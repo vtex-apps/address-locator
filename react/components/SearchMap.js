@@ -28,29 +28,29 @@ const SearchMap = compose(
       })
     },
   }),
-  withScriptjs  
-)(props =>  
-  <div>
-      <StandaloneSearchBox
-        ref={props.onSearchBoxMounted}
-        bounds={props.bounds}
-        onPlacesChanged={props.onPlacesChanged}
-      >
-        <input
-            type="text"
-            placeholder="Enter your address"
-        />
-      </StandaloneSearchBox>
+  withScriptjs
+)(props =>
+  <div className="w-100">
+    <StandaloneSearchBox
+      ref={props.onSearchBoxMounted}
+      bounds={props.bounds}
+      onPlacesChanged={props.onPlacesChanged}
+    >
+      <input
+        type="text"
+        placeholder="Enter your address"
+      />
+    </StandaloneSearchBox>
 
-      {typeof props.place !== typeof undefined && (
-        <Fragment>
-          <p>
-            {props.place.formatted_address}
-          </p>
+    {typeof props.place !== typeof undefined && (
+      <Fragment>
+        <p>
+          {props.place.formatted_address}
+        </p>
 
-          <Map marker={{lat: props.place.geometry.location.lat(), lng: props.place.geometry.location.lng()}} />
-        </Fragment>
-      )}
+        <Map marker={{ lat: props.place.geometry.location.lat(), lng: props.place.geometry.location.lng() }} />
+      </Fragment>
+    )}
 
   </div>
 );

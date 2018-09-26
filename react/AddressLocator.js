@@ -11,13 +11,13 @@ class AddressLocator extends Component {
   };
 
   render() {
-      const {logoUrl, logoTitle, intl} = this.props
+    const { logoUrl, logoTitle, intl } = this.props
 
-      const message = intl.formatMessage({id: 'address-locator.where-to-deliver'})
+    const message = intl.formatMessage({ id: 'address-locator.where-to-deliver' })
 
     return (
       <div className="vtex-address-locator w-100 flex flex-column justify-center items-center pa6">
-        {logoUrl && <img src={logoUrl} alt={logoTitle}/>}
+        {logoUrl && <img src={logoUrl} alt={logoTitle} />}
         <span className="db b f3 mb4">{message}</span>
         <SearchMap />
       </div>
