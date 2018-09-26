@@ -7,6 +7,7 @@ import { withScriptjs, withGoogleMap, GoogleMap, Marker } from "react-google-map
 import { StandaloneSearchBox } from 'react-google-maps/lib/components/places/StandaloneSearchBox'
 
 import InputSearch from 'vtex.styleguide/InputSearch'
+import Button from 'vtex.styleguide/Button'
 
 const SearchMap = compose(
   withProps({
@@ -18,44 +19,56 @@ const SearchMap = compose(
     componentWillMount() {
       const refs = {}
       this.setState({
-        place: undefined,
+        selectedPlace: undefined,
+        
         onSearchBoxMounted: ref => {
           refs.searchBox = ref;
         },
+
         onPlacesChanged: () => {
           const place = refs.searchBox.getPlaces()[0];
           this.setState({
-            place,
+            selectedPlace: {
+              lat: place.geometry.location.lat(),
+              lng: place.geometry.location.lng()
+            },
           });
         },
+
+        setCurrentPosition: () => {
+          if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition((position) => {
+              this.setState({
+                selectedPlace: {
+                  lat: position.coords.latitude,
+                  lng: position.coords.longitude
+                }
+              })
+            })
+          }
+        }
       })
-    },
+    }
   }),
-  withScriptjs  
-)(({place, onSearchBoxMounted, bounds, onPlacesChanged, intl}) =>  
+  withScriptjs
+)(({ selectedPlace, onSearchBoxMounted, bounds, onPlacesChanged, setCurrentPosition, intl }) =>
   <div className="w-100">
-      <StandaloneSearchBox
-        ref={onSearchBoxMounted}
-        bounds={bounds}
-        onPlacesChanged={onPlacesChanged}
-      >
-        <InputSearch
-            type="text"
-            placeholder={intl.formatMessage({id:'address-locator.enter-address'})}
-            size="x-large"
-        />
-      </StandaloneSearchBox>
+    <StandaloneSearchBox
+      ref={onSearchBoxMounted}
+      bounds={bounds}
+      onPlacesChanged={onPlacesChanged}
+    >
+      <InputSearch
+        type="text"
+        placeholder={intl.formatMessage({ id: 'address-locator.enter-address' })}
+        size="x-large"
+      />
+    </StandaloneSearchBox>
+    <Button onClick={setCurrentPosition}>{intl.formatMessage({id: 'address-locator.current-location'})}</Button>
 
-    {place && (
-      <Fragment>
-        <p>
-          {place.formatted_address}
-        </p>
-
-        <Map marker={{ lat: place.geometry.location.lat(), lng: place.geometry.location.lng() }} />
-      </Fragment>
+    {selectedPlace && (
+      <Map marker={selectedPlace} />
     )}
-
   </div>
 );
 

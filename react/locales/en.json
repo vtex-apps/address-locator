@@ -1,4 +1,5 @@
 {
     "address-locator.where-to-deliver": "Where do you want your order delivered?",
-    "address-locator.enter-address": "Enter your address"
+    "address-locator.enter-address": "Enter your address",
+    "address-locator.current-location": "Use my current location"
 }
