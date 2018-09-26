@@ -12,6 +12,9 @@
     "smartcheckout"
   ],
   "settingsSchema": {},
+  "dependencies": {
+    "vtex.styleguide": "6.x"
+  },
   "scripts": {
     "postreleasy": "vtex publish --verbose"
   }
