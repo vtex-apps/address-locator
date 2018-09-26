@@ -1,4 +1,5 @@
 import React, { Fragment } from 'react';
+import { injectIntl, intlShape } from 'react-intl'
 import Map from './Map';
 
 import { compose, withProps, lifecycle } from 'recompose'
@@ -31,31 +32,33 @@ const SearchMap = compose(
     },
   }),
   withScriptjs  
-)(props =>  
+)(({place, onSearchBoxMounted, bounds, onPlacesChanged, intl}) =>  
   <div className="w-100">
       <StandaloneSearchBox
-        ref={props.onSearchBoxMounted}
-        bounds={props.bounds}
-        onPlacesChanged={props.onPlacesChanged}
+        ref={onSearchBoxMounted}
+        bounds={bounds}
+        onPlacesChanged={onPlacesChanged}
       >
         <InputSearch
             type="text"
-            placeholder="Enter your address"
+            placeholder={intl.formatMessage({id:'address-locator.enter-address'})}
             size="x-large"
         />
       </StandaloneSearchBox>
 
-    {typeof props.place !== typeof undefined && (
+    {place && (
       <Fragment>
         <p>
-          {props.place.formatted_address}
+          {place.formatted_address}
         </p>
 
-        <Map marker={{ lat: props.place.geometry.location.lat(), lng: props.place.geometry.location.lng() }} />
+        <Map marker={{ lat: place.geometry.location.lat(), lng: place.geometry.location.lng() }} />
       </Fragment>
     )}
 
   </div>
 );
 
-export default SearchMap
+SearchMap.propTypes = { intl: intlShape.isRequired }
+
+export default injectIntl(SearchMap)
