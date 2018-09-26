@@ -1,4 +1,7 @@
 {
     "address-locator.where-to-deliver": "Aonde quer pedir hoje?",
-    "address-locator.enter-address": "Digite seu endereço"
+    "address-locator.enter-address": "Digite seu endereço",
+    "address-locator.popover.title": "Entregar aqui?",
+    "address-locator.popover.description": "(Mova o mapa para ajustar se necessário)",
+    "address-locator.popover.button": "Confirmar"
 }

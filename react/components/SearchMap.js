@@ -1,12 +1,13 @@
 import React, { Fragment } from 'react';
-import { injectIntl, intlShape } from 'react-intl'
+import { injectIntl, intlShape } from 'react-intl';
 import Map from './Map';
 
-import { compose, withProps, lifecycle } from 'recompose'
-import { withScriptjs, withGoogleMap, GoogleMap, Marker } from "react-google-maps"
-import { StandaloneSearchBox } from 'react-google-maps/lib/components/places/StandaloneSearchBox'
+import { compose, withProps, lifecycle } from 'recompose';
+import { withScriptjs, withGoogleMap, GoogleMap, Marker } from 'react-google-maps';
+import { StandaloneSearchBox } from 'react-google-maps/lib/components/places/StandaloneSearchBox';
 
-import InputSearch from 'vtex.styleguide/InputSearch'
+import InputSearch from 'vtex.styleguide/InputSearch';
+import Popover from './Popover';
 
 const SearchMap = compose(
   withProps({
@@ -31,33 +32,44 @@ const SearchMap = compose(
       })
     },
   }),
-  withScriptjs  
-)(({place, onSearchBoxMounted, bounds, onPlacesChanged, intl}) =>  
-  <div className="w-100">
+  withScriptjs
+)(({ place, onSearchBoxMounted, bounds, onPlacesChanged, intl }) => {
+  const placeholder = intl.formatMessage({id: "address-locator.enter-address"});
+  const popoverTitle = intl.formatMessage({id: "address-locator.popover.title"});
+  const popoverDescription = intl.formatMessage({id: "address-locator.popover.description"});
+  const popoverButton = intl.formatMessage({id: "address-locator.popover.button"});
+
+  return (
+    <div className="w-100">
       <StandaloneSearchBox
         ref={onSearchBoxMounted}
         bounds={bounds}
         onPlacesChanged={onPlacesChanged}
       >
-        <InputSearch
-            type="text"
-            placeholder={intl.formatMessage({id:'address-locator.enter-address'})}
-            size="x-large"
-        />
+        <InputSearch type="text" placeholder={placeholder} size="x-large" />
       </StandaloneSearchBox>
 
-    {place && (
-      <Fragment>
-        <p>
-          {place.formatted_address}
-        </p>
+      {place && (
+        <Fragment>
+          <p>{place.formatted_address}</p>
 
-        <Map marker={{ lat: place.geometry.location.lat(), lng: place.geometry.location.lng() }} />
-      </Fragment>
-    )}
+          <Popover
+            titleText={popoverTitle}
+            descriptionText={popoverDescription}
+            buttonText={popoverButton}
+          />
 
-  </div>
-);
+          <Map
+            marker={{
+              lat: place.geometry.location.lat(),
+              lng: place.geometry.location.lng()
+            }}
+          />
+        </Fragment>
+      )}
+    </div>
+  );
+});
 
 SearchMap.propTypes = { intl: intlShape.isRequired }
 

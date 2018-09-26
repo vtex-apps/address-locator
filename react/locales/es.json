@@ -1,4 +1,7 @@
 {
     "address-locator.where-to-deliver": "¿Dónde entregamos tu pedido?",
-    "address-locator.enter-address": "Ingrese su dirección"
+    "address-locator.enter-address": "Ingrese su dirección",
+    "address-locator.popover.title": "¿Aquí entregamos tu pedido?",
+    "address-locator.popover.description": "(Mueve el mapa para ajustar el pin de ser necesario)",
+    "address-locator.popover.button": "Continuar"
 }
