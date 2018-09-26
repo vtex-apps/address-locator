@@ -6,7 +6,7 @@
     },
     "extensions": {
         "address-locator": {
-            "component": "index"
+            "component": "AddressLocator"
         }
     }
 }
