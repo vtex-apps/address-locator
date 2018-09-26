@@ -8,6 +8,7 @@ import { StandaloneSearchBox } from 'react-google-maps/lib/components/places/Sta
 
 import InputSearch from 'vtex.styleguide/InputSearch'
 import Button from 'vtex.styleguide/Button'
+import Popover from './Popover';
 
 const SearchMap = compose(
   withProps({
@@ -51,26 +52,36 @@ const SearchMap = compose(
     }
   }),
   withScriptjs
-)(({ selectedPlace, onSearchBoxMounted, bounds, onPlacesChanged, setCurrentPosition, intl }) =>
-  <div className="w-100">
-    <StandaloneSearchBox
-      ref={onSearchBoxMounted}
-      bounds={bounds}
-      onPlacesChanged={onPlacesChanged}
-    >
-      <InputSearch
-        type="text"
-        placeholder={intl.formatMessage({ id: 'address-locator.enter-address' })}
-        size="x-large"
-      />
-    </StandaloneSearchBox>
-    <Button onClick={setCurrentPosition}>{intl.formatMessage({id: 'address-locator.current-location'})}</Button>
+)(({ selectedPlace, onSearchBoxMounted, bounds, onPlacesChanged, setCurrentPosition, intl }) => {
+  const placeholder = intl.formatMessage({id: "address-locator.enter-address"});
+  const popoverTitle = intl.formatMessage({id: "address-locator.popover.title"});
+  const popoverDescription = intl.formatMessage({id: "address-locator.popover.description"});
+  const popoverButton = intl.formatMessage({id: "address-locator.popover.button"});
 
-    {selectedPlace && (
-      <Map marker={selectedPlace} />
-    )}
-  </div>
-);
+  return (
+    <div className="w-100">
+      <StandaloneSearchBox
+        ref={onSearchBoxMounted}
+        bounds={bounds}
+        onPlacesChanged={onPlacesChanged}
+      >
+        <InputSearch type="text" placeholder={placeholder} size="x-large" />
+      </StandaloneSearchBox>
+      <Button onClick={setCurrentPosition}>{intl.formatMessage({id: 'address-locator.current-location'})}</Button>
+
+      {selectedPlace && (
+        <Fragment>
+          <Popover
+            titleText={popoverTitle}
+            descriptionText={popoverDescription}
+            buttonText={popoverButton}
+          />
+          <Map marker={selectedPlace} />
+        </Fragment>
+      )}
+    </div>
+  )
+})
 
 SearchMap.propTypes = { intl: intlShape.isRequired }
 
