@@ -4,10 +4,10 @@ import { withScriptjs, withGoogleMap, GoogleMap, Marker } from "react-google-map
 const MapWithMarker = withScriptjs(withGoogleMap((props) =>
   <GoogleMap
     defaultZoom={18}
-    center={props.marker}
+    defaultCenter={props.marker}
   >
     <Marker
-      position={props.marker}
+      defaultPosition={props.marker}
       title="Click to zoom"
     />
   </GoogleMap>

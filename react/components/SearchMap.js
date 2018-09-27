@@ -3,7 +3,7 @@ import { injectIntl, intlShape } from 'react-intl'
 import Map from './Map';
 
 import { compose, withProps, lifecycle } from 'recompose'
-import { withScriptjs, withGoogleMap, GoogleMap, Marker } from "react-google-maps"
+import { withScriptjs } from "react-google-maps"
 import { StandaloneSearchBox } from 'react-google-maps/lib/components/places/StandaloneSearchBox'
 
 import InputSearch from 'vtex.styleguide/InputSearch'
