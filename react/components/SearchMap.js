@@ -1,14 +1,14 @@
-import React, { Fragment } from 'react';
+import React from 'react';
 import { injectIntl, intlShape } from 'react-intl'
-import Map from './Map';
 
 import { compose, withProps, lifecycle } from 'recompose'
+
 import { withScriptjs } from "react-google-maps"
 import { StandaloneSearchBox } from 'react-google-maps/lib/components/places/StandaloneSearchBox'
 
+import MapWrapper from './MapWrapper';
 import InputSearch from 'vtex.styleguide/InputSearch'
 import Button from 'vtex.styleguide/Button'
-import Popover from './Popover';
 
 const SearchMap = compose(
   withProps({
@@ -21,7 +21,7 @@ const SearchMap = compose(
       const refs = {}
       this.setState({
         selectedPlace: undefined,
-        
+
         onSearchBoxMounted: ref => {
           refs.searchBox = ref;
         },
@@ -53,10 +53,8 @@ const SearchMap = compose(
   }),
   withScriptjs
 )(({ selectedPlace, onSearchBoxMounted, bounds, onPlacesChanged, setCurrentPosition, intl }) => {
-  const placeholder = intl.formatMessage({id: "address-locator.enter-address"});
-  const popoverTitle = intl.formatMessage({id: "address-locator.popover.title"});
-  const popoverDescription = intl.formatMessage({id: "address-locator.popover.description"});
-  const popoverButton = intl.formatMessage({id: "address-locator.popover.button"});
+  const placeholder = intl.formatMessage({ id: "address-locator.enter-address" });
+  const buttonText = intl.formatMessage({ id: 'address-locator.current-location' })
 
   return (
     <div className="w-100">
@@ -67,17 +65,10 @@ const SearchMap = compose(
       >
         <InputSearch type="text" placeholder={placeholder} size="x-large" />
       </StandaloneSearchBox>
-      <Button onClick={setCurrentPosition}>{intl.formatMessage({id: 'address-locator.current-location'})}</Button>
+      <Button onClick={setCurrentPosition}>{buttonText}</Button>
 
       {selectedPlace && (
-        <Fragment>
-          <Popover
-            titleText={popoverTitle}
-            descriptionText={popoverDescription}
-            buttonText={popoverButton}
-          />
-          <Map marker={selectedPlace} />
-        </Fragment>
+        <MapWrapper marker={selectedPlace} />
       )}
     </div>
   )
