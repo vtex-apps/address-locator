@@ -1,7 +1,9 @@
 {
-    "address-locator.where-to-deliver": "¿Dónde entregamos tu pedido?",
+    "address-locator.order-title": "Ordenar en cualquier lugar",
     "address-locator.enter-address": "Ingrese su dirección",
     "address-locator.current-location": "Utilizar mi ubicación actual",
     "address-locator.popover.title": "¿Aquí entregamos tu pedido?",
-    "address-locator.popover.button": "Continuar"
+    "address-locator.popover.button": "Continuar",
+    "address-locator.tab-1-label": "Primer pedido",
+    "address-locator.tab-2-label": "Canjear dirección"
 }

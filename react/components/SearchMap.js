@@ -66,10 +66,6 @@ const SearchMap = compose(
         <InputSearch type="text" placeholder={placeholder} size="x-large" />
       </StandaloneSearchBox>
       <Button onClick={setCurrentPosition}>{buttonText}</Button>
-
-      {selectedPlace && (
-        <MapWrapper marker={selectedPlace} />
-      )}
     </div>
   )
 })

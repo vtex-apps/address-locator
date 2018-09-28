@@ -1,7 +1,9 @@
 {
-    "address-locator.where-to-deliver": "Where do you want your order delivered?",
+    "address-locator.order-title": "Order anywhere",
     "address-locator.enter-address": "Enter your address",
     "address-locator.popover.title": "Deliver here?",
     "address-locator.popover.button": "Confirm",
-    "address-locator.current-location": "Use my current location"
+    "address-locator.current-location": "Use my current location",
+    "address-locator.tab-1-label": "First order",
+    "address-locator.tab-2-label": "Redeem address"
 }

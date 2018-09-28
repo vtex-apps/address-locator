@@ -1,7 +1,9 @@
 {
-    "address-locator.where-to-deliver": "Aonde quer pedir hoje?",
+    "address-locator.order-title": "Peça de qualquer lugar",
     "address-locator.enter-address": "Digite seu endereço",
     "address-locator.current-location": "Usar minha localização atual",
     "address-locator.popover.title": "Entregar aqui?",
-    "address-locator.popover.button": "Confirmar"
+    "address-locator.popover.button": "Confirmar",
+    "address-locator.tab-1-label": "Primeiro pedido",
+    "address-locator.tab-2-label": "Resgatar endereço"
 }
