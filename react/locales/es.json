@@ -5,5 +5,7 @@
     "address-locator.popover.title": "¿Aquí entregamos tu pedido?",
     "address-locator.popover.button": "Continuar",
     "address-locator.tab-1-label": "Primer pedido",
-    "address-locator.tab-2-label": "Canjear dirección"
+    "address-locator.tab-2-label": "Canjear dirección",
+    "address-locator.tab-1-button": "Orden en esta dirección",
+    "address-locator.address-label": "Enter your address below"
 }

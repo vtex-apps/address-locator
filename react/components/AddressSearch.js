@@ -1,10 +1,8 @@
 import React from 'react'
 import { injectIntl, intlShape } from 'react-intl'
-
 import { withScriptjs } from 'react-google-maps'
 import { StandaloneSearchBox } from 'react-google-maps/lib/components/places/StandaloneSearchBox'
-
-import InputSearch from 'vtex.styleguide/InputSearch'
+import Input from 'vtex.styleguide/Input'
 import Button from 'vtex.styleguide/Button'
 
 class AddressSearch extends React.Component {
@@ -43,18 +41,18 @@ class AddressSearch extends React.Component {
     const { intl } = this.props
 
     const placeholder = intl.formatMessage({ id: 'address-locator.enter-address' })
-    const buttonText = intl.formatMessage({ id: 'address-locator.current-location' })
+    const label = intl.formatMessage({ id: 'address-locator.address-label' })
+    const buttonText = intl.formatMessage({ id: 'address-locator.tab-1-button' })
 
     return (
       <div className="w-100">
         <StandaloneSearchBox
           ref={this.handleSearchBoxMounted}
           onPlacesChanged={this.handlePlacesChanged}
-
         >
-          <InputSearch type="text" placeholder={placeholder} size="x-large" />
+          <Input type="text" placeholder={placeholder} size="large" label={label} />
         </StandaloneSearchBox>
-        <Button onClick={this.handleSetCurrentPosition}>{buttonText}</Button>
+        <Button>{buttonText}</Button>
       </div>
     )
   }
