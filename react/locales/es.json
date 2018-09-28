@@ -4,5 +4,7 @@
     "address-locator.address-search-label": "Introduzca su dirección abajo",
     "address-locator.address-search-placeholder": "Calle, ciudad, estado",
     "address-locator.address-search-button": "Entregar en esta dirección",
-    "address-locator.address-redeem-tab": "Recuperar dirección"
+    "address-locator.address-redeem-tab": "Recuperar dirección",
+    "address-locator.address-redeem-label": "Introduzca su teléfono a continuación",
+    "address-locator.address-redeem-button": "Buscar dirección"
 }

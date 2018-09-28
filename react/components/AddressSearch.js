@@ -14,7 +14,7 @@ class AddressSearch extends Component {
     selectedPlace: undefined,
   }
 
-  handleSearchBoxMounted = (ref) => {
+  handleSearchBoxMounted = ref => {
     this.searchBox = ref
   }
 
@@ -54,7 +54,7 @@ class AddressSearch extends Component {
         >
           <Input type="text" placeholder={placeholder} size="large" label={label} />
         </StandaloneSearchBox>
-        <Button>{ buttonText }</Button>
+        <Button>{buttonText}</Button>
       </div>
     )
   }
