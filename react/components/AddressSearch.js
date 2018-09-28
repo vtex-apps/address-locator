@@ -1,5 +1,5 @@
-import React from 'react'
-import { injectIntl, intlShape } from 'react-intl'
+import React, { Component } from 'react'
+import { FormattedMessage } from 'react-intl'
 import { withScriptjs } from 'react-google-maps'
 import { StandaloneSearchBox } from 'react-google-maps/lib/components/places/StandaloneSearchBox'
 import InputSearch from 'vtex.styleguide/InputSearch'
@@ -9,10 +9,8 @@ import {
   contextPropTypes,
 } from 'vtex.store/OrderFormContext'
 
-class AddressSearch extends React.Component {
+class AddressSearch extends Component {
   static propTypes = {
-    /* i18n API */
-    intl: intlShape.isRequired,
     /* Context used to call address mutation and retrieve the orderForm */
     orderFormContext: contextPropTypes,
   }
@@ -49,23 +47,24 @@ class AddressSearch extends React.Component {
   }
 
   render() {
-    const { intl } = this.props
-
-    const placeholder = intl.formatMessage({ id: 'address-locator.enter-address' })
-    const buttonText = intl.formatMessage({ id: 'address-locator.current-location' })
-
     return (
       <div className="w-100">
         <StandaloneSearchBox
           ref={this.handleSearchBoxMounted}
           onPlacesChanged={this.handlePlacesChanged}
         >
-          <InputSearch type="text" placeholder={placeholder} size="x-large" />
+          <FormattedMessage id="address-locator.enter-address" tagName="div">
+            {placeholder => (
+              <InputSearch type="text" placeholder={placeholder} size="large" />
+            )}
+          </FormattedMessage>
         </StandaloneSearchBox>
-        <Button onClick={this.handleSetCurrentPosition}>{buttonText}</Button>
+        <Button onClick={this.handleSetCurrentPosition}>
+          <FormattedMessage id="address-locator.current-location" />
+        </Button>
       </div>
     )
   }
 }
 
-export default orderFormConsumer(injectIntl(withScriptjs(AddressSearch)))
+export default orderFormConsumer(withScriptjs(AddressSearch))
