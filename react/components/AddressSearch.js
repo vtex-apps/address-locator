@@ -1,18 +1,27 @@
 import React from 'react'
 import { injectIntl, intlShape } from 'react-intl'
-
 import { withScriptjs } from 'react-google-maps'
 import { StandaloneSearchBox } from 'react-google-maps/lib/components/places/StandaloneSearchBox'
-
 import InputSearch from 'vtex.styleguide/InputSearch'
 import Button from 'vtex.styleguide/Button'
+import {
+  orderFormConsumer,
+  contextPropTypes,
+} from 'vtex.store/OrderFormContext'
 
 class AddressSearch extends React.Component {
+  static propTypes = {
+    /* i18n API */
+    intl: intlShape.isRequired,
+    /* Context used to call address mutation and retrieve the orderForm */
+    orderFormContext: contextPropTypes,
+  }
+
   state = {
     selectedPlace: undefined,
   }
 
-  handleSearchBoxMounted = (ref) => {
+  handleSearchBoxMounted = ref => {
     this.searchBox = ref
   }
 
@@ -50,7 +59,6 @@ class AddressSearch extends React.Component {
         <StandaloneSearchBox
           ref={this.handleSearchBoxMounted}
           onPlacesChanged={this.handlePlacesChanged}
-
         >
           <InputSearch type="text" placeholder={placeholder} size="x-large" />
         </StandaloneSearchBox>
@@ -60,6 +68,4 @@ class AddressSearch extends React.Component {
   }
 }
 
-AddressSearch.propTypes = { intl: intlShape.isRequired }
-
-export default injectIntl(withScriptjs(AddressSearch))
+export default orderFormConsumer(injectIntl(withScriptjs(AddressSearch)))
