@@ -1,11 +1,15 @@
-import React from 'react'
-import { injectIntl, intlShape } from 'react-intl'
+import React, { Component } from 'react'
+import { intlShape } from 'react-intl'
 import { withScriptjs } from 'react-google-maps'
 import { StandaloneSearchBox } from 'react-google-maps/lib/components/places/StandaloneSearchBox'
 import Input from 'vtex.styleguide/Input'
 import Button from 'vtex.styleguide/Button'
 
-class AddressSearch extends React.Component {
+class AddressSearch extends Component {
+  static contextTypes = {
+    intl: intlShape,
+  }
+
   state = {
     selectedPlace: undefined,
   }
@@ -38,11 +42,9 @@ class AddressSearch extends React.Component {
   }
 
   render() {
-    const { intl } = this.props
-
-    const placeholder = intl.formatMessage({ id: 'address-locator.enter-address' })
-    const label = intl.formatMessage({ id: 'address-locator.address-label' })
-    const buttonText = intl.formatMessage({ id: 'address-locator.tab-1-button' })
+    const placeholder = this.context.intl.formatMessage({ id: 'address-locator.address-search-placeholder' })
+    const label = this.context.intl.formatMessage({ id: 'address-locator.address-search-label' })
+    const buttonText = this.context.intl.formatMessage({ id: 'address-locator.address-search-button' })
 
     return (
       <div className="w-100">
@@ -52,12 +54,10 @@ class AddressSearch extends React.Component {
         >
           <Input type="text" placeholder={placeholder} size="large" label={label} />
         </StandaloneSearchBox>
-        <Button>{buttonText}</Button>
+        <Button>{ buttonText }</Button>
       </div>
     )
   }
 }
 
-AddressSearch.propTypes = { intl: intlShape.isRequired }
-
-export default injectIntl(withScriptjs(AddressSearch))
+export default withScriptjs(AddressSearch)
