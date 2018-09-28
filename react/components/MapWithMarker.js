@@ -2,14 +2,14 @@ import React from 'react'
 
 import { injectIntl, intlShape } from 'react-intl'
 
-import { withScriptjs, withGoogleMap, GoogleMap } from "react-google-maps"
+import { withScriptjs, withGoogleMap, GoogleMap } from 'react-google-maps'
 import { MarkerWithLabel } from 'react-google-maps/lib/components/addons/MarkerWithLabel'
 
 import Popover from './Popover'
 
 const MapWithMarker = withScriptjs(withGoogleMap(({ marker, intl }) => {
-  const popoverTitle = intl.formatMessage({ id: "address-locator.popover.title" });
-  const popoverButton = intl.formatMessage({ id: "address-locator.popover.button" });
+  const popoverTitle = intl.formatMessage({ id: 'address-locator.popover.title' })
+  const popoverButton = intl.formatMessage({ id: 'address-locator.popover.button' })
 
   return (
     <GoogleMap
@@ -26,7 +26,8 @@ const MapWithMarker = withScriptjs(withGoogleMap(({ marker, intl }) => {
         />
       </MarkerWithLabel>
     </GoogleMap>
-  )}
+  )
+}
 ))
 
 MapWithMarker.propTypes = { intl: intlShape.isRequired }

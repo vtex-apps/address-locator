@@ -1,13 +1,13 @@
-import React, { Component } from "react";
-import { injectIntl, intlShape } from "react-intl";
-import PropTypes from "prop-types";
+import React, { Component } from 'react'
+import { injectIntl, intlShape } from 'react-intl'
+import PropTypes from 'prop-types'
 import SearchMap from './components/SearchMap'
 
 class AddressLocator extends Component {
   static propTypes = {
     logoUrl: PropTypes.string,
     logoTitle: PropTypes.string,
-    intl: intlShape.isRequired
+    intl: intlShape.isRequired,
   };
 
   render() {
@@ -21,8 +21,8 @@ class AddressLocator extends Component {
         <span className="db b f3 mb4">{message}</span>
         <SearchMap />
       </div>
-    );
+    )
   }
 }
 
-export default injectIntl(AddressLocator);
+export default injectIntl(AddressLocator)
