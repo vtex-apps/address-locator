@@ -1,11 +1,8 @@
 {
-    "address-locator.order-title": "Ordenar en cualquier lugar",
-    "address-locator.enter-address": "Ingrese su dirección",
-    "address-locator.current-location": "Utilizar mi ubicación actual",
-    "address-locator.popover.title": "¿Aquí entregamos tu pedido?",
-    "address-locator.popover.button": "Continuar",
-    "address-locator.tab-1-label": "Primer pedido",
-    "address-locator.tab-2-label": "Canjear dirección",
-    "address-locator.tab-1-button": "Orden en esta dirección",
-    "address-locator.address-label": "Enter your address below"
+    "address-locator.order-title": "Pieza de cualquier lugar",
+    "address-locator.address-search-tab": "Primer pedido",
+    "address-locator.address-search-label": "Introduzca su dirección abajo",
+    "address-locator.address-search-placeholder": "Calle, ciudad, estado",
+    "address-locator.address-search-button": "Entregar en esta dirección",
+    "address-locator.address-redeem-tab": "Recuperar dirección"
 }
