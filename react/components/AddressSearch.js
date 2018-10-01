@@ -1,16 +1,16 @@
 import React, { Component } from 'react'
 import { intlShape } from 'react-intl'
 import { withScriptjs } from 'react-google-maps'
-
 import { StandaloneSearchBox } from 'react-google-maps/lib/components/places/StandaloneSearchBox'
-import LocationInputIcon from './LocationInputIcon'
+import { alpha2ToAlpha3 } from 'i18n-iso-countries'
 import Input from 'vtex.styleguide/Input'
 import Button from 'vtex.styleguide/Button'
 import {
   orderFormConsumer,
   contextPropTypes,
 } from 'vtex.store/OrderFormContext'
-import { alpha2ToAlpha3 } from 'i18n-iso-countries'
+
+import LocationInputIcon from './LocationInputIcon'
 
 class AddressSearch extends Component {
   static propTypes = {
