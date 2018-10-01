@@ -26,7 +26,6 @@
 }
 
 .vtex-tabs__content .vtex-input-prefix__group input {
-    color: #979899;
     font-size: .85rem;
     padding-left: 1rem;
     padding-right: 1rem;
@@ -42,3 +41,21 @@
     width: 100%;
 }
 
+.input-wrapper {
+    position: relative;
+}
+
+.icon-current-location {
+    position: absolute;
+    top: 24px;
+    right: 14px;
+    bottom: 0;
+    margin: auto;
+    line-height: 42px;
+}
+
+.icon-current-location img {
+    border-left: 1px solid #f1f1f2;
+    padding-left: 14px;
+    vertical-align: middle;
+}
