@@ -23,7 +23,8 @@ class AddressSearch extends Component {
   }
 
   state = {
-    selectedPlace: undefined,
+    address: undefined,
+    shouldDisplayNumberInput: false
   }
 
   handleSearchBoxMounted = ref => {
@@ -33,7 +34,10 @@ class AddressSearch extends Component {
   handlePlacesChanged = () => {
     const place = this.searchBox.getPlaces()[0]
     const address = this.getParsedAddress(place)
-    this.setState({ address })
+    this.setState({
+      address,
+      shouldDisplayNumberInput: !address.number
+    })
   }
 
   handleSetCurrentPosition = () => {
@@ -91,19 +95,27 @@ class AddressSearch extends Component {
           address,
         },
       })
-      .then(res => {
+      .then(() => {
         /* TODO */
       })
   }
 
+  handleAddressValueChanged = (e, key) => {
+    const { address } = this.state
+    address[key] = e.target.value
+    this.setState({ address })
+  }
+
   render() {
-    const addressInputPlaceholder = this.context.intl.formatMessage({ id: 'address-locator.address-search-placeholder' })
-    const addressInputLabel = this.context.intl.formatMessage({ id: 'address-locator.address-search-label' })
-    const numberInputPlaceholder = this.context.intl.formatMessage({ id: 'address-locator.address-search-number-placeholder' })
-    const numberInputLabel = this.context.intl.formatMessage({ id: 'address-locator.address-search-number-label' })
-    const complementInputPlaceholder = this.context.intl.formatMessage({ id: 'address-locator.address-search-complement-placeholder' })
-    const complementInputLabel = this.context.intl.formatMessage({ id: 'address-locator.address-search-complement-label' })
-    const buttonText = this.context.intl.formatMessage({ id: 'address-locator.address-search-button' })
+    const { address, shouldDisplayNumberInput } = this.state
+    const { intl } = this.context
+    const addressInputPlaceholder = intl.formatMessage({ id: 'address-locator.address-search-placeholder' })
+    const addressInputLabel = intl.formatMessage({ id: 'address-locator.address-search-label' })
+    const numberInputPlaceholder = intl.formatMessage({ id: 'address-locator.address-search-number-placeholder' })
+    const numberInputLabel = intl.formatMessage({ id: 'address-locator.address-search-number-label' })
+    const complementInputPlaceholder = intl.formatMessage({ id: 'address-locator.address-search-complement-placeholder' })
+    const complementInputLabel = intl.formatMessage({ id: 'address-locator.address-search-complement-label' })
+    const buttonText = intl.formatMessage({ id: 'address-locator.address-search-button' })
 
     return (
       <div className="w-100">
@@ -116,13 +128,13 @@ class AddressSearch extends Component {
           </StandaloneSearchBox>
           <LocationInputIcon />
         </div>
-        {(this.state.address && !this.state.address.number) && (
-          <Input type="text" placeholder={numberInputPlaceholder} size="large" label={numberInputLabel} />
+        {(address && shouldDisplayNumberInput) && (
+          <Input type="text" placeholder={numberInputPlaceholder} size="large" label={numberInputLabel} onChange={(e) => this.handleAddressValueChanged(e, 'number')} />
         )}
-        {(this.state.address && !this.state.address.complement) && (
-          <Input type="text" placeholder={complementInputPlaceholder} size="large" label={complementInputLabel} />
+        {(address) && (
+          <Input type="text" placeholder={complementInputPlaceholder} size="large" label={complementInputLabel} onChange={(e) => this.handleAddressValueChanged(e, 'complement')} />
         )}
-        <Button>{buttonText}</Button>
+        <Button disabled={(!address || !address.number)}>{buttonText}</Button>
       </div>
     )
   }
