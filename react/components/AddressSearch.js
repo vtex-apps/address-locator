@@ -32,32 +32,26 @@ class AddressSearch extends Component {
 
   handlePlacesChanged = () => {
     const place = this.searchBox.getPlaces()[0]
-    this.setState({
-      selectedPlace: {
-        lat: place.geometry.location.lat(),
-        lng: place.geometry.location.lng(),
-      },
-    })
+    const address = this.getParsedAddress(place)
+    this.setState({ address })
   }
 
   handleSetCurrentPosition = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(position => {
-        this.setState({
-          selectedPlace: {
-            lat: position.coords.latitude,
-            lng: position.coords.longitude,
-          },
-        })
+        const currentLatLng = {
+          lat: position.coords.latitude,
+          lng: position.coords.longitude,
+        }
+        /* @TODO: API call to get address based on latlng */
       })
     }
   }
 
-  handleSetAddress = () => {
-    const { orderFormContext } = this.props
-    const place = this.searchBox.getPlaces()[0]
-
-    /* Reduces Google Maps API of array address components into a simpler consumable object */
+  /**
+   * Reduces Google Maps API of array address components into a simpler consumable object
+   */
+  getParsedAddress = place => {
     const parsedAddressComponents = place.address_components.reduce(
       (prev, curr) => {
         const parsedItem = curr.types.reduce(
@@ -83,6 +77,13 @@ class AddressSearch extends Component {
       street: parsedAddressComponents.route,
     }
 
+    return address
+  }
+
+  handleSetAddress = () => {
+    const { orderFormContext } = this.props
+    const { address } = this.state
+
     orderFormContext
       .updateOrderFormShipping({
         variables: {
@@ -90,14 +91,18 @@ class AddressSearch extends Component {
           address,
         },
       })
-      .then(() => {
+      .then(res => {
         /* TODO */
       })
   }
 
   render() {
-    const placeholder = this.context.intl.formatMessage({ id: 'address-locator.address-search-placeholder' })
-    const label = this.context.intl.formatMessage({ id: 'address-locator.address-search-label' })
+    const addressInputPlaceholder = this.context.intl.formatMessage({ id: 'address-locator.address-search-placeholder' })
+    const addressInputLabel = this.context.intl.formatMessage({ id: 'address-locator.address-search-label' })
+    const numberInputPlaceholder = this.context.intl.formatMessage({ id: 'address-locator.address-search-number-placeholder' })
+    const numberInputLabel = this.context.intl.formatMessage({ id: 'address-locator.address-search-number-label' })
+    const complementInputPlaceholder = this.context.intl.formatMessage({ id: 'address-locator.address-search-complement-placeholder' })
+    const complementInputLabel = this.context.intl.formatMessage({ id: 'address-locator.address-search-complement-label' })
     const buttonText = this.context.intl.formatMessage({ id: 'address-locator.address-search-button' })
 
     return (
@@ -107,10 +112,16 @@ class AddressSearch extends Component {
             ref={this.handleSearchBoxMounted}
             onPlacesChanged={this.handlePlacesChanged}
           >
-            <Input type="text" placeholder={placeholder} size="large" label={label} />
+            <Input type="text" placeholder={addressInputPlaceholder} size="large" label={addressInputLabel} />
           </StandaloneSearchBox>
           <LocationInputIcon />
         </div>
+        {(this.state.address && !this.state.address.number) && (
+          <Input type="text" placeholder={numberInputPlaceholder} size="large" label={numberInputLabel} />
+        )}
+        {(this.state.address && !this.state.address.complement) && (
+          <Input type="text" placeholder={complementInputPlaceholder} size="large" label={complementInputLabel} />
+        )}
         <Button>{buttonText}</Button>
       </div>
     )
