@@ -3,7 +3,7 @@ import { intlShape } from 'react-intl'
 import { withScriptjs } from 'react-google-maps'
 
 import { StandaloneSearchBox } from 'react-google-maps/lib/components/places/StandaloneSearchBox'
-import CurrentLocationLogo from './CurrentLocationLogo'
+import LocationInputIcon from './LocationInputIcon'
 import Input from 'vtex.styleguide/Input'
 import Button from 'vtex.styleguide/Button'
 
@@ -50,14 +50,14 @@ class AddressSearch extends Component {
 
     return (
       <div className="w-100">
-        <div className="input-wrapper">
+        <div className="input-wrapper input-wrapper--icon-right">
           <StandaloneSearchBox
             ref={this.handleSearchBoxMounted}
             onPlacesChanged={this.handlePlacesChanged}
           >
             <Input type="text" placeholder={placeholder} size="large" label={label} />
           </StandaloneSearchBox>
-          <CurrentLocationLogo />
+          <LocationInputIcon />
         </div>
         <Button>{buttonText}</Button>
       </div>

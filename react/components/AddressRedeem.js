@@ -1,5 +1,7 @@
 import React from 'react'
 import { injectIntl, intlShape } from 'react-intl'
+
+import BrazilInputIcon from './BrazilInputIcon'
 import Input from 'vtex.styleguide/Input'
 import Button from 'vtex.styleguide/Button'
 
@@ -9,7 +11,10 @@ const AddressRedeem = ({ intl }) => {
 
   return (
     <div className="w-100">
-      <Input type="text" size="large" label={label} />
+      <div className="input-wrapper input-wrapper--icon-left">
+        <Input type="text" size="large" placeholder="(99) 99999-9999" label={label} />
+        <BrazilInputIcon />
+      </div>
       <Button>{buttonText}</Button>
     </div>
   )

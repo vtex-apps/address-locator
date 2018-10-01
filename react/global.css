@@ -25,7 +25,7 @@
     margin-bottom: 1.6rem;
 }
 
-.vtex-tabs__content .vtex-input-prefix__group input {
+.vtex-input-prefix__group input {
     font-size: .85rem;
     padding-left: 1rem;
     padding-right: 1rem;
@@ -41,21 +41,45 @@
     width: 100%;
 }
 
-.input-wrapper {
+.input-wrapper  {
     position: relative;
 }
 
-.icon-current-location {
-    position: absolute;
-    top: 24px;
-    right: 14px;
-    bottom: 0;
-    margin: auto;
-    line-height: 42px;
+.input-wrapper--icon-right input {
+    padding-right: 4rem;
 }
 
-.icon-current-location img {
+.input-wrapper--icon-left input {
+    padding-left: 4rem;
+}
+
+.input-icon {
+    position: absolute;
+    top: 23px;
+    bottom: 0;
+    line-height: 42px;
+    font-size: .85rem;
+    color: #3f3f40;
+}
+
+.input-icon img {
+    vertical-align: middle;
+}
+
+.input-icon--location {
+    right: 14px;
+}
+
+.input-icon--location img {
     border-left: 1px solid #f1f1f2;
     padding-left: 14px;
-    vertical-align: middle;
+}
+
+.input-icon--brazil {
+    left: 14px;
+}
+
+.input-icon--brazil img {
+    width: 18px;
+    padding-right: 5px;
 }
