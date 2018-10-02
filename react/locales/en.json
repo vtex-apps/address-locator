@@ -10,5 +10,6 @@
     "address-locator.address-search-button": "Order on this address",
     "address-locator.address-redeem-tab": "Redeem address",
     "address-locator.address-redeem-label": "Insert your phone below",
-    "address-locator.address-redeem-button": "Find address"
+    "address-locator.address-redeem-button": "Find address",
+    "address-locator.address-redeem-error": "Invalid phone number"
 }
