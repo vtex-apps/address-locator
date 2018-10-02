@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import { FormattedMessage } from 'react-intl'
+import PropTypes from 'prop-types'
 import { withScriptjs } from 'react-google-maps'
 import { StandaloneSearchBox } from 'react-google-maps/lib/components/places/StandaloneSearchBox'
 import { alpha2ToAlpha3 } from 'i18n-iso-countries'
@@ -17,6 +18,8 @@ class AddressSearch extends Component {
   static propTypes = {
     /* Context used to call address mutation and retrieve the orderForm */
     orderFormContext: contextPropTypes,
+    /* Google Maps Geolocation API key */
+    googleMapKey: PropTypes.string,
   }
 
   state = {
@@ -39,8 +42,8 @@ class AddressSearch extends Component {
       navigator.geolocation.getCurrentPosition((position) => {
         (async () => {
           const { latitude, longitude } = position.coords
-          /* @TODO: API key is hardcoded for now, it has to be defined dinamically according to the Geolocation API configuration */
-          const rawResponse = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyDs38ci8GZYCA0VSaA4KGoEHV06g9gTSwk&latlng=${latitude},${longitude}`)
+          const { googleMapKey } = this.props
+          const rawResponse = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?key=${googleMapKey}&latlng=${latitude},${longitude}`)
           const parsedResponse = await rawResponse.json()
           const place = parsedResponse.results[0]
           this.setAddressProperties(place)
@@ -90,7 +93,9 @@ class AddressSearch extends Component {
     return address
   }
 
-  handleSetAddress = () => {
+  handleFormSubmit = e => {
+    e.preventDefault()
+
     const { orderFormContext } = this.props
     const { address } = this.state
 
@@ -124,70 +129,72 @@ class AddressSearch extends Component {
 
     return (
       <div className="w-100">
-        <div className="input-wrapper input-wrapper--icon-right">
-          <StandaloneSearchBox
-            ref={this.handleSearchBoxMounted}
-            onPlacesChanged={this.handlePlacesChanged}
-          >
+        <form onSubmit={this.handleFormSubmit}>
+          <div className="input-wrapper input-wrapper--icon-right">
+            <StandaloneSearchBox
+              ref={this.handleSearchBoxMounted}
+              onPlacesChanged={this.handlePlacesChanged}
+            >
+              <Adopt mapper={{
+                placeholder: <FormattedMessage id="address-locator.address-search-placeholder" />,
+                label: <FormattedMessage id="address-locator.address-search-label" />,
+              }}>
+                {({ placeholder, label }) => (
+                  <Input
+                    type="text"
+                    value={formattedAddress}
+                    placeholder={placeholder}
+                    size="large"
+                    label={label}
+                    onChange={this.handleAddressChanged}
+                  />
+                )}
+              </Adopt>
+            </StandaloneSearchBox>
+            <LocationInputIcon onClick={this.handleSetCurrentPosition} />
+          </div>
+          {(address && shouldDisplayNumberInput) && (
             <Adopt mapper={{
-              placeholder: <FormattedMessage id="address-locator.address-search-placeholder" />,
-              label: <FormattedMessage id="address-locator.address-search-label" />,
+              placeholder: <FormattedMessage id="address-locator.address-search-number-placeholder" />,
+              label: <FormattedMessage id="address-locator.address-search-number-label" />,
             }}>
               {({ placeholder, label }) => (
                 <Input
                   type="text"
-                  value={formattedAddress}
+                  value={address.number}
                   placeholder={placeholder}
                   size="large"
                   label={label}
-                  onChange={this.handleAddressChanged}
+                  onChange={e => this.handleAddressKeyChanged(e, 'number')}
                 />
               )}
             </Adopt>
-          </StandaloneSearchBox>
-          <LocationInputIcon onClick={this.handleSetCurrentPosition} />
-        </div>
-        {(address && shouldDisplayNumberInput) && (
-          <Adopt mapper={{
-            placeholder: <FormattedMessage id="address-locator.address-search-number-placeholder" />,
-            label: <FormattedMessage id="address-locator.address-search-number-label" />,
-          }}>
-            {({ placeholder, label }) => (
-              <Input
-                type="text"
-                value={address.number}
-                placeholder={placeholder}
-                size="large"
-                label={label}
-                onChange={e => this.handleAddressKeyChanged(e, 'number')}
-              />
-            )}
-          </Adopt>
-        )}
-        {address && (
-          <Adopt mapper={{
-            placeholder: <FormattedMessage id="address-locator.address-search-complement-placeholder" />,
-            label: <FormattedMessage id="address-locator.address-search-complement-label" />,
-          }}>
-            {({ placeholder, label }) => (
-              <Input
-                type="text"
-                value={address.complement}
-                placeholder={placeholder}
-                size="large"
-                label={label}
-                onChange={e => this.handleAddressKeyChanged(e, 'complement')}
-              />
-            )}
-          </Adopt>
-        )}
-        <Adopt mapper={{
-          text: <FormattedMessage id="address-locator.address-search-button" />,
-        }}>
-          {({ text }) => (
-            <Button disabled={!address || !address.number}>{text}</Button>
           )}
-        </Adopt>
+          {address && (
+            <Adopt mapper={{
+              placeholder: <FormattedMessage id="address-locator.address-search-complement-placeholder" />,
+              label: <FormattedMessage id="address-locator.address-search-complement-label" />,
+            }}>
+              {({ placeholder, label }) => (
+                <Input
+                  type="text"
+                  value={address.complement}
+                  placeholder={placeholder}
+                  size="large"
+                  label={label}
+                  onChange={e => this.handleAddressKeyChanged(e, 'complement')}
+                />
+              )}
+            </Adopt>
+          )}
+          <Adopt mapper={{
+            text: <FormattedMessage id="address-locator.address-search-button" />,
+          }}>
+            {({ text }) => (
+              <Button type="submit" disabled={!address || !address.number}>{text}</Button>
+            )}
+          </Adopt>
+        </form>
       </div>
     )
   }

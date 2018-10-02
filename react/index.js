@@ -40,6 +40,7 @@ class AddressLocator extends Component {
               {({ data }) => (
                 <AddressSearch
                   googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${data.logistics.googleMapsKey}&v=3.exp&libraries=places`}
+                  googleMapKey={data.logistics.googleMapsKey}
                   loadingElement={<div className="h-100" />}
                 />
               )}
