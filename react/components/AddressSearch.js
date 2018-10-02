@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { FormattedMessage } from 'react-intl'
 import PropTypes from 'prop-types'
 import { withScriptjs } from 'react-google-maps'
+import { Adopt } from 'react-adopt'
 import { StandaloneSearchBox } from 'react-google-maps/lib/components/places/StandaloneSearchBox'
 import { alpha2ToAlpha3 } from 'i18n-iso-countries'
 import Input from 'vtex.styleguide/Input'
@@ -10,9 +11,7 @@ import {
   orderFormConsumer,
   contextPropTypes,
 } from 'vtex.store/OrderFormContext'
-
 import LocationInputIcon from './LocationInputIcon'
-import { Adopt } from 'react-adopt'
 
 class AddressSearch extends Component {
   static propTypes = {
