@@ -62,7 +62,7 @@ class AddressRedeem extends Component {
 
     return (
       <form className="w-100" onSubmit={this.handleSubmit}>
-        <div className="input-wrapper input-wrapper--icon-left">
+        <div className="input-wrapper input-wrapper--icon-left mb4">
           <InputMessages>
             {({ label, errorMessage }) => (
               <ReactInput
