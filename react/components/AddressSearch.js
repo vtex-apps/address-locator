@@ -60,7 +60,7 @@ class AddressSearch extends Component {
     this.setState({
       address,
       formattedAddress: place.formatted_address,
-      shouldDisplayNumberInput: !address.number
+      shouldDisplayNumberInput: !address.number,
     })
   }
 
@@ -112,7 +112,7 @@ class AddressSearch extends Component {
       })
   }
 
-  handleAddressKeyChanged = (key, e) => {
+  handleAddressKeyChanged = (e, key) => {
     const { address } = this.state
     address[key] = e.target.value
     this.setState({ address })
@@ -121,7 +121,7 @@ class AddressSearch extends Component {
   handleAddressChanged = e => {
     this.setState({
       address: undefined,
-      formattedAddress: e.target.value
+      formattedAddress: e.target.value,
     })
   }
 
@@ -148,10 +148,10 @@ class AddressSearch extends Component {
           <LocationInputIcon onClick={this.handleSetCurrentPosition} />
         </div>
         {(address && shouldDisplayNumberInput) && (
-          <Input type="text" value={address.number} placeholder={numberInputPlaceholder} size="large" label={numberInputLabel} onChange={this.handleAddressKeyChanged.bind(this, 'number')} />
+          <Input type="text" value={address.number} placeholder={numberInputPlaceholder} size="large" label={numberInputLabel} onChange={e => this.handleAddressKeyChanged(e, 'number')} />
         )}
         {address && (
-          <Input type="text" value={address.complement} placeholder={complementInputPlaceholder} size="large" label={complementInputLabel} onChange={this.handleAddressKeyChanged.bind(this,'complement')} />
+          <Input type="text" value={address.complement} placeholder={complementInputPlaceholder} size="large" label={complementInputLabel} onChange={e => this.handleAddressKeyChanged(e, 'complement')} />
         )}
         <Button disabled={!address || !address.number}>{buttonText}</Button>
       </div>
