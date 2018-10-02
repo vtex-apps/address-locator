@@ -84,3 +84,11 @@
     width: 18px;
     padding-right: 5px;
 }
+
+.address-manager {
+  float: left;
+  width: 100%;
+  padding-left: 15px;
+  background: #25354d;
+  color: #fff;
+}
