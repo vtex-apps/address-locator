@@ -160,7 +160,7 @@ class AddressSearch extends Component {
             }}>
               {({ placeholder, label }) => (
                 <Input
-                  type="text"
+                  type="number"
                   value={address.number}
                   placeholder={placeholder}
                   size="large"
