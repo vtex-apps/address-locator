@@ -8,3 +8,4 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Added
 - MVP of `Address Locator` app.
+- Component to format and validate phone number
