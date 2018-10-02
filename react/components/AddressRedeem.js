@@ -8,7 +8,7 @@ import {
 } from 'input-format'
 import { adopt } from 'react-adopt'
 import Phone from '@vtex/phone'
-import PhoneBrazil from '@vtex/phone/countries/BRA'
+import PhoneBrazil from '@vtex/phone/countries/BRA' //eslint-disable-line
 import Input from 'vtex.styleguide/Input'
 import Button from 'vtex.styleguide/Button'
 
@@ -38,7 +38,7 @@ class AddressRedeem extends Component {
   Icon = withImage(() => this.state.selectedCountry.icon)(PhoneInputIcon)
 
   handlePhoneChange = phone => this.setState({ phone, error: false })
-  
+
   handleSubmit = e => {
     e.preventDefault()
 

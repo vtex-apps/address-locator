@@ -15,7 +15,7 @@ const PhoneInputIcon = ({ imageSrc, countryCode }) => {
 
 PhoneInputIcon.propTypes = {
   imageSrc: PropTypes.string,
-  countryCode: PropTypes.number
+  countryCode: PropTypes.number,
 }
 
 export default PhoneInputIcon
