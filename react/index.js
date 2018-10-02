@@ -32,6 +32,7 @@ class AddressLocator extends Component {
         <Tabs fullWidth>
           <Tab label={addressSearchTab} active={this.state.currentTab === 1} onClick={() => this.handleTabChange(1)}>
             <AddressSearch
+              /* @TODO: API key is hardcoded for now, it has to be defined dinamically according to the Geolocation API configuration */
               googleMapURL="https://maps.googleapis.com/maps/api/js?key=AIzaSyCUbzqhN6HZoty-UigCHG4bitF-Vl2GU7U&v=3.exp&libraries=places"
               loadingElement={<div className="h-100" />}
             />

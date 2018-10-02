@@ -24,7 +24,7 @@ class AddressSearch extends Component {
 
   state = {
     address: undefined,
-    shouldDisplayNumberInput: false
+    shouldDisplayNumberInput: false,
   }
 
   handleSearchBoxMounted = ref => {
@@ -36,18 +36,21 @@ class AddressSearch extends Component {
     const address = this.getParsedAddress(place)
     this.setState({
       address,
-      shouldDisplayNumberInput: !address.number
+      shouldDisplayNumberInput: !address.number,
     })
   }
 
   handleSetCurrentPosition = () => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(position => {
-        const currentLatLng = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        }
-        /* @TODO: API call to get address based on latlng */
+      navigator.geolocation.getCurrentPosition((position) => {
+        (async () => {
+          const { latitude, longitude } = position.coords
+          /* @TODO: API key is hardcoded for now, it has to be defined dinamically according to the Geolocation API configuration */
+          const rawResponse = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyDs38ci8GZYCA0VSaA4KGoEHV06g9gTSwk&latlng=${latitude},${longitude}`)
+          const parsedResponse = await rawResponse.json()
+          const address = this.getParsedAddress(parsedResponse.results[0])
+          this.setState({ address })
+        })()
       })
     }
   }
@@ -126,15 +129,15 @@ class AddressSearch extends Component {
           >
             <Input type="text" placeholder={addressInputPlaceholder} size="large" label={addressInputLabel} />
           </StandaloneSearchBox>
-          <LocationInputIcon />
+          <LocationInputIcon onClick={this.handleSetCurrentPosition} />
         </div>
         {(address && shouldDisplayNumberInput) && (
           <Input type="text" placeholder={numberInputPlaceholder} size="large" label={numberInputLabel} onChange={(e) => this.handleAddressValueChanged(e, 'number')} />
         )}
-        {(address) && (
+        {address && (
           <Input type="text" placeholder={complementInputPlaceholder} size="large" label={complementInputLabel} onChange={(e) => this.handleAddressValueChanged(e, 'complement')} />
         )}
-        <Button disabled={(!address || !address.number)}>{buttonText}</Button>
+        <Button disabled={!address || !address.number}>{buttonText}</Button>
       </div>
     )
   }
