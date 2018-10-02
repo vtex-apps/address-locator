@@ -62,12 +62,12 @@ class AddressRedeem extends Component {
 
     return (
       <form className="w-100" onSubmit={this.handleSubmit}>
-        <div className="input-wrapper input-wrapper--icon-left mb4">
+        <div className="input-wrapper input-wrapper--icon-left mb5">
           <InputMessages>
             {({ label, errorMessage }) => (
               <ReactInput
                 value={phone}
-                onChange={phone => this.setState({ phone })}
+                onChange={this.handlePhoneChange}
                 format={templateFormatter(template)}
                 parse={templateParser(template, parseDigit)}
                 inputComponent={Input}
