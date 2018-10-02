@@ -25,6 +25,7 @@ class AddressSearch extends Component {
     address: null,
     formattedAddress: '',
     shouldDisplayNumberInput: false,
+    isLoading: false,
   }
 
   handleSearchBoxMounted = ref => {
@@ -95,6 +96,10 @@ class AddressSearch extends Component {
   handleFormSubmit = e => {
     e.preventDefault()
 
+    this.setState({
+      isLoading: true,
+    })
+
     const { orderFormContext } = this.props
     const { address } = this.state
 
@@ -107,6 +112,10 @@ class AddressSearch extends Component {
       })
       .then(() => {
         /* TODO */
+        orderFormContext.refetch()
+        this.setState({
+          isLoading: false,
+        })
       })
   }
 
@@ -124,7 +133,7 @@ class AddressSearch extends Component {
   }
 
   render() {
-    const { address, formattedAddress, shouldDisplayNumberInput } = this.state
+    const { address, formattedAddress, shouldDisplayNumberInput, isLoading } = this.state
 
     return (
       <div className="w-100">
@@ -190,7 +199,13 @@ class AddressSearch extends Component {
             text: <FormattedMessage id="address-locator.address-search-button" />,
           }}>
             {({ text }) => (
-              <Button type="submit" disabled={!address || !address.number}>{text}</Button>
+              <Button
+                type="submit"
+                disabled={!address || !address.number}
+                isLoading={isLoading}
+              >
+                {text}
+              </Button>
             )}
           </Adopt>
         </form>

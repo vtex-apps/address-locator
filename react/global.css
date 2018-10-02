@@ -86,9 +86,10 @@
 }
 
 .address-manager {
-  float: left;
-  width: 100%;
-  padding-left: 15px;
   background: #25354d;
-  color: #fff;
+}
+
+.address-manager__title {
+  flex: 1;
+  text-overflow: ellipsis;
 }
