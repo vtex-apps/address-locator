@@ -23,7 +23,11 @@ class AddressSearch extends Component {
   }
 
   state = {
-    address: undefined,
+    address: {
+      number: '',
+      complement: '',
+    },
+    formattedAddress: '',
     shouldDisplayNumberInput: false,
   }
 
@@ -33,11 +37,7 @@ class AddressSearch extends Component {
 
   handlePlacesChanged = () => {
     const place = this.searchBox.getPlaces()[0]
-    const address = this.getParsedAddress(place)
-    this.setState({
-      address,
-      shouldDisplayNumberInput: !address.number,
-    })
+    this.setAddressProperties(place)
   }
 
   handleSetCurrentPosition = () => {
@@ -48,11 +48,20 @@ class AddressSearch extends Component {
           /* @TODO: API key is hardcoded for now, it has to be defined dinamically according to the Geolocation API configuration */
           const rawResponse = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?key=AIzaSyDs38ci8GZYCA0VSaA4KGoEHV06g9gTSwk&latlng=${latitude},${longitude}`)
           const parsedResponse = await rawResponse.json()
-          const address = this.getParsedAddress(parsedResponse.results[0])
-          this.setState({ address })
+          const place = parsedResponse.results[0]
+          this.setAddressProperties(place)
         })()
       })
     }
+  }
+
+  setAddressProperties = place => {
+    const address = this.getParsedAddress(place)
+    this.setState({
+      address,
+      formattedAddress: place.formatted_address,
+      shouldDisplayNumberInput: !address.number
+    })
   }
 
   /**
@@ -77,7 +86,7 @@ class AddressSearch extends Component {
       /* Google Maps API returns Alpha-2 ISO codes, but checkout API requires Alpha-3 */
       country: alpha2ToAlpha3(parsedAddressComponents.country),
       neighborhood: parsedAddressComponents.sublocality_level_1,
-      number: parsedAddressComponents.street_number,
+      number: parsedAddressComponents.street_number || '',
       postalCode: parsedAddressComponents.postal_code,
       receiverName: '',
       state: parsedAddressComponents.administrative_area_level_1,
@@ -103,14 +112,21 @@ class AddressSearch extends Component {
       })
   }
 
-  handleAddressValueChanged = (e, key) => {
+  handleAddressKeyChanged = (key, e) => {
     const { address } = this.state
     address[key] = e.target.value
     this.setState({ address })
   }
 
+  handleAddressChanged = e => {
+    this.setState({
+      address: undefined,
+      formattedAddress: e.target.value
+    })
+  }
+
   render() {
-    const { address, shouldDisplayNumberInput } = this.state
+    const { address, formattedAddress, shouldDisplayNumberInput } = this.state
     const { intl } = this.context
     const addressInputPlaceholder = intl.formatMessage({ id: 'address-locator.address-search-placeholder' })
     const addressInputLabel = intl.formatMessage({ id: 'address-locator.address-search-label' })
@@ -127,15 +143,15 @@ class AddressSearch extends Component {
             ref={this.handleSearchBoxMounted}
             onPlacesChanged={this.handlePlacesChanged}
           >
-            <Input type="text" placeholder={addressInputPlaceholder} size="large" label={addressInputLabel} />
+            <Input type="text" value={formattedAddress} placeholder={addressInputPlaceholder} size="large" label={addressInputLabel} onChange={this.handleAddressChanged} />
           </StandaloneSearchBox>
           <LocationInputIcon onClick={this.handleSetCurrentPosition} />
         </div>
         {(address && shouldDisplayNumberInput) && (
-          <Input type="text" placeholder={numberInputPlaceholder} size="large" label={numberInputLabel} onChange={(e) => this.handleAddressValueChanged(e, 'number')} />
+          <Input type="text" value={address.number} placeholder={numberInputPlaceholder} size="large" label={numberInputLabel} onChange={this.handleAddressKeyChanged.bind(this, 'number')} />
         )}
         {address && (
-          <Input type="text" placeholder={complementInputPlaceholder} size="large" label={complementInputLabel} onChange={(e) => this.handleAddressValueChanged(e, 'complement')} />
+          <Input type="text" value={address.complement} placeholder={complementInputPlaceholder} size="large" label={complementInputLabel} onChange={this.handleAddressKeyChanged.bind(this,'complement')} />
         )}
         <Button disabled={!address || !address.number}>{buttonText}</Button>
       </div>
