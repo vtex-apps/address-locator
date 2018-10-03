@@ -78,3 +78,7 @@
   overflow: hidden;
   border-radius: 0;
 }
+
+.pac-container {
+  z-index: 10001;
+}
