@@ -1,86 +1,65 @@
 .vtex-tab__button {
-    border: none;
-    font-size: 12px;
-    font-weight: normal;
-    text-transform: uppercase;
+  border: none;
+  font-size: 12px;
+  font-weight: normal;
+  text-transform: uppercase;
 }
 
 .vtex-tabs__nav {
-    border: none;
+  border: none;
 }
 
 .vtex-tabs__content,
 .vtex-tab__button.c-on-muted {
-    background: #fff;
-    border-top-left-radius: .25rem;
-    border-top-right-radius: .25rem;
+  background: #fff;
+  border-top-left-radius: .25rem;
+  border-top-right-radius: .25rem;
 }
 
 .vtex-tabs__content {
-    padding: 2rem 1.6rem;
-    border-bottom-left-radius: .25rem;
-    border-bottom-right-radius: .25rem;
+  padding: 2rem 1.6rem;
+  border-bottom-left-radius: .25rem;
+  border-bottom-right-radius: .25rem;
 }
 
 .vtex-tabs__content .vtex-input-prefix__group {
-    margin-bottom: 1rem;
+  margin-bottom: 1rem;
 }
 
 .vtex-input-prefix__group input {
-    font-size: .85rem;
-    padding-left: 1rem;
-    padding-right: 1rem;
+  font-size: .85rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
 }
 
 .vtex-input__label {
-    color: #727273;
-    font-size: .85rem;
+  color: #727273;
+  font-size: .85rem;
 }
 
 .vtex-tabs__content button {
-    width: 100%;
+  width: 100%;
 }
 
-.input-wrapper {
-    position: relative;
+.input--icon-right input {
+  padding-right: 4rem;
+  text-overflow: ellipsis;
 }
 
-.input-wrapper--icon-right input {
-    padding-right: 4rem;
-}
-
-.input-wrapper--icon-left input {
-    padding-left: 4rem;
+.input--icon-left input {
+  padding-left: 4rem;
+  text-overflow: ellipsis;
 }
 
 .input-icon {
-    position: absolute;
-    top: 23px;
-    bottom: 0;
-    line-height: 42px;
-    font-size: .85rem;
-    color: #3f3f40;
-}
-
-.input-icon img {
-    padding-bottom: 2px;
-    vertical-align: middle;
-}
-
-.input-icon--location {
-    right: 14px;
+  font-size: .85rem;
+  color: #3f3f40;
 }
 
 .input-icon--location img {
-    border-left: 1px solid #f1f1f2;
-    padding-left: 14px;
-}
-
-.input-icon--brazil {
-    left: 14px;
+  border-left: 1px solid #f1f1f2;
 }
 
 .input-icon--brazil img {
-    width: 18px;
-    padding-right: 5px;
+  width: 19px;
 }
