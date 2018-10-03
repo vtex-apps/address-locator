@@ -10,5 +10,6 @@
     "address-locator.address-search-button": "Entregar neste endereço",
     "address-locator.address-redeem-tab": "Recuperar endereço",
     "address-locator.address-redeem-label": "Insira o seu telefone abaixo",
-    "address-locator.address-redeem-button": "Procurar endereço"
+    "address-locator.address-redeem-button": "Procurar endereço",
+    "address-locator.address-manager-title": "Seus Endereços"
 }

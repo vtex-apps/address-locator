@@ -1,29 +1,65 @@
-import React from 'react'
+import React, { Component } from 'react'
+import { Adopt } from 'react-adopt'
+import { FormattedMessage } from 'react-intl'
 import {
   orderFormConsumer,
   contextPropTypes,
 } from 'vtex.store/OrderFormContext'
+import Modal from 'vtex.styleguide/Modal'
 import ChangeAddressIcon from './components/ChangeAddressIcon'
+import NewAddressIcon from './components/NewAddressIcon'
 
-const AddressManager = (props) => {
-  if (!props.orderFormContext.orderForm.shippingData) {
-    return null
+class AddressManager extends Component {
+  static propTypes = {
+    /* Context used to call address mutation and retrieve the orderForm */
+    orderFormContext: contextPropTypes,
   }
-  const { street, number } = props.orderFormContext.orderForm.shippingData.address
 
-  return (
-    <div className="address-manager flex ph5 white">
-      <p className="address-manager__title mr5 overflow-hidden nowrap">
-        {`${street}, ${number}`}
-      </p>
-      <ChangeAddressIcon />
-    </div>
-  )
-}
+  state = {
+    isModalOpen: false,
+  }
 
-AddressManager.propTypes = {
-  /* Context used to call address mutation and retrieve the orderForm */
-  orderFormContext: contextPropTypes,
+  handleOpenModal = () => {
+    this.setState({ isModalOpen: true })
+  }
+
+  handleCloseModal = () => {
+    this.setState({ isModalOpen: false })
+  }
+
+  render() {
+    const { shippingData } = this.props.orderFormContext.orderForm
+    if (!shippingData) {
+      return null
+    }
+
+    const { street, number } = shippingData.address
+    const { isModalOpen } = this.state
+
+    return (
+      <div className="address-manager">
+        <div className="address-manager__bar flex ph5 white" onClick={this.handleOpenModal}>
+          <p className="address-manager__address mr5 overflow-hidden nowrap">
+            {`${street}, ${number}`}
+          </p>
+          <ChangeAddressIcon />
+        </div>
+        <Modal
+          isOpen={isModalOpen}
+          onClose={this.handleCloseModal}
+        >
+          <Adopt mapper={{
+            title: <FormattedMessage id="address-locator.address-manager-title" />,
+          }}>
+            {({ title }) => (
+              <p className="f3 pa5 ma0 bb b--light-gray bw1 b dark-gray">{ title }</p>
+            )}
+          </Adopt>
+          <NewAddressIcon />
+        </Modal>
+      </div>
+    )
+  }
 }
 
 export default orderFormConsumer(AddressManager)
