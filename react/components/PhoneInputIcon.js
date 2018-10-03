@@ -7,8 +7,8 @@ const PhoneInputIcon = ({ imageSrc, countryCode }) => {
   }
 
   return (
-    <span className="input-icon input-icon--brazil">
-      <img src={imageSrc} />+{countryCode}
+    <span className="input-icon input-icon--flag left-1">
+      <img src={imageSrc} className="w-20 pr2" />+{countryCode}
     </span>
   )
 }

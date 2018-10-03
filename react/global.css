@@ -76,11 +76,6 @@
     padding-left: 14px;
 }
 
-.input-icon--brazil {
-    left: 14px;
-}
-
-.input-icon--brazil img {
+.input-icon--flag img {
     width: 18px;
-    padding-right: 5px;
 }
