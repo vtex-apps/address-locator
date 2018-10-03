@@ -1,54 +1,48 @@
-.vtex-tab__button {
+.vtex-address-locator .vtex-tab__button {
   border: none;
   font-size: 12px;
   font-weight: normal;
   text-transform: uppercase;
 }
 
-.vtex-tabs__nav {
+.vtex-address-locator .vtex-tabs__nav {
   border: none;
 }
 
-.vtex-tabs__content,
-.vtex-tab__button.c-on-muted {
+.vtex-address-locator .vtex-tabs__content,
+.vtex-address-locator .vtex-tab__button.c-on-muted {
   background: #fff;
   border-top-left-radius: .25rem;
   border-top-right-radius: .25rem;
 }
 
-.vtex-tabs__content {
-  padding: 2rem 1.6rem;
+.vtex-address-locator .vtex-tabs__content {
   border-bottom-left-radius: .25rem;
   border-bottom-right-radius: .25rem;
 }
 
-.vtex-tabs__content .vtex-input-prefix__group {
+.address-search .vtex-input-prefix__group, .address-redeem .vtex-input-prefix__group {
   margin-bottom: 1rem;
 }
 
-.vtex-input-prefix__group input {
+.address-search .vtex-input-prefix__group input, .address-redeem .vtex-input-prefix__group input {
   font-size: .85rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  text-overflow: ellipsis;
 }
 
-.vtex-input__label {
+.address-search .vtex-input__label, .address-redeem .vtex-input__label {
   color: #727273;
   font-size: .85rem;
 }
 
-.vtex-tabs__content button {
-  width: 100%;
-}
-
 .input--icon-right input {
   padding-right: 4rem;
-  text-overflow: ellipsis;
+  padding-left: 1rem;
 }
 
 .input--icon-left input {
   padding-left: 4rem;
-  text-overflow: ellipsis;
+  padding-right: 1rem;
 }
 
 .input-icon {

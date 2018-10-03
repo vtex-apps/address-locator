@@ -10,12 +10,12 @@ const AddressRedeem = ({ intl }) => {
   const buttonText = intl.formatMessage({ id: 'address-locator.address-redeem-button' })
 
   return (
-    <div className="w-100">
+    <div className="address-redeem w-100 pv7 ph6">
       <div className="relative input--icon-left">
         <Input type="text" size="large" placeholder="(99) 99999-9999" label={label} />
         <BrazilInputIcon />
       </div>
-      <Button>{buttonText}</Button>
+      <Button block>{buttonText}</Button>
     </div>
   )
 }
