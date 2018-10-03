@@ -19,6 +19,8 @@ class AddressSearch extends Component {
     orderFormContext: contextPropTypes,
     /* Google Maps Geolocation API key */
     googleMapKey: PropTypes.string,
+    /* Function that will be called after updating the orderform */
+    onOrderFormUpdated: PropTypes.func,
   }
 
   state = {
@@ -100,7 +102,7 @@ class AddressSearch extends Component {
       isLoading: true,
     })
 
-    const { orderFormContext } = this.props
+    const { orderFormContext, onOrderFormUpdated } = this.props
     const { address } = this.state
 
     orderFormContext
@@ -111,7 +113,9 @@ class AddressSearch extends Component {
         },
       })
       .then(() => {
-        /* TODO */
+        if (onOrderFormUpdated) {
+          onOrderFormUpdated()
+        }
         orderFormContext.refetch()
         this.setState({
           isLoading: false,

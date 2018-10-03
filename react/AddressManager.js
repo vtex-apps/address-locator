@@ -79,6 +79,7 @@ class AddressManager extends Component {
                   googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${googleMapsKey}&v=3.exp&libraries=places`}
                   googleMapKey={googleMapsKey}
                   loadingElement={<div className="h-100" />}
+                  onOrderFormUpdated={this.handleCloseModal}
                 />
               )
             }}
