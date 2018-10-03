@@ -9,8 +9,8 @@ const LocationInputIcon = ({ onClick, imageSrc }) => {
   }
 
   return (
-    <span onClick={onClick} className="input-icon input-icon--location">
-      <img src={imageSrc} />
+    <span onClick={onClick} className="absolute bottom-0 pv4 right-1 input-icon input-icon--location">
+      <img className="v-mid pl3" src={imageSrc} />
     </span>
   )
 }

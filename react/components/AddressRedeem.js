@@ -11,7 +11,7 @@ const AddressRedeem = ({ intl }) => {
 
   return (
     <div className="w-100">
-      <div className="input-wrapper input-wrapper--icon-left">
+      <div className="relative input--icon-left">
         <Input type="text" size="large" placeholder="(99) 99999-9999" label={label} />
         <BrazilInputIcon />
       </div>

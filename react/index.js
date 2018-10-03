@@ -25,7 +25,7 @@ class AddressLocator extends Component {
     const { currentTab } = this.state
 
     return (
-      <div className="vtex-address-locator w-100 flex flex-column justify-center items-center pa6">
+      <div className="vtex-address-locator w-100 w-50-m center flex flex-column justify-center items-center pa6">
         <Adopt mapper={{
           title: <FormattedMessage id="address-locator.order-title" />,
         }}>

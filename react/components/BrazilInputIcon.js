@@ -9,8 +9,8 @@ const BrazilInputIcon = ({ imageSrc }) => {
   }
 
   return (
-    <span className="input-icon input-icon--brazil">
-      <img src={imageSrc} />+55
+    <span className="absolute bottom-0 pv4 left-1 input-icon input-icon--brazil">
+      <img className="v-mid pr2" src={imageSrc} />+55
     </span>
   )
 }

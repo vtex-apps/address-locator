@@ -138,7 +138,7 @@ class AddressSearch extends Component {
     return (
       <div className="w-100">
         <form onSubmit={this.handleFormSubmit}>
-          <div className="input-wrapper input-wrapper--icon-right">
+          <div className="relative input--icon-right">
             <StandaloneSearchBox
               ref={this.handleSearchBoxMounted}
               onPlacesChanged={this.handlePlacesChanged}
