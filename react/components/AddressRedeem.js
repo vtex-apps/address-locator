@@ -1,24 +1,13 @@
-import React, { Component } from 'react'
-import { FormattedMessage } from 'react-intl'
-import {
-  templateParser,
-  templateFormatter,
-  parseDigit,
-  ReactInput,
-} from 'input-format'
-import { adopt } from 'react-adopt'
+import React, { Component, Fragment } from 'react'
+import { withApollo, compose, graphql } from 'react-apollo'
+import { FormattedMessage, intlShape } from 'react-intl'
 import Phone from '@vtex/phone'
 import PhoneBrazil from '@vtex/phone/countries/BRA' //eslint-disable-line
-import Input from 'vtex.styleguide/Input'
 import Button from 'vtex.styleguide/Button'
+import { orderFormConsumer, contextPropTypes } from 'vtex.store/OrderFormContext'
 
-import PhoneInputIcon from './PhoneInputIcon'
-import withImage from './withImage'
-
-const InputMessages = adopt({
-  label: <FormattedMessage id="address-locator.address-redeem-label" />,
-  errorMessage: <FormattedMessage id="address-locator.address-redeem-error" />,
-})
+import PhoneInput from './PhoneInput'
+import documentsQuery from '../queries/documents.gql'
 
 const countries = {
   BRA: {
@@ -29,59 +18,99 @@ const countries = {
 }
 
 class AddressRedeem extends Component {
+  static propTypes = {
+    /* Apollo client instance */
+    client: PropTypes.object.isRequired,
+    /* Context used to call address mutation and retrieve the orderForm */
+    orderFormContext: contextPropTypes
+  }
+
+  static contextTypes = {
+    intl: intlShape,
+  }
+
   state = {
     selectedCountry: countries.BRA,
     phone: '',
-    error: false,
+    errorMessage: '',
   }
 
-  Icon = withImage(() => this.state.selectedCountry.icon)(PhoneInputIcon)
+  updateProfile = async ({ email }) => {
+    const { orderFormContext } = this.props
 
-  handlePhoneChange = phone => this.setState({ phone, error: false })
+    const { data } = await orderFormContext.updateOrderFormProfile({
+      variables: {
+        orderFormId: orderFormContext.orderForm.orderFormId,
+        fields: { email },
+      },
+    })
 
-  handleSubmit = e => {
+    /* TODO: user redirection */
+  }
+
+  handlePhoneChange = phone => this.setState({ phone, errorMessage: '' })
+
+  handleSubmit = async e => {
     e.preventDefault()
 
     const {
-      phone,
-      selectedCountry: { code },
-    } = this.state
+      state: {
+        phone,
+        selectedCountry: { code },
+      },
+      props: { client, orderFormContext },
+      context: { intl },
+    } = this
 
-    const national = Phone.validate(phone, code)
-    if (!national) return this.setState({ error: true })
+    const invalidPhoneError = intl.formatMessage({
+      id: 'address-locator.address-redeem-invalid-phone',
+    })
+    const profileNotFoundError = intl.formatMessage({
+      id: 'address-locator.address-redeem-profile-not-found',
+    })
 
-    this.setState({ error: false })
+    const valid = Phone.validate(phone, code)
+
+    if (!valid)
+      return this.setState({
+        errorMessage: invalidPhoneError,
+      })
+
+    try {
+      const { data } = await client.query({
+        query: documentsQuery,
+        variables: { acronym: 'CL', fields: ['email'], where: `homePhone=+${code}${phone}` },
+      })
+
+      if (!data.documents) return this.setState({ errorMessage: profileNotFoundError })
+
+      const { email } = data.documents
+
+      return await this.updateProfile({ email })
+    } catch (e) {
+      console.error(e)
+      return this.setState({ errorMessage: profileNotFoundError })
+    }
+
+    this.setState({ errorMessage: '' })
   }
 
   render() {
-    const {
-      selectedCountry: { code, template },
-      phone,
-      error,
-    } = this.state
+    const { selectedCountry, phone, errorMessage } = this.state
 
     return (
       <form className="w-100" onSubmit={this.handleSubmit}>
-        <div className="input-wrapper input-wrapper--icon-left mb5">
-          <InputMessages>
-            {({ label, errorMessage }) => (
-              <ReactInput
-                value={phone}
-                onChange={this.handlePhoneChange}
-                format={templateFormatter(template)}
-                parse={templateParser(template, parseDigit)}
-                inputComponent={Input}
-                label={label}
-                placeholder={template.replace(/x/g, '9')}
-                size="large"
-                type="text"
-                name="phone"
-                errorMessage={error ? errorMessage : null}
-              />
-            )}
-          </InputMessages>
-          <this.Icon countryCode={code} />
-        </div>
+        <FormattedMessage id="address-locator.address-redeem-label">
+          {label => (
+            <PhoneInput
+              value={phone}
+              country={selectedCountry}
+              label={label}
+              errorMessage={errorMessage}
+              onChange={this.handlePhoneChange}
+            />
+          )}
+        </FormattedMessage>
         <Button type="submit">
           <FormattedMessage id="address-locator.address-redeem-button" />
         </Button>
@@ -90,4 +119,7 @@ class AddressRedeem extends Component {
   }
 }
 
-export default AddressRedeem
+export default compose(
+  orderFormConsumer,
+  withApollo
+)(AddressRedeem)
