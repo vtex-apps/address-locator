@@ -10,6 +10,7 @@
     "address-locator.address-search-button": "Entregar neste endereço",
     "address-locator.address-redeem-tab": "Recuperar endereço",
     "address-locator.address-redeem-label": "Insira o seu telefone abaixo",
-    "address-locator.address-redeem-button": "Procurar endereço",
-    "address-locator.address-redeem-error": "Número de telefone inválido"
+    "address-locator.address-redeem-button": "Buscar endereço",
+    "address-locator.address-redeem-invalid-phone": "Número de telefone inválido",
+    "address-locator.address-redeem-profile-not-found": "Não encontramos uma conta com este telefone"
 }

@@ -11,5 +11,6 @@
     "address-locator.address-redeem-tab": "Recuperar dirección",
     "address-locator.address-redeem-label": "Introduzca su teléfono a continuación",
     "address-locator.address-redeem-button": "Buscar dirección",
-    "address-locator.address-redeem-error": "Numero de telefono invalido"
+    "address-locator.address-redeem-invalid-phone": "Numero de telefono invalido",
+    "address-locator.address-redeem-profile-not-found": "No pudimos encontrar una cuenta con este teléfono"
 }
