@@ -9,12 +9,28 @@ import { orderFormConsumer, contextPropTypes } from 'vtex.store/OrderFormContext
 import PhoneInput from './PhoneInput'
 import documentsQuery from '../queries/documents.gql'
 
+<<<<<<< HEAD
 const countries = {
   BRA: {
     icon: 'brazil.svg',
     code: 55,
     template: '(xx) xxxxx-xxxx',
   },
+=======
+const AddressRedeem = ({ intl }) => {
+  const label = intl.formatMessage({ id: 'address-locator.address-redeem-label' })
+  const buttonText = intl.formatMessage({ id: 'address-locator.address-redeem-button' })
+
+  return (
+    <div className="w-100">
+      <div className="relative input--icon-left">
+        <Input type="text" size="large" placeholder="(99) 99999-9999" label={label} />
+        <BrazilInputIcon />
+      </div>
+      <Button>{buttonText}</Button>
+    </div>
+  )
+>>>>>>> address-search
 }
 
 class AddressRedeem extends Component {

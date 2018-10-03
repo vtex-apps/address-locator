@@ -1,6 +1,8 @@
 import React, { Component } from 'react'
-import { intlShape } from 'react-intl'
+import { FormattedMessage } from 'react-intl'
+import PropTypes from 'prop-types'
 import { withScriptjs } from 'react-google-maps'
+import { Adopt } from 'react-adopt'
 import { StandaloneSearchBox } from 'react-google-maps/lib/components/places/StandaloneSearchBox'
 import { alpha2ToAlpha3 } from 'i18n-iso-countries'
 import Input from 'vtex.styleguide/Input'
@@ -9,21 +11,20 @@ import {
   orderFormConsumer,
   contextPropTypes,
 } from 'vtex.store/OrderFormContext'
-
 import LocationInputIcon from './LocationInputIcon'
 
 class AddressSearch extends Component {
   static propTypes = {
     /* Context used to call address mutation and retrieve the orderForm */
     orderFormContext: contextPropTypes,
-  }
-
-  static contextTypes = {
-    intl: intlShape,
+    /* Google Maps Geolocation API key */
+    googleMapKey: PropTypes.string,
   }
 
   state = {
-    selectedPlace: undefined,
+    address: null,
+    formattedAddress: '',
+    shouldDisplayNumberInput: false,
   }
 
   handleSearchBoxMounted = ref => {
@@ -32,20 +33,31 @@ class AddressSearch extends Component {
 
   handlePlacesChanged = () => {
     const place = this.searchBox.getPlaces()[0]
-    const address = this.getParsedAddress(place)
-    this.setState({ address })
+    this.setAddressProperties(place)
   }
 
   handleSetCurrentPosition = () => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(position => {
-        const currentLatLng = {
-          lat: position.coords.latitude,
-          lng: position.coords.longitude,
-        }
-        /* @TODO: API call to get address based on latlng */
+      navigator.geolocation.getCurrentPosition((position) => {
+        (async () => {
+          const { latitude, longitude } = position.coords
+          const { googleMapKey } = this.props
+          const rawResponse = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?key=${googleMapKey}&latlng=${latitude},${longitude}`)
+          const parsedResponse = await rawResponse.json()
+          const place = parsedResponse.results[0]
+          this.setAddressProperties(place)
+        })()
       })
     }
+  }
+
+  setAddressProperties = place => {
+    const address = this.getParsedAddress(place)
+    this.setState({
+      address,
+      formattedAddress: place.formatted_address,
+      shouldDisplayNumberInput: !address.number,
+    })
   }
 
   /**
@@ -70,7 +82,7 @@ class AddressSearch extends Component {
       /* Google Maps API returns Alpha-2 ISO codes, but checkout API requires Alpha-3 */
       country: alpha2ToAlpha3(parsedAddressComponents.country),
       neighborhood: parsedAddressComponents.sublocality_level_1,
-      number: parsedAddressComponents.street_number,
+      number: parsedAddressComponents.street_number || '',
       postalCode: parsedAddressComponents.postal_code,
       receiverName: '',
       state: parsedAddressComponents.administrative_area_level_1,
@@ -80,7 +92,9 @@ class AddressSearch extends Component {
     return address
   }
 
-  handleSetAddress = () => {
+  handleFormSubmit = e => {
+    e.preventDefault()
+
     const { orderFormContext } = this.props
     const { address } = this.state
 
@@ -91,38 +105,95 @@ class AddressSearch extends Component {
           address,
         },
       })
-      .then(res => {
+      .then(() => {
         /* TODO */
       })
   }
 
+  handleAddressKeyChanged = (e, key) => {
+    const { address } = this.state
+    address[key] = e.target.value
+    this.setState({ address })
+  }
+
+  handleAddressChanged = e => {
+    this.setState({
+      address: undefined,
+      formattedAddress: e.target.value,
+    })
+  }
+
   render() {
-    const addressInputPlaceholder = this.context.intl.formatMessage({ id: 'address-locator.address-search-placeholder' })
-    const addressInputLabel = this.context.intl.formatMessage({ id: 'address-locator.address-search-label' })
-    const numberInputPlaceholder = this.context.intl.formatMessage({ id: 'address-locator.address-search-number-placeholder' })
-    const numberInputLabel = this.context.intl.formatMessage({ id: 'address-locator.address-search-number-label' })
-    const complementInputPlaceholder = this.context.intl.formatMessage({ id: 'address-locator.address-search-complement-placeholder' })
-    const complementInputLabel = this.context.intl.formatMessage({ id: 'address-locator.address-search-complement-label' })
-    const buttonText = this.context.intl.formatMessage({ id: 'address-locator.address-search-button' })
+    const { address, formattedAddress, shouldDisplayNumberInput } = this.state
 
     return (
       <div className="w-100">
-        <div className="input-wrapper input-wrapper--icon-right">
-          <StandaloneSearchBox
-            ref={this.handleSearchBoxMounted}
-            onPlacesChanged={this.handlePlacesChanged}
-          >
-            <Input type="text" placeholder={addressInputPlaceholder} size="large" label={addressInputLabel} />
-          </StandaloneSearchBox>
-          <LocationInputIcon />
-        </div>
-        {(this.state.address && !this.state.address.number) && (
-          <Input type="text" placeholder={numberInputPlaceholder} size="large" label={numberInputLabel} />
-        )}
-        {(this.state.address && !this.state.address.complement) && (
-          <Input type="text" placeholder={complementInputPlaceholder} size="large" label={complementInputLabel} />
-        )}
-        <Button>{buttonText}</Button>
+        <form onSubmit={this.handleFormSubmit}>
+          <div className="relative input--icon-right">
+            <StandaloneSearchBox
+              ref={this.handleSearchBoxMounted}
+              onPlacesChanged={this.handlePlacesChanged}
+            >
+              <Adopt mapper={{
+                placeholder: <FormattedMessage id="address-locator.address-search-placeholder" />,
+                label: <FormattedMessage id="address-locator.address-search-label" />,
+              }}>
+                {({ placeholder, label }) => (
+                  <Input
+                    type="text"
+                    value={formattedAddress}
+                    placeholder={placeholder}
+                    size="large"
+                    label={label}
+                    onChange={this.handleAddressChanged}
+                  />
+                )}
+              </Adopt>
+            </StandaloneSearchBox>
+            <LocationInputIcon onClick={this.handleSetCurrentPosition} />
+          </div>
+          {(address && shouldDisplayNumberInput) && (
+            <Adopt mapper={{
+              placeholder: <FormattedMessage id="address-locator.address-search-number-placeholder" />,
+              label: <FormattedMessage id="address-locator.address-search-number-label" />,
+            }}>
+              {({ placeholder, label }) => (
+                <Input
+                  type="number"
+                  value={address.number}
+                  placeholder={placeholder}
+                  size="large"
+                  label={label}
+                  onChange={e => this.handleAddressKeyChanged(e, 'number')}
+                />
+              )}
+            </Adopt>
+          )}
+          {address && (
+            <Adopt mapper={{
+              placeholder: <FormattedMessage id="address-locator.address-search-complement-placeholder" />,
+              label: <FormattedMessage id="address-locator.address-search-complement-label" />,
+            }}>
+              {({ placeholder, label }) => (
+                <Input
+                  type="text"
+                  value={address.complement}
+                  placeholder={placeholder}
+                  size="large"
+                  label={label}
+                  onChange={e => this.handleAddressKeyChanged(e, 'complement')}
+                />
+              )}
+            </Adopt>
+          )}
+          <Adopt mapper={{
+            text: <FormattedMessage id="address-locator.address-search-button" />,
+          }}>
+            {({ text }) => (
+              <Button type="submit" disabled={!address || !address.number}>{text}</Button>
+            )}
+          </Adopt>
+        </form>
       </div>
     )
   }
