@@ -5,10 +5,11 @@ import {
   orderFormConsumer,
   contextPropTypes,
 } from 'vtex.store/OrderFormContext'
-import AddressSearch from './components/AddressSearch'
 import Modal from 'vtex.styleguide/Modal'
+import Button from 'vtex.styleguide/Button'
 import ChangeAddressIcon from './components/ChangeAddressIcon'
 import NewAddressIcon from './components/NewAddressIcon'
+import AddressList from './components/AddressList'
 import './global.css'
 
 class AddressManager extends Component {
@@ -29,14 +30,9 @@ class AddressManager extends Component {
     this.setState({ isModalOpen: false })
   }
 
-  componentDidMount() {
-    const { orderFormContext } = this.props
-    orderFormContext.refetch()
-  }
-
   render() {
     const { shippingData } = this.props.orderFormContext.orderForm
-    if (!shippingData) {
+    if (!shippingData.address) {
       return null
     }
 
@@ -63,7 +59,10 @@ class AddressManager extends Component {
             )}
           </Adopt>
           <NewAddressIcon />
-          <AddressSearch />
+          <div className="pa5 mb5">
+            <Button block>Add new address</Button>
+          </div>
+          <AddressList availableAddresses={shippingData.availableAddresses} />
         </Modal>
       </div>
     )
