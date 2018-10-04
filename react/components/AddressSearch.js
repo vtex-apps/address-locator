@@ -36,7 +36,7 @@ class AddressSearch extends Component {
   handleSetCurrentPosition = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(position => {
-        ;(async () => {
+        (async () => {
           const { latitude, longitude } = position.coords
           const { googleMapKey } = this.props
           const rawResponse = await fetch(
@@ -152,28 +152,28 @@ class AddressSearch extends Component {
           </div>
           {address &&
             shouldDisplayNumberInput && (
-              <Adopt
-                mapper={{
-                  placeholder: (
-                    <FormattedMessage id="address-locator.address-search-number-placeholder" />
-                  ),
-                  label: <FormattedMessage id="address-locator.address-search-number-label" />,
-                }}
-              >
-                {({ placeholder, label }) => (
-                  <div className="mb5">
-                    <Input
-                      type="number"
-                      value={address.number}
-                      placeholder={placeholder}
-                      size="large"
-                      label={label}
-                      onChange={e => this.handleAddressKeyChanged(e, 'number')}
-                    />
-                  </div>
-                )}
-              </Adopt>
-            )}
+            <Adopt
+              mapper={{
+                placeholder: (
+                  <FormattedMessage id="address-locator.address-search-number-placeholder" />
+                ),
+                label: <FormattedMessage id="address-locator.address-search-number-label" />,
+              }}
+            >
+              {({ placeholder, label }) => (
+                <div className="mb5">
+                  <Input
+                    type="number"
+                    value={address.number}
+                    placeholder={placeholder}
+                    size="large"
+                    label={label}
+                    onChange={e => this.handleAddressKeyChanged(e, 'number')}
+                  />
+                </div>
+              )}
+            </Adopt>
+          )}
           {address && (
             <Adopt
               mapper={{
