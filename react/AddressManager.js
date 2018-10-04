@@ -32,7 +32,9 @@ class AddressManager extends Component {
 
   render() {
     const { shippingData } = this.props.orderFormContext.orderForm
-    if (!shippingData.address) {
+
+    /* If there is no address, it means that the user isn't identified */
+    if (!shippingData || !shippingData.address) {
       return null
     }
 
@@ -55,12 +57,18 @@ class AddressManager extends Component {
             title: <FormattedMessage id="address-locator.address-manager-title" />,
           }}>
             {({ title }) => (
-              <p className="f3 pa5 ma0 bb b--light-gray bw1 b dark-gray">{title}</p>
+              <p className="f4 pa5 ma0 bb b--light-gray bw1 b dark-gray">{title}</p>
             )}
           </Adopt>
           <NewAddressIcon />
           <div className="pa5 mb5">
-            <Button block>Add new address</Button>
+            <Adopt mapper={{
+              text: <FormattedMessage id="address-locator.address-manager-button" />,
+            }}>
+              {({ text }) => (
+                <Button block>{text}</Button>
+              )}
+            </Adopt>
           </div>
           <AddressList availableAddresses={shippingData.availableAddresses} />
         </Modal>

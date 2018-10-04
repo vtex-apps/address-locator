@@ -11,6 +11,8 @@
     "address-locator.address-redeem-tab": "Recuperar endereço",
     "address-locator.address-redeem-button": "Buscar endereço",
     "address-locator.address-manager-title": "Seus Endereços",
+    "address-locator.address-manager-button": "Adicionar novo endereço",
+    "address-manager.address-list": "Endereços anteriores",
     "profile-form.field.homePhone": "Insira o seu telefone abaixo",
     "profile-form.error.INVALID_FIELD": "Número de telefone inválido",
     "profile-form.error.EMPTY_FIELD": "Campo obrigatório",
