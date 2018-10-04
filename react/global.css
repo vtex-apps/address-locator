@@ -22,10 +22,6 @@
   border-bottom-right-radius: 0.25rem;
 }
 
-.vtex-tabs__content .vtex-input-prefix__group {
-  margin-bottom: 1rem;
-}
-
 .vtex-input-prefix__group input {
   font-size: 0.85rem;
   padding-left: 1rem;
@@ -66,4 +62,8 @@
 
 .input--icon-left .input-icon {
   top: 1.4rem;
+}
+
+.vtex-profile-form__homePhone {
+  padding-bottom: 0;
 }
