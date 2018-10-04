@@ -2,7 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { templateParser, templateFormatter, parseDigit, ReactInput } from 'input-format'
 import Input from 'vtex.styleguide/Input'
-
+// import { ProfileField, ProfileSummary } from 'vtex.profile-form'
+import ProfileField from '@vtex/profile-form/lib/ProfileField'
 import PhoneInputIcon from './PhoneInputIcon'
 import withImage from './withImage'
 
@@ -24,25 +25,25 @@ class PhoneInput extends Component {
   render() {
     const {
       country: { code, template },
-      onChange,
-      value,
-      errorMessage,
-      label,
+      ...inputProps
     } = this.props
 
     return (
-      <div className="input-wrapper input-wrapper--icon-left mb5">
-        <ReactInput
-          format={templateFormatter(template)}
-          parse={templateParser(template, parseDigit)}
-          inputComponent={Input}
-          placeholder={template.replace(/x/g, '9')}
-          size="large"
-          type="text"
-          name="phone"
-          {...{ onChange, value, errorMessage, label }}
-        />
-        <this.Icon countryCode={code} />
+      <div>
+        {/* <ProfileField field={{label: "homePhone", maxLength: 30, name: "homePhone"}}></ProfileField> */}
+        <div className="mb5 relative input--icon-left">
+          <ReactInput
+            format={templateFormatter(template)}
+            parse={templateParser(template, parseDigit)}
+            inputComponent={Input}
+            placeholder={template.replace(/x/g, '9')}
+            size="large"
+            type="text"
+            name="phone"
+            {...inputProps}
+          />
+          <this.Icon countryCode={code} />
+        </div>
       </div>
     )
   }

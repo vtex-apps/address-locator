@@ -4,7 +4,7 @@ import PropTypes from 'prop-types'
 import { withScriptjs } from 'react-google-maps'
 import { Adopt } from 'react-adopt'
 import { StandaloneSearchBox } from 'react-google-maps/lib/components/places/StandaloneSearchBox'
-import { alpha2ToAlpha3 } from 'i18n-iso-countries'
+import alpha2ToAlpha3 from 'country-iso-2-to-3'
 import Input from 'vtex.styleguide/Input'
 import Button from 'vtex.styleguide/Button'
 import {

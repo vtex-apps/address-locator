@@ -12,14 +12,14 @@
 .vtex-tabs__content,
 .vtex-tab__button.c-on-muted {
   background: #fff;
-  border-top-left-radius: .25rem;
-  border-top-right-radius: .25rem;
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
 }
 
 .vtex-tabs__content {
   padding: 2rem 1.6rem;
-  border-bottom-left-radius: .25rem;
-  border-bottom-right-radius: .25rem;
+  border-bottom-left-radius: 0.25rem;
+  border-bottom-right-radius: 0.25rem;
 }
 
 .vtex-tabs__content .vtex-input-prefix__group {
@@ -27,14 +27,14 @@
 }
 
 .vtex-input-prefix__group input {
-  font-size: .85rem;
+  font-size: 0.85rem;
   padding-left: 1rem;
   padding-right: 1rem;
 }
 
 .vtex-input__label {
   color: #727273;
-  font-size: .85rem;
+  font-size: 0.85rem;
 }
 
 .vtex-tabs__content button {
@@ -52,7 +52,7 @@
 }
 
 .input-icon {
-  font-size: .85rem;
+  font-size: 0.85rem;
   color: #3f3f40;
 }
 
@@ -60,6 +60,10 @@
   border-left: 1px solid #f1f1f2;
 }
 
-.input-icon--flag img {
-    width: 18px;
+.input--icon-left img {
+  width: 18px;
+}
+
+.input--icon-left .input-icon {
+  top: 1.4rem;
 }

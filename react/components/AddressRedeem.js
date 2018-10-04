@@ -1,54 +1,31 @@
-import React, { Component, Fragment } from 'react'
-import { withApollo, compose, graphql } from 'react-apollo'
-import { FormattedMessage, intlShape } from 'react-intl'
-import Phone from '@vtex/phone'
-import PhoneBrazil from '@vtex/phone/countries/BRA' //eslint-disable-line
-import Button from 'vtex.styleguide/Button'
+import React, { Component, createElement } from 'react'
+import { Query } from 'react-apollo'
 import { orderFormConsumer, contextPropTypes } from 'vtex.store/OrderFormContext'
+import ProfileRules from '@vtex/profile-form/lib/ProfileRules'
+import addValidation from '@vtex/profile-form/lib/modules/addValidation'
+import RuleShape from '@vtex/profile-form/lib/RuleShape'
 
-import PhoneInput from './PhoneInput'
+import AddressRedeemForm from './AddressRedeemForm'
 import documentsQuery from '../queries/documents.gql'
 
-<<<<<<< HEAD
 const countries = {
   BRA: {
     icon: 'brazil.svg',
     code: 55,
-    template: '(xx) xxxxx-xxxx',
   },
-=======
-const AddressRedeem = ({ intl }) => {
-  const label = intl.formatMessage({ id: 'address-locator.address-redeem-label' })
-  const buttonText = intl.formatMessage({ id: 'address-locator.address-redeem-button' })
-
-  return (
-    <div className="w-100">
-      <div className="relative input--icon-left">
-        <Input type="text" size="large" placeholder="(99) 99999-9999" label={label} />
-        <BrazilInputIcon />
-      </div>
-      <Button>{buttonText}</Button>
-    </div>
-  )
->>>>>>> address-search
 }
 
 class AddressRedeem extends Component {
   static propTypes = {
-    /* Apollo client instance */
-    client: PropTypes.object.isRequired,
     /* Context used to call address mutation and retrieve the orderForm */
-    orderFormContext: contextPropTypes
-  }
-
-  static contextTypes = {
-    intl: intlShape,
+    orderFormContext: contextPropTypes,
+    /* Profile field rules */
+    rules: RuleShape,
   }
 
   state = {
     selectedCountry: countries.BRA,
-    phone: '',
-    errorMessage: '',
+    profile: addValidation({ homePhone: '' }, this.props.rules),
   }
 
   updateProfile = async ({ email }) => {
@@ -64,78 +41,76 @@ class AddressRedeem extends Component {
     /* TODO: user redirection */
   }
 
-  handlePhoneChange = phone => this.setState({ phone, errorMessage: '' })
+  handleSubmit = async data => {
+    const { profile } = this.state
 
-  handleSubmit = async e => {
-    e.preventDefault()
+    const profileNotFoundError = {
+      ...profile,
+      homePhone: { ...profile.homePhone, error: 'NOT_FOUND' },
+    }
 
-    const {
-      state: {
-        phone,
-        selectedCountry: { code },
-      },
-      props: { client, orderFormContext },
-      context: { intl },
-    } = this
-
-    const invalidPhoneError = intl.formatMessage({
-      id: 'address-locator.address-redeem-invalid-phone',
-    })
-    const profileNotFoundError = intl.formatMessage({
-      id: 'address-locator.address-redeem-profile-not-found',
-    })
-
-    const valid = Phone.validate(phone, code)
-
-    if (!valid)
-      return this.setState({
-        errorMessage: invalidPhoneError,
-      })
+    if (Boolean(profile.homePhone.error)) return this.setState({ profile: profileNotFoundError })
 
     try {
-      const { data } = await client.query({
-        query: documentsQuery,
-        variables: { acronym: 'CL', fields: ['email'], where: `homePhone=+${code}${phone}` },
-      })
-
       if (!data.documents) return this.setState({ errorMessage: profileNotFoundError })
+      if (!data.documents[0]) throw new Error('Profile not found')
 
-      const { email } = data.documents
-
+      const { value: email } = data.documents[0].fields.find(item => item.key === 'email')
       return await this.updateProfile({ email })
     } catch (e) {
       console.error(e)
-      return this.setState({ errorMessage: profileNotFoundError })
+      return this.setState({ profile: profileNotFoundError })
     }
 
     this.setState({ errorMessage: '' })
   }
 
+  handleFieldUpdate = field => {
+    this.setState(prevState => ({
+      profile: { ...prevState.profile, ...field },
+    }))
+  }
+
   render() {
-    const { selectedCountry, phone, errorMessage } = this.state
+    const { selectedCountry, profile } = this.state
+    const { orderFormContext, rules } = this.props
 
     return (
-      <form className="w-100" onSubmit={this.handleSubmit}>
-        <FormattedMessage id="address-locator.address-redeem-label">
-          {label => (
-            <PhoneInput
-              value={phone}
-              country={selectedCountry}
-              label={label}
-              errorMessage={errorMessage}
-              onChange={this.handlePhoneChange}
+      <Query
+        query={documentsQuery}
+        variables={{
+          acronym: 'CL',
+          fields: ['email'],
+          where: `homePhone=+${selectedCountry.code}${profile.homePhone.value.replace(/\D/g, '')}`,
+        }}
+        skip={!Boolean(profile.homePhone.touched)}
+      >
+        {({ loading: documentLoading, data }) => {
+          console.warn(data)
+          return (
+            <AddressRedeemForm
+              {...{
+                rules,
+                profile,
+                data,
+                country: selectedCountry,
+                onSubmit: this.handleSubmit,
+                onFieldUpdate: this.handleFieldUpdate,
+                loading: documentLoading || orderFormContext.loading,
+              }}
             />
-          )}
-        </FormattedMessage>
-        <Button type="submit">
-          <FormattedMessage id="address-locator.address-redeem-button" />
-        </Button>
-      </form>
+          )
+        }}
+      </Query>
     )
   }
 }
 
-export default compose(
-  orderFormConsumer,
-  withApollo
-)(AddressRedeem)
+/* NOTE: Couldn't use compose here because ProfileRules is not a HOC and does not play nicely with HOC's */
+const ComposedAddressRedeem = () => (
+  <ProfileRules country={global.__RUNTIME__.culture.country} shouldUseIOFetching>
+    {createElement(orderFormConsumer(AddressRedeem))}
+  </ProfileRules>
+)
+
+export default ComposedAddressRedeem
