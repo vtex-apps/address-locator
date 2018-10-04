@@ -1,11 +1,9 @@
 import React, { Component } from 'react'
 import { FormattedMessage } from 'react-intl'
-import { Query } from 'react-apollo'
 import { Adopt } from 'react-adopt'
 import Tabs from 'vtex.styleguide/Tabs'
 import Tab from 'vtex.styleguide/Tab'
 
-import logisticsQuery from './queries/logistics.gql'
 import AddressSearch from './components/AddressSearch'
 import AddressRedeem from './components/AddressRedeem'
 import './global.css'
@@ -40,19 +38,7 @@ class AddressLocator extends Component {
           {({ addressSearchTab, addressRedeemTab }) => (
             <Tabs fullWidth>
               <Tab label={addressSearchTab} active={currentTab === 1} onClick={() => this.handleTabChange(1)}>
-                <Query query={logisticsQuery}>
-                  {({ data }) => {
-                    const { googleMapsKey } = data.logistics
-
-                    return (
-                      <AddressSearch
-                        googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${googleMapsKey}&v=3.exp&libraries=places`}
-                        googleMapKey={googleMapsKey}
-                        loadingElement={<div className="h-100" />}
-                      />
-                    )
-                  }}
-                </Query>
+                <AddressSearch />
               </Tab>
               <Tab label={addressRedeemTab} active={currentTab === 2} onClick={() => this.handleTabChange(2)}>
                 <AddressRedeem />

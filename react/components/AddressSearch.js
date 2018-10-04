@@ -3,10 +3,15 @@ import { FormattedMessage } from 'react-intl'
 import PropTypes from 'prop-types'
 import { withScriptjs } from 'react-google-maps'
 import { Adopt } from 'react-adopt'
+import { graphql } from 'react-apollo'
+import { compose, branch, mapProps, renderComponent } from 'recompose'
+
+import logisticsQuery from '../queries/logistics.gql'
 import { StandaloneSearchBox } from 'react-google-maps/lib/components/places/StandaloneSearchBox'
 import { alpha2ToAlpha3 } from 'i18n-iso-countries'
 import Input from 'vtex.styleguide/Input'
 import Button from 'vtex.styleguide/Button'
+import Spinner from 'vtex.styleguide/Spinner'
 import {
   orderFormConsumer,
   contextPropTypes,
@@ -218,4 +223,24 @@ class AddressSearch extends Component {
   }
 }
 
-export default orderFormConsumer(withScriptjs(AddressSearch))
+export default compose(
+  graphql(logisticsQuery, {
+    name: 'logisticsQuery',
+  }),
+  branch(
+    props => !props.logisticsQuery.loading,
+    compose(
+      mapProps(ownerProps => {
+        const { googleMapsKey } = ownerProps.logisticsQuery.logistics
+        return {
+          googleMapKey: googleMapsKey,
+          googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${googleMapsKey}&v=3.exp&libraries=places`,
+          loadingElement: <div className="h-100" />,
+        }
+      }),
+      withScriptjs
+    ),
+    renderComponent(Spinner)
+  ),
+  orderFormConsumer,
+)(AddressSearch)
