@@ -1,4 +1,5 @@
 import React, { Component, createElement } from 'react'
+import PropTypes from 'prop-types'
 import { Query } from 'react-apollo'
 import { orderFormConsumer, contextPropTypes } from 'vtex.store/OrderFormContext'
 import ProfileRules from '@vtex/profile-form/lib/ProfileRules'
@@ -21,6 +22,8 @@ class AddressRedeem extends Component {
     orderFormContext: contextPropTypes,
     /* Profile field rules */
     rules: RuleShape,
+    /* Event handler for when the user is identified */
+    onIdentified: PropTypes.func,
   }
 
   state = {
@@ -29,7 +32,7 @@ class AddressRedeem extends Component {
   }
 
   updateProfile = async ({ email }) => {
-    const { orderFormContext } = this.props
+    const { orderFormContext, onIdentified } = this.props
 
     const { data } = await orderFormContext.updateOrderFormProfile({
       variables: {
@@ -39,6 +42,7 @@ class AddressRedeem extends Component {
     })
 
     /* TODO: user redirection */
+    onIdentified && onIdentified(data)
   }
 
   handleSubmit = async data => {
@@ -49,11 +53,11 @@ class AddressRedeem extends Component {
       homePhone: { ...profile.homePhone, error: 'NOT_FOUND' },
     }
 
-    if (Boolean(profile.homePhone.error)) return this.setState({ profile: profileNotFoundError })
+    if (profile.homePhone.error) return this.setState({ profile: profileNotFoundError })
 
     try {
       if (!data.documents) return this.setState({ errorMessage: profileNotFoundError })
-      if (!data.documents[0]) throw new Error('Profile not found')
+      if (!data.documents[0])throw new Error('Profile not found')
 
       const { value: email } = data.documents[0].fields.find(item => item.key === 'email')
       return await this.updateProfile({ email })
@@ -61,8 +65,6 @@ class AddressRedeem extends Component {
       console.error(e)
       return this.setState({ profile: profileNotFoundError })
     }
-
-    this.setState({ errorMessage: '' })
   }
 
   handleFieldUpdate = field => {
@@ -84,7 +86,7 @@ class AddressRedeem extends Component {
           fields: ['email'],
           where: `homePhone=+${selectedCountry.code}${profile.homePhone.value.replace(/\D/g, '')}`,
         }}
-        skip={!Boolean(profile.homePhone.touched) || Boolean(profile.homePhone.error)}
+        skip={!profile.homePhone.touched || Boolean(profile.homePhone.error)}
       >
         {({ loading: documentLoading, data }) => (
           <AddressRedeemForm

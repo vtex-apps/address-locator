@@ -32,7 +32,29 @@ class AddressRedeemForm extends Component {
       code: PropTypes.number.isRequired,
     }).isRequired,
     /* Input change event handler */
-    onFieldUpdate: PropTypes.func.isRequired
+    onFieldUpdate: PropTypes.func.isRequired,
+    /* Profile Form rules object for the store country */
+    rules: PropTypes.shape({
+      country: PropTypes.string,
+      personalFields: PropTypes.arrayOf(
+        PropTypes.shape({
+          display: PropTypes.func,
+          label: PropTypes.string,
+          mask: PropTypes.func,
+          maxLength: PropTypes.number,
+          name: PropTypes.string,
+          submit: PropTypes.func,
+          validate: PropTypes.func,
+        })
+      ),
+    }).isRequired,
+    profile: PropTypes.shape({
+      homePhone: PropTypes.shape({
+        value: PropTypes.string,
+        touched: PropTypes.bool,
+        error: PropTypes.string,
+      }),
+    }).isRequired,
   }
 
   Icon = withImage(() => this.props.country.icon)(PhoneInputIcon)
@@ -74,7 +96,7 @@ class AddressRedeemForm extends Component {
           />
           <this.Icon countryCode={code} />
         </div>
-        <Button type="submit" isLoading={loading} disabled={!Boolean(profilePhone.touched)} block>
+        <Button type="submit" isLoading={loading} disabled={!profilePhone.touched} block>
           <FormattedMessage id="address-locator.address-redeem-button" />
         </Button>
       </form>

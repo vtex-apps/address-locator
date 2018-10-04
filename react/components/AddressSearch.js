@@ -47,7 +47,7 @@ class AddressSearch extends Component {
   handleSetCurrentPosition = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(position => {
-        ;(async () => {
+        (async () => {
           const { latitude, longitude } = position.coords
           const { googleMapKey } = this.props
           const rawResponse = await fetch(
