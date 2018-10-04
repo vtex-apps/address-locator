@@ -8,7 +8,7 @@ import { compose, branch, mapProps, renderComponent } from 'recompose'
 
 import logisticsQuery from '../queries/logistics.gql'
 import { StandaloneSearchBox } from 'react-google-maps/lib/components/places/StandaloneSearchBox'
-import { alpha2ToAlpha3 } from 'i18n-iso-countries'
+import alpha2ToAlpha3 from 'country-iso-2-to-3'
 import Input from 'vtex.styleguide/Input'
 import Button from 'vtex.styleguide/Button'
 import Spinner from 'vtex.styleguide/Spinner'
@@ -46,11 +46,13 @@ class AddressSearch extends Component {
 
   handleSetCurrentPosition = () => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        (async () => {
+      navigator.geolocation.getCurrentPosition(position => {
+        ;(async () => {
           const { latitude, longitude } = position.coords
           const { googleMapKey } = this.props
-          const rawResponse = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?key=${googleMapKey}&latlng=${latitude},${longitude}`)
+          const rawResponse = await fetch(
+            `https://maps.googleapis.com/maps/api/geocode/json?key=${googleMapKey}&latlng=${latitude},${longitude}`
+          )
           const parsedResponse = await rawResponse.json()
           const place = parsedResponse.results[0]
           this.setAddressProperties(place)
@@ -72,16 +74,13 @@ class AddressSearch extends Component {
    * Reduces Google Maps API of array address components into a simpler consumable object
    */
   getParsedAddress = place => {
-    const parsedAddressComponents = place.address_components.reduce(
-      (prev, curr) => {
-        const parsedItem = curr.types.reduce(
-          (prev, type) => ({ ...prev, [type]: curr.short_name }),
-          {}
-        )
-        return { ...prev, ...parsedItem }
-      },
-      {}
-    )
+    const parsedAddressComponents = place.address_components.reduce((prev, curr) => {
+      const parsedItem = curr.types.reduce(
+        (prev, type) => ({ ...prev, [type]: curr.short_name }),
+        {}
+      )
+      return { ...prev, ...parsedItem }
+    }, {})
 
     const address = {
       addressType: 'residential',

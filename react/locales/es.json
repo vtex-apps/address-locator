@@ -9,7 +9,10 @@
     "address-locator.address-search-complement-placeholder": "ex 302",
     "address-locator.address-search-button": "Entregar en esta dirección",
     "address-locator.address-redeem-tab": "Recuperar dirección",
-    "address-locator.address-redeem-label": "Introduzca su teléfono a continuación",
     "address-locator.address-redeem-button": "Buscar dirección",
-    "address-locator.address-manager-title": "Sus Direcciones"
+    "address-locator.address-manager-title": "Sus Direcciones",
+    "profile-form.field.homePhone": "Introduzca su teléfono a continuación",
+    "profile-form.error.INVALID_FIELD": "Numero de telefono invalido",
+    "profile-form.error.EMPTY_FIELD": "Required field",
+    "profile-form.error.NOT_FOUND": "No pudimos encontrar una cuenta con este teléfono"
 }

@@ -12,8 +12,8 @@
 .vtex-address-locator .vtex-tabs__content,
 .vtex-address-locator .vtex-tab__button.c-on-muted {
   background: #fff;
-  border-top-left-radius: .25rem;
-  border-top-right-radius: .25rem;
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
 }
 
 .vtex-address-locator .vtex-tabs__content {
@@ -21,18 +21,18 @@
   border-bottom-right-radius: .25rem;
 }
 
-.address-search .vtex-input-prefix__group, .address-redeem .vtex-input-prefix__group {
+.address-search .vtex-input-prefix__group, .vtex-address-locator__address-redeem .vtex-input-prefix__group {
   margin-bottom: 1rem;
 }
 
-.address-search .vtex-input-prefix__group input, .address-redeem .vtex-input-prefix__group input {
+.address-search .vtex-input-prefix__group input, .vtex-address-locator__address-redeem .vtex-input-prefix__group input {
   font-size: .85rem;
   text-overflow: ellipsis;
 }
 
-.address-search .vtex-input__label, .address-redeem .vtex-input__label {
+.address-search .vtex-input__label, .vtex-address-locator__address-redeem .vtex-input__label {
   color: #727273;
-  font-size: .85rem;
+  font-size: 0.85rem;
 }
 
 .input--icon-right input {
@@ -46,7 +46,7 @@
 }
 
 .input-icon {
-  font-size: .85rem;
+  font-size: 0.85rem;
   color: #3f3f40;
 }
 
@@ -81,4 +81,12 @@
 
 .pac-container {
   z-index: 10001;
+}
+
+.input--icon-left .input-icon {
+  top: 1.4rem;
+}
+
+.vtex-profile-form__homePhone {
+  padding-bottom: 0;
 }
