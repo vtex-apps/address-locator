@@ -66,6 +66,7 @@ class AddressRedeem extends Component {
   }
 
   handleFieldUpdate = field => {
+    field.homePhone.touched = true
     this.setState(prevState => ({
       profile: { ...prevState.profile, ...field },
     }))
@@ -83,24 +84,21 @@ class AddressRedeem extends Component {
           fields: ['email'],
           where: `homePhone=+${selectedCountry.code}${profile.homePhone.value.replace(/\D/g, '')}`,
         }}
-        skip={!Boolean(profile.homePhone.touched)}
+        skip={!Boolean(profile.homePhone.touched) || Boolean(profile.homePhone.error)}
       >
-        {({ loading: documentLoading, data }) => {
-          console.warn(data)
-          return (
-            <AddressRedeemForm
-              {...{
-                rules,
-                profile,
-                data,
-                country: selectedCountry,
-                onSubmit: this.handleSubmit,
-                onFieldUpdate: this.handleFieldUpdate,
-                loading: documentLoading || orderFormContext.loading,
-              }}
-            />
-          )
-        }}
+        {({ loading: documentLoading, data }) => (
+          <AddressRedeemForm
+            {...{
+              rules,
+              profile,
+              data,
+              country: selectedCountry,
+              onSubmit: this.handleSubmit,
+              onFieldUpdate: this.handleFieldUpdate,
+              loading: documentLoading || orderFormContext.loading,
+            }}
+          />
+        )}
       </Query>
     )
   }

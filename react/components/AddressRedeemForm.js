@@ -74,7 +74,7 @@ class AddressRedeemForm extends Component {
           />
           <this.Icon countryCode={code} />
         </div>
-        <Button type="submit" isLoading={loading}>
+        <Button type="submit" isLoading={loading} disabled={!Boolean(profilePhone.touched)}>
           <FormattedMessage id="address-locator.address-redeem-button" />
         </Button>
       </form>
