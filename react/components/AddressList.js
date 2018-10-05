@@ -1,29 +1,70 @@
-import React from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Adopt } from 'react-adopt'
 import { FormattedMessage } from 'react-intl'
+import AddressListItem from './AddressListItem'
+import { orderFormConsumer, contextPropTypes } from 'vtex.store/OrderFormContext'
 
-const AddressList = ({ availableAddresses }) => (
-  <div className="vtex-address-locator__address-list pa5">
-    <Adopt mapper={{
-      text: <FormattedMessage id="address-manager.address-list" />,
-    }}>
-      {({ text }) => (
-        <span className="f6 dark-gray">{text}</span>
-      )}
-    </Adopt>
-    {availableAddresses.slice(0, 5).map((e, key) => (
-      <div className={`${key !== 4 && 'bb b--light-gray'} pv4`} key={key}>
-        <p className="mb2 mt0">{`${e.street}, ${e.number}`}</p>
-        <span className="f7 dark-gray">{`${e.neighborhood}, ${e.city}`}</span>
+class AddressList extends Component {
+  static propTypes = {
+    /* Context used to call address mutation and retrieve the orderForm */
+    orderFormContext: contextPropTypes,
+    /* Function that will be called after updating the orderform */
+    onOrderFormUpdated: PropTypes.func,
+  }
+
+  handleSelectAddress = address => {
+    const { orderFormContext, onOrderFormUpdated } = this.props
+    const { orderFormId } = orderFormContext.orderForm
+
+    orderFormContext
+      .updateOrderFormShipping({
+        variables: {
+          orderFormId,
+          address,
+        },
+      })
+      .then(() => {
+        if (onOrderFormUpdated) {
+          onOrderFormUpdated()
+        }
+        orderFormContext.refetch()
+        this.setState({
+          isLoading: false,
+        })
+      })
+  }
+
+  render() {
+    const { availableAddresses } = this.props
+
+    /* It will set the max length of available addresses array */
+    const maxAddressesQuantity = 5
+    return (
+      <div className="vtex-address-locator__address-list pa5">
+        <Adopt
+          mapper={{
+            text: <FormattedMessage id="address-manager.address-list" />,
+          }}
+        >
+          {({ text }) => <span className="f6 dark-gray">{text}</span>}
+        </Adopt>
+        {availableAddresses.slice(0, maxAddressesQuantity).map((address, key) => (
+          <AddressListItem
+            key={key}
+            address={address}
+            isLastAddress={key === maxAddressesQuantity - 1}
+            onSelectAddress={this.handleSelectAddress}
+          />
+        ))}
       </div>
-    ))}
-  </div>
-)
+    )
+  }
+}
 
 AddressList.propTypes = {
   /* Array of user's available addresses */
   availableAddresses: PropTypes.arrayOf(PropTypes.object),
 }
 
-export default AddressList
+export default orderFormConsumer(AddressList)
