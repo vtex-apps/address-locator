@@ -25,6 +25,7 @@ class AddressSearch extends Component {
     address: null,
     formattedAddress: '',
     shouldDisplayNumberInput: false,
+    errorMessage: false,
   }
 
   searchBox = React.createRef()
@@ -38,13 +39,28 @@ class AddressSearch extends Component {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(async (position) => {
         const { latitude, longitude } = position.coords
-        const { googleMapKey } = this.props
-        const rawResponse = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?key=${googleMapKey}&latlng=${latitude},${longitude}`)
+        const rawResponse = await fetch(this.getApiUrlFromCoordinates(latitude, longitude))
         const parsedResponse = await rawResponse.json()
+
+        if (!parsedResponse.results.length) {
+          return this.setState({
+            errorMessage: true,
+          })
+        }
+
         const place = parsedResponse.results[0]
         this.setAddressProperties(place)
       })
     }
+  }
+
+  /**
+   * Returns Google Maps API geocode URL according to given latlng
+   */
+  getApiUrlFromCoordinates = (latitude, longitude) => {
+    const { googleMapKey } = this.props
+
+    return `https://maps.googleapis.com/maps/api/geocode/json?key=${googleMapKey}&latlng=${latitude},${longitude}`
   }
 
   setAddressProperties = place => {
@@ -53,6 +69,7 @@ class AddressSearch extends Component {
       address,
       formattedAddress: place.formatted_address,
       shouldDisplayNumberInput: !address.number,
+      errorMessage: false,
     })
   }
 
@@ -120,7 +137,7 @@ class AddressSearch extends Component {
   }
 
   render() {
-    const { address, formattedAddress, shouldDisplayNumberInput } = this.state
+    const { address, formattedAddress, shouldDisplayNumberInput, errorMessage } = this.state
 
     return (
       <div className="w-100">
@@ -133,11 +150,13 @@ class AddressSearch extends Component {
               <Adopt mapper={{
                 placeholder: <FormattedMessage id="address-locator.address-search-placeholder" />,
                 label: <FormattedMessage id="address-locator.address-search-label" />,
+                errorMessageText: <FormattedMessage id="address-locator.address-search-error" />,
               }}>
-                {({ placeholder, label }) => (
+                {({ placeholder, label, errorMessageText }) => (
                   <Input
                     type="text"
                     value={formattedAddress}
+                    errorMessage={errorMessage ? errorMessageText : ''}
                     placeholder={placeholder}
                     size="large"
                     label={label}

@@ -7,6 +7,7 @@
     "address-locator.address-search-number-placeholder": "ex 90",
     "address-locator.address-search-complement-label": "Complemento Opcional",
     "address-locator.address-search-complement-placeholder": "ex 302",
+    "address-locator.address-search-error": "Dirección no encontrada. Por favor, escríbalo manualmente.",
     "address-locator.address-search-button": "Entregar en esta dirección",
     "address-locator.address-redeem-tab": "Recuperar dirección",
     "address-locator.address-redeem-label": "Introduzca su teléfono a continuación",
