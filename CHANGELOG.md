@@ -7,8 +7,6 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 ### Added
-- Added component to locate address and insert data into orderform
-
-### Added
 - MVP of `Address Locator` app.
+- Added component to locate address and insert data into orderform
 - Component to format and validate phone number
