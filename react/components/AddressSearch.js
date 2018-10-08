@@ -33,6 +33,7 @@ class AddressSearch extends Component {
     formattedAddress: '',
     shouldDisplayNumberInput: false,
     isLoading: false,
+    errorMessage: false,
   }
 
   searchBox = React.createRef()
@@ -46,13 +47,28 @@ class AddressSearch extends Component {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(async (position) => {
         const { latitude, longitude } = position.coords
-        const { googleMapKey } = this.props
-        const rawResponse = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?key=${googleMapKey}&latlng=${latitude},${longitude}`)
+        const rawResponse = await fetch(this.getApiUrlFromCoordinates(latitude, longitude))
         const parsedResponse = await rawResponse.json()
+
+        if (!parsedResponse.results.length) {
+          return this.setState({
+            errorMessage: true,
+          })
+        }
+
         const place = parsedResponse.results[0]
         this.setAddressProperties(place)
       })
     }
+  }
+
+  /**
+   * Returns Google Maps API geocode URL according to given latlng
+   */
+  getApiUrlFromCoordinates = (latitude, longitude) => {
+    const { googleMapKey } = this.props
+
+    return `https://maps.googleapis.com/maps/api/geocode/json?key=${googleMapKey}&latlng=${latitude},${longitude}`
   }
 
   setAddressProperties = place => {
@@ -61,6 +77,7 @@ class AddressSearch extends Component {
       address,
       formattedAddress: place.formatted_address,
       shouldDisplayNumberInput: !address.number,
+      errorMessage: false,
     })
   }
 
@@ -135,7 +152,7 @@ class AddressSearch extends Component {
   }
 
   render() {
-    const { address, formattedAddress, shouldDisplayNumberInput, isLoading } = this.state
+    const { address, formattedAddress, shouldDisplayNumberInput, isLoading, errorMessage } = this.state
 
     return (
       <form className="address-search w-100 pv7 ph6" onSubmit={this.handleFormSubmit}>
@@ -152,6 +169,7 @@ class AddressSearch extends Component {
                 <Input
                   type="text"
                   value={formattedAddress}
+                  errorMessage={errorMessage ? errorMessageText : ''}
                   placeholder={placeholder}
                   size="large"
                   label={label}
