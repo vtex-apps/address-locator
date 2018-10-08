@@ -85,16 +85,19 @@ class AddressSearch extends Component {
    * to orderform. So, this function will reduce nested address information into a simpler consumable object.
    *
    * @param {Object} place The place object returned from Google Maps API
-   * @returns {Object} address The reduced address data with only necessary fields/information
+   * @returns {Object} The reduced address data with only necessary fields/information
    */
   getParsedAddress = place => {
-    const parsedAddressComponents = place.address_components.reduce((prev, curr) => {
-      const parsedItem = curr.types.reduce(
-        (prev, type) => ({ ...prev, [type]: curr.short_name }),
-        {}
-      )
-      return { ...prev, ...parsedItem }
-    }, {})
+    const parsedAddressComponents = place.address_components.reduce(
+      (accumulator, address) => {
+        const parsedItem = address.types.reduce(
+          (accumulator, type) => ({ ...accumulator, [type]: address.short_name }),
+          {}
+        )
+        return { ...accumulator, ...parsedItem }
+      },
+      {}
+    )
 
     const address = {
       addressType: 'residential',
