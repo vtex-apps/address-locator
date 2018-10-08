@@ -19,6 +19,8 @@ class AddressSearch extends Component {
     orderFormContext: contextPropTypes,
     /* Google Maps Geolocation API key */
     googleMapKey: PropTypes.string,
+    /* Function that will be called after updating the orderform */
+    onOrderFormUpdated: PropTypes.func,
   }
 
   state = {
@@ -26,6 +28,7 @@ class AddressSearch extends Component {
     formattedAddress: '',
     shouldDisplayNumberInput: false,
     errorMessage: false,
+    isLoading: false,
   }
 
   searchBox = React.createRef()
@@ -112,7 +115,11 @@ class AddressSearch extends Component {
   handleFormSubmit = e => {
     e.preventDefault()
 
-    const { orderFormContext } = this.props
+    this.setState({
+      isLoading: true,
+    })
+
+    const { orderFormContext, onOrderFormUpdated } = this.props
     const { address } = this.state
 
     orderFormContext
@@ -123,7 +130,13 @@ class AddressSearch extends Component {
         },
       })
       .then(() => {
-        /* TODO */
+        if (onOrderFormUpdated) {
+          onOrderFormUpdated()
+        }
+        orderFormContext.refetch()
+        this.setState({
+          isLoading: false,
+        })
       })
   }
 
@@ -141,7 +154,7 @@ class AddressSearch extends Component {
   }
 
   render() {
-    const { address, formattedAddress, shouldDisplayNumberInput, errorMessage } = this.state
+    const { address, formattedAddress, shouldDisplayNumberInput, errorMessage, isLoading } = this.state
 
     return (
       <div className="w-100">
@@ -209,7 +222,7 @@ class AddressSearch extends Component {
             text: <FormattedMessage id="address-locator.address-search-button" />,
           }}>
             {({ text }) => (
-              <Button type="submit" disabled={!address || !address.number}>{text}</Button>
+              <Button type="submit" disabled={!address || !address.number} isLoading={isLoading}>{text}</Button>
             )}
           </Adopt>
         </form>
