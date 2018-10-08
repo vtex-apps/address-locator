@@ -23,29 +23,31 @@ class AddressLocator extends Component {
     const { currentTab } = this.state
 
     return (
-      <div className="vtex-address-locator w-100 w-50-m center flex flex-column justify-center items-center pa6">
+      <div>
         <Adopt mapper={{
           title: <FormattedMessage id="address-locator.order-title" />,
         }}>
           {({ title }) => (
-            <span className="db b f1 mb7">{title}</span>
+            <span className="db b f1 mb7 tc">{title}</span>
           )}
         </Adopt>
-        <Adopt mapper={{
-          addressSearchTab: <FormattedMessage id="address-locator.address-search-tab" />,
-          addressRedeemTab: <FormattedMessage id="address-locator.address-redeem-tab" />,
-        }}>
-          {({ addressSearchTab, addressRedeemTab }) => (
-            <Tabs fullWidth>
-              <Tab label={addressSearchTab} active={currentTab === 1} onClick={() => this.handleTabChange(1)}>
-                <AddressSearch />
-              </Tab>
-              <Tab label={addressRedeemTab} active={currentTab === 2} onClick={() => this.handleTabChange(2)}>
-                <AddressRedeem />
-              </Tab>
-            </Tabs>
-          )}
-        </Adopt>
+        <div className="vtex-address-locator w-100 w-30-m center flex flex-column justify-center items-center pa5">
+          <Adopt mapper={{
+            addressSearchTab: <FormattedMessage id="address-locator.address-search-tab" />,
+            addressRedeemTab: <FormattedMessage id="address-locator.address-redeem-tab" />,
+          }}>
+            {({ addressSearchTab, addressRedeemTab }) => (
+              <Tabs fullWidth>
+                <Tab label={addressSearchTab} active={currentTab === 1} onClick={() => this.handleTabChange(1)}>
+                  <AddressSearch />
+                </Tab>
+                <Tab label={addressRedeemTab} active={currentTab === 2} onClick={() => this.handleTabChange(2)}>
+                  <AddressRedeem />
+                </Tab>
+              </Tabs>
+            )}
+          </Adopt>
+        </div>
       </div>
     )
   }

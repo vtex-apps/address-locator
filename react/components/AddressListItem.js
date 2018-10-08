@@ -31,9 +31,9 @@ class AddressListItem extends Component {
     const { isLastAddress, address } = this.props
     const { street, number, neighborhood, city } = address
     return (
-      <div className={`${!isLastAddress && 'bb b--light-gray'} pv4`} onClick={this.handleClick}>
-        <p className="mb2 mt0">{`${street}, ${number}`}</p>
-        <span className="f7 dark-gray">{`${neighborhood}, ${city}`}</span>
+      <div className={`${!isLastAddress && 'bb b--light-gray'} pv4 dim pointer`} onClick={this.handleClick}>
+        <p className="ma0">{`${street}, ${number}`}</p>
+        <span className="f7 mid-gray">{`${neighborhood}, ${city}`}</span>
       </div>
     )
   }

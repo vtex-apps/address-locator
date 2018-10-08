@@ -40,7 +40,7 @@ class AddressManager extends Component {
 
     return (
       <div className="address-manager">
-        <div className="address-manager__bar flex ph5 white" onClick={this.handleOpenModal}>
+        <div className="address-manager__bar flex ph5 white pointer" onClick={this.handleOpenModal}>
           <p className="address-manager__address mr5 overflow-hidden nowrap">
             {`${street}, ${number}`}
           </p>
@@ -52,7 +52,7 @@ class AddressManager extends Component {
               title: <FormattedMessage id="address-locator.address-manager-title" />,
             }}
           >
-            {({ title }) => <p className="f4 pa5 ma0 bb b--light-gray bw1 b dark-gray">{title}</p>}
+            {({ title }) => <p className="f4 pa5 ma0 bb b--light-gray bw1 b near-black">{title}</p>}
           </Adopt>
           <NewAddressIcon />
           <div className="pa5 mb5">

@@ -96,3 +96,10 @@
 .vtex-address-locator__address-list {
   background: #f2f4f5;
 }
+
+@media (min-width: 768px) {
+  .vtex-modal__modal {
+    height: auto;
+    top: 6rem;
+  }
+}
