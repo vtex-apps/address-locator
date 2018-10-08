@@ -27,26 +27,22 @@ class AddressSearch extends Component {
     shouldDisplayNumberInput: false,
   }
 
-  handleSearchBoxMounted = ref => {
-    this.searchBox = ref
-  }
+  searchBox = React.createRef()
 
   handlePlacesChanged = () => {
-    const place = this.searchBox.getPlaces()[0]
+    const place = this.searchBox.current.getPlaces()[0]
     this.setAddressProperties(place)
   }
 
   handleSetCurrentPosition = () => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition((position) => {
-        (async () => {
-          const { latitude, longitude } = position.coords
-          const { googleMapKey } = this.props
-          const rawResponse = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?key=${googleMapKey}&latlng=${latitude},${longitude}`)
-          const parsedResponse = await rawResponse.json()
-          const place = parsedResponse.results[0]
-          this.setAddressProperties(place)
-        })()
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const { latitude, longitude } = position.coords
+        const { googleMapKey } = this.props
+        const rawResponse = await fetch(`https://maps.googleapis.com/maps/api/geocode/json?key=${googleMapKey}&latlng=${latitude},${longitude}`)
+        const parsedResponse = await rawResponse.json()
+        const place = parsedResponse.results[0]
+        this.setAddressProperties(place)
       })
     }
   }
@@ -131,7 +127,7 @@ class AddressSearch extends Component {
         <form onSubmit={this.handleFormSubmit}>
           <div className="relative input--icon-right">
             <StandaloneSearchBox
-              ref={this.handleSearchBoxMounted}
+              ref={this.searchBox}
               onPlacesChanged={this.handlePlacesChanged}
             >
               <Adopt mapper={{
@@ -159,7 +155,7 @@ class AddressSearch extends Component {
             }}>
               {({ placeholder, label }) => (
                 <Input
-                  type="number"
+                  type="text"
                   value={address.number}
                   placeholder={placeholder}
                   size="large"
