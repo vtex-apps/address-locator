@@ -74,7 +74,11 @@ class AddressSearch extends Component {
   }
 
   /**
-   * Reduces Google Maps API of array address components into a simpler consumable object
+   * The place object returned from Google Maps API has some extra informations about the address that won't be used when sending
+   * to orderform. So, this function will reduce nested address information into a simpler consumable object.
+   *
+   * @param {Object} place The place object returned from Google Maps API
+   * @returns {Object} address The reduced address data with only necessary fields/information
    */
   getParsedAddress = place => {
     const parsedAddressComponents = place.address_components.reduce(
