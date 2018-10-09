@@ -40,7 +40,8 @@ class AddressManager extends Component {
   }
 
   render() {
-    const { shippingData } = this.props.orderFormContext.orderForm
+    const { orderFormContext } = this.props
+    const { shippingData } = orderFormContext.orderForm
 
     /* If there is no address, it means that the user isn't identified, and so the component won't render */
     if (!shippingData || !shippingData.address) {
@@ -86,11 +87,15 @@ class AddressManager extends Component {
               </div>
               <AddressList
                 availableAddresses={shippingData.availableAddresses}
+                orderFormContext={orderFormContext}
                 onOrderFormUpdated={this.handleCloseModal}
               />
             </Fragment>
           ) : (
-            <AddressSearch onOrderFormUpdated={this.handleCloseModal} />
+            <AddressSearch
+              onOrderFormUpdated={this.handleCloseModal}
+              orderFormContext={orderFormContext}
+            />
           )}
         </Modal>
       </div>

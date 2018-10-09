@@ -13,19 +13,18 @@ import Input from 'vtex.styleguide/Input'
 import Button from 'vtex.styleguide/Button'
 import Spinner from 'vtex.styleguide/Spinner'
 import {
-  orderFormConsumer,
   contextPropTypes,
 } from 'vtex.store/OrderFormContext'
 import LocationInputIcon from './LocationInputIcon'
 
 class AddressSearch extends Component {
   static propTypes = {
-    /* Context used to call address mutation and retrieve the orderForm */
-    orderFormContext: contextPropTypes,
     /* Google Maps Geolocation API key */
     googleMapKey: PropTypes.string,
     /* Function that will be called after updating the orderform */
     onOrderFormUpdated: PropTypes.func,
+    /* Context used to call address mutation and retrieve the orderForm */
+    orderFormContext: contextPropTypes,
   }
 
   state = {
@@ -243,18 +242,18 @@ export default compose(
     compose(
       mapProps(ownerProps => {
         const { googleMapsKey } = ownerProps.logisticsQuery.logistics
-        const { onOrderFormUpdated } = ownerProps
+        const { onOrderFormUpdated, orderFormContext } = ownerProps
 
         return {
           googleMapKey: googleMapsKey,
           googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${googleMapsKey}&v=3.exp&libraries=places`,
           loadingElement: <div className="h-100" />,
           onOrderFormUpdated: onOrderFormUpdated,
+          orderFormContext: orderFormContext,
         }
       }),
       withScriptjs
     ),
     renderComponent(Spinner)
   ),
-  orderFormConsumer,
 )(AddressSearch)

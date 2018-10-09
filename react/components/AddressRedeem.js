@@ -1,7 +1,7 @@
 import React, { Component, createElement } from 'react'
 import PropTypes from 'prop-types'
 import { Query } from 'react-apollo'
-import { orderFormConsumer, contextPropTypes } from 'vtex.store/OrderFormContext'
+import { contextPropTypes } from 'vtex.store/OrderFormContext'
 import ProfileRules from '@vtex/profile-form/lib/ProfileRules'
 import addValidation from '@vtex/profile-form/lib/modules/addValidation'
 import RuleShape from '@vtex/profile-form/lib/RuleShape'
@@ -109,7 +109,7 @@ class AddressRedeem extends Component {
 /* NOTE: Couldn't use compose here because ProfileRules is not a HOC and does not play nicely with HOC's */
 const ComposedAddressRedeem = () => (
   <ProfileRules country={global.__RUNTIME__.culture.country} shouldUseIOFetching>
-    {createElement(orderFormConsumer(AddressRedeem))}
+    {createElement(AddressRedeem)}
   </ProfileRules>
 )
 

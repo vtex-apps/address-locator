@@ -3,14 +3,16 @@ import PropTypes from 'prop-types'
 import { Adopt } from 'react-adopt'
 import { FormattedMessage } from 'react-intl'
 import AddressListItem from './AddressListItem'
-import { orderFormConsumer, contextPropTypes } from 'vtex.store/OrderFormContext'
+import { contextPropTypes } from 'vtex.store/OrderFormContext'
 
 class AddressList extends Component {
   static propTypes = {
-    /* Context used to call address mutation and retrieve the orderForm */
-    orderFormContext: contextPropTypes,
+    /* Array of user's available addresses */
+    availableAddresses: PropTypes.arrayOf(PropTypes.object),
     /* Function that will be called after updating the orderform */
     onOrderFormUpdated: PropTypes.func,
+    /* Context used to call address mutation and retrieve the orderForm */
+    orderFormContext: contextPropTypes,
   }
 
   handleSelectAddress = address => {
@@ -62,9 +64,4 @@ class AddressList extends Component {
   }
 }
 
-AddressList.propTypes = {
-  /* Array of user's available addresses */
-  availableAddresses: PropTypes.arrayOf(PropTypes.object),
-}
-
-export default orderFormConsumer(AddressList)
+export default AddressList
