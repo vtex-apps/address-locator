@@ -10,6 +10,11 @@ import AddressSearch from './components/AddressSearch'
 import AddressRedeem from './components/AddressRedeem'
 import './global.css'
 
+/**
+ * Component that allows the user to locate his address, by inserting, searching, managing and
+ * saving it into orderform.
+ * Configure the key for Google Geolocation API, by inserting it on the admin logistics section.
+ */
 class AddressLocator extends Component {
   state = {
     currentTab: 1,
