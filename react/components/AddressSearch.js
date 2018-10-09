@@ -157,9 +157,9 @@ class AddressSearch extends Component {
     const { address, formattedAddress, shouldDisplayNumberInput, errorMessage, isLoading } = this.state
 
     return (
-      <div className="w-100">
+      <div className="vtex-address-search w-100">
         <form onSubmit={this.handleFormSubmit}>
-          <div className="relative input--icon-right">
+          <div className="relative vtex-input--icon-right">
             <StandaloneSearchBox
               ref={this.searchBox}
               onPlacesChanged={this.handlePlacesChanged}

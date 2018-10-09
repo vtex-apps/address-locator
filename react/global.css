@@ -41,26 +41,26 @@
   width: 100%;
 }
 
-.input--icon-right input {
+.vtex-input--icon-right input {
   padding-right: 4rem;
   text-overflow: ellipsis;
 }
 
-.input--icon-left input {
+.vtex-input--icon-left input {
   padding-left: 4rem;
   text-overflow: ellipsis;
 }
 
-.input-icon {
+.vtex-input-icon {
   top: 1.4rem;
   font-size: .85rem;
   color: #3f3f40;
 }
 
-.input-icon--location img {
+.vtex-input-icon--location img {
   border-left: 1px solid #f1f1f2;
 }
 
-.input-icon--brazil img {
+.vtex-input-icon--brazil img {
   width: 19px;
 }
