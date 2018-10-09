@@ -28,10 +28,10 @@ class AddressLocator extends Component {
           title: <FormattedMessage id="address-locator.order-title" />,
         }}>
           {({ title }) => (
-            <span className="db b f1 mb7 tc">{title}</span>
+            <span className="db b f1 pa5 tl tc-m">{title}</span>
           )}
         </Adopt>
-        <div className="vtex-address-locator w-100 w-30-m center flex flex-column justify-center items-center pa5">
+        <div className="vtex-address-locator w-100 w-60-m w-40-l center flex flex-column justify-center items-center pa5">
           <Adopt mapper={{
             addressSearchTab: <FormattedMessage id="address-locator.address-search-tab" />,
             addressRedeemTab: <FormattedMessage id="address-locator.address-redeem-tab" />,

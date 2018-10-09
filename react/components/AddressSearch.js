@@ -116,7 +116,6 @@ class AddressSearch extends Component {
     this.setState({
       isLoading: true,
     })
-
     const { orderFormContext, onOrderFormUpdated } = this.props
     const { address } = this.state
 
@@ -128,13 +127,13 @@ class AddressSearch extends Component {
         },
       })
       .then(() => {
-        if (onOrderFormUpdated) {
-          onOrderFormUpdated()
-        }
         orderFormContext.refetch()
         this.setState({
           isLoading: false,
         })
+        if (onOrderFormUpdated) {
+          onOrderFormUpdated()
+        }
       })
   }
 
@@ -164,8 +163,9 @@ class AddressSearch extends Component {
             <Adopt mapper={{
               placeholder: <FormattedMessage id="address-locator.address-search-placeholder" />,
               label: <FormattedMessage id="address-locator.address-search-label" />,
+              errorMessageText: <FormattedMessage id="address-locator.address-search-error" />,
             }}>
-              {({ placeholder, label }) => (
+              {({ placeholder, label, errorMessageText }) => (
                 <Input
                   type="text"
                   value={formattedAddress}
@@ -243,10 +243,13 @@ export default compose(
     compose(
       mapProps(ownerProps => {
         const { googleMapsKey } = ownerProps.logisticsQuery.logistics
+        const { onOrderFormUpdated } = ownerProps
+
         return {
           googleMapKey: googleMapsKey,
           googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${googleMapsKey}&v=3.exp&libraries=places`,
           loadingElement: <div className="h-100" />,
+          onOrderFormUpdated: onOrderFormUpdated,
         }
       }),
       withScriptjs

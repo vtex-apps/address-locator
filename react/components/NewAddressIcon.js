@@ -9,9 +9,7 @@ const NewAddressIcon = ({ imageSrc }) => {
   }
 
   return (
-    <p className="mt8 tc">
-      <img className="v-mid" src={imageSrc} />
-    </p>
+    <img className="v-mid" src={imageSrc} />
   )
 }
 
