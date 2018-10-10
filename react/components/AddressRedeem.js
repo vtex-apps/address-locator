@@ -1,4 +1,4 @@
-import React, { Component, createElement } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Query } from 'react-apollo'
 import { contextPropTypes } from 'vtex.store/OrderFormContext'
@@ -18,8 +18,6 @@ const countries = {
 
 class AddressRedeem extends Component {
   static propTypes = {
-    /* Context used to call address mutation and retrieve the orderForm */
-    orderFormContext: contextPropTypes,
     /* Profile field rules */
     rules: RuleShape,
     /* Event handler for when the user is identified */
@@ -107,10 +105,15 @@ class AddressRedeem extends Component {
 }
 
 /* NOTE: Couldn't use compose here because ProfileRules is not a HOC and does not play nicely with HOC's */
-const ComposedAddressRedeem = () => (
+const ComposedAddressRedeem = ({ orderFormContext }) => (
   <ProfileRules country={global.__RUNTIME__.culture.country} shouldUseIOFetching>
-    {createElement(AddressRedeem)}
+    <AddressRedeem orderFormContext={orderFormContext} />
   </ProfileRules>
 )
+
+ComposedAddressRedeem.propTypes = {
+  /* Context used to call address mutation and retrieve the orderForm */
+  orderFormContext: contextPropTypes,
+}
 
 export default ComposedAddressRedeem

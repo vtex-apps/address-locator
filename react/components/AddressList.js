@@ -37,8 +37,16 @@ class AddressList extends Component {
       })
   }
 
-  render() {
+  getValidAvailableAddresses = () => {
     const { availableAddresses } = this.props
+
+    return availableAddresses.filter(
+      address => (address.city && address.street && address.number)
+    )
+  }
+
+  render() {
+    const availableAddresses = this.getValidAvailableAddresses()
 
     /* It will set the max length of available addresses array */
     const maxAddressesQuantity = 5
@@ -51,14 +59,17 @@ class AddressList extends Component {
         >
           {({ text }) => <span className="f6 dark-gray">{text}</span>}
         </Adopt>
-        {availableAddresses.slice(0, maxAddressesQuantity).map((address, key) => (
-          <AddressListItem
-            key={key}
-            address={address}
-            isLastAddress={key === maxAddressesQuantity - 1}
-            onSelectAddress={this.handleSelectAddress}
-          />
-        ))}
+        {availableAddresses
+          .reverse()
+          .slice(0, maxAddressesQuantity)
+          .map((address, key) => (
+            <AddressListItem
+              key={key}
+              address={address}
+              isLastAddress={key === maxAddressesQuantity - 1}
+              onSelectAddress={this.handleSelectAddress}
+            />
+          ))}
       </div>
     )
   }

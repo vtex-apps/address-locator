@@ -32,7 +32,7 @@ class AddressSearch extends Component {
     formattedAddress: '',
     shouldDisplayNumberInput: false,
     isLoading: false,
-    errorMessage: false,
+    errorMessage: null,
   }
 
   searchBox = React.createRef()
@@ -76,7 +76,7 @@ class AddressSearch extends Component {
       address,
       formattedAddress: place.formatted_address,
       shouldDisplayNumberInput: !address.number,
-      errorMessage: false,
+      errorMessage: null,
     })
   }
 
@@ -114,6 +114,7 @@ class AddressSearch extends Component {
 
     this.setState({
       isLoading: true,
+      errorMessage: null,
     })
     const { orderFormContext, onOrderFormUpdated } = this.props
     const { address } = this.state
@@ -125,15 +126,28 @@ class AddressSearch extends Component {
           address,
         },
       })
-      .then(() => {
+      .then(({ data }) => {
+        const { address } = data.updateOrderFormShipping.shippingData
+        if (!this.getIsAddressValid(address)) {
+          return this.setState({
+            isLoading: false,
+            errorMessage: true,
+          })
+        }
+
         orderFormContext.refetch()
         this.setState({
           isLoading: false,
         })
+
         if (onOrderFormUpdated) {
           onOrderFormUpdated()
         }
       })
+  }
+
+  getIsAddressValid = address => {
+    return (address.city && address.street && address.number)
   }
 
   handleAddressKeyChanged = (e, key) => {
