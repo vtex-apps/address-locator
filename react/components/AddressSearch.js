@@ -12,9 +12,7 @@ import alpha2ToAlpha3 from 'country-iso-2-to-3'
 import Input from 'vtex.styleguide/Input'
 import Button from 'vtex.styleguide/Button'
 import Spinner from 'vtex.styleguide/Spinner'
-import {
-  contextPropTypes,
-} from 'vtex.store/OrderFormContext'
+import { contextPropTypes } from 'vtex.store/OrderFormContext'
 import LocationInputIcon from './LocationInputIcon'
 
 class AddressSearch extends Component {
@@ -44,7 +42,7 @@ class AddressSearch extends Component {
 
   handleSetCurrentPosition = () => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(async (position) => {
+      navigator.geolocation.getCurrentPosition(async position => {
         const { latitude, longitude } = position.coords
         const rawResponse = await fetch(this.getApiUrlFromCoordinates(latitude, longitude))
         const parsedResponse = await rawResponse.json()
@@ -88,16 +86,13 @@ class AddressSearch extends Component {
    * @returns {Object} The reduced address data with only necessary fields/information
    */
   getParsedAddress = place => {
-    const parsedAddressComponents = place.address_components.reduce(
-      (accumulator, address) => {
-        const parsedItem = address.types.reduce(
-          (accumulator, type) => ({ ...accumulator, [type]: address.short_name }),
-          {}
-        )
-        return { ...accumulator, ...parsedItem }
-      },
-      {}
-    )
+    const parsedAddressComponents = place.address_components.reduce((accumulator, address) => {
+      const parsedItem = address.types.reduce(
+        (accumulator, type) => ({ ...accumulator, [type]: address.short_name }),
+        {}
+      )
+      return { ...accumulator, ...parsedItem }
+    }, {})
 
     const address = {
       addressType: 'residential',
@@ -154,7 +149,7 @@ class AddressSearch extends Component {
   }
 
   getIsAddressValid = address => {
-    return (address.city && address.street && address.number)
+    return address.city && address.street && address.number
   }
 
   handleAddressKeyChanged = (e, key) => {
@@ -171,20 +166,25 @@ class AddressSearch extends Component {
   }
 
   render() {
-    const { address, formattedAddress, shouldDisplayNumberInput, isLoading, errorMessage } = this.state
+    const {
+      address,
+      formattedAddress,
+      shouldDisplayNumberInput,
+      isLoading,
+      errorMessage,
+    } = this.state
 
     return (
       <form className="address-search w-100 pv7 ph6" onSubmit={this.handleFormSubmit}>
         <div className="relative input--icon-right">
-          <StandaloneSearchBox
-            ref={this.searchBox}
-            onPlacesChanged={this.handlePlacesChanged}
-          >
-            <Adopt mapper={{
-              placeholder: <FormattedMessage id="address-locator.address-search-placeholder" />,
-              label: <FormattedMessage id="address-locator.address-search-label" />,
-              errorMessageText: <FormattedMessage id="address-locator.address-search-error" />,
-            }}>
+          <StandaloneSearchBox ref={this.searchBox} onPlacesChanged={this.handlePlacesChanged}>
+            <Adopt
+              mapper={{
+                placeholder: <FormattedMessage id="address-locator.address-search-placeholder" />,
+                label: <FormattedMessage id="address-locator.address-search-label" />,
+                errorMessageText: <FormattedMessage id="address-locator.address-search-error" />,
+              }}
+            >
               {({ placeholder, label, errorMessageText }) => (
                 <Input
                   type="text"
@@ -200,11 +200,16 @@ class AddressSearch extends Component {
           </StandaloneSearchBox>
           <LocationInputIcon onClick={this.handleSetCurrentPosition} />
         </div>
-        {(address && shouldDisplayNumberInput) && (
-          <Adopt mapper={{
-            placeholder: <FormattedMessage id="address-locator.address-search-number-placeholder" />,
-            label: <FormattedMessage id="address-locator.address-search-number-label" />,
-          }}>
+        {address &&
+          shouldDisplayNumberInput && (
+          <Adopt
+            mapper={{
+              placeholder: (
+                <FormattedMessage id="address-locator.address-search-number-placeholder" />
+              ),
+              label: <FormattedMessage id="address-locator.address-search-number-label" />,
+            }}
+          >
             {({ placeholder, label }) => (
               <Input
                 type="number"
@@ -218,10 +223,14 @@ class AddressSearch extends Component {
           </Adopt>
         )}
         {address && (
-          <Adopt mapper={{
-            placeholder: <FormattedMessage id="address-locator.address-search-complement-placeholder" />,
-            label: <FormattedMessage id="address-locator.address-search-complement-label" />,
-          }}>
+          <Adopt
+            mapper={{
+              placeholder: (
+                <FormattedMessage id="address-locator.address-search-complement-placeholder" />
+              ),
+              label: <FormattedMessage id="address-locator.address-search-complement-label" />,
+            }}
+          >
             {({ placeholder, label }) => (
               <Input
                 type="text"
@@ -234,9 +243,11 @@ class AddressSearch extends Component {
             )}
           </Adopt>
         )}
-        <Adopt mapper={{
-          text: <FormattedMessage id="address-locator.address-search-button" />,
-        }}>
+        <Adopt
+          mapper={{
+            text: <FormattedMessage id="address-locator.address-search-button" />,
+          }}
+        >
           {({ text }) => (
             <Button
               className="w-100"
@@ -276,5 +287,5 @@ export default compose(
       withScriptjs
     ),
     renderComponent(Spinner)
-  ),
+  )
 )(AddressSearch)

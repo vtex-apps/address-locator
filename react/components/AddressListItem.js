@@ -8,7 +8,8 @@ class AddressListItem extends Component {
     onSelectAddress: PropTypes.func,
   }
 
-  pick = (source, ...fields) => fields.reduce((prev, field) => ((prev[field] = source[field]), prev), {})
+  pick = (source, ...fields) =>
+    fields.reduce((prev, field) => ((prev[field] = source[field]), prev), {})
   handleClick = () => {
     const { onSelectAddress, address } = this.props
 
@@ -31,7 +32,10 @@ class AddressListItem extends Component {
     const { isLastAddress, address } = this.props
     const { street, number, neighborhood, city } = address
     return (
-      <div className={`${!isLastAddress && 'bb b--light-gray'} pv4 dim pointer`} onClick={this.handleClick}>
+      <div
+        className={`${!isLastAddress && 'bb b--light-gray'} pv4 dim pointer`}
+        onClick={this.handleClick}
+      >
         <p className="ma0">{`${street}, ${number}`}</p>
         <span className="f7 mid-gray">{`${neighborhood}, ${city}`}</span>
       </div>

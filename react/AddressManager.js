@@ -4,6 +4,7 @@ import { FormattedMessage } from 'react-intl'
 import { orderFormConsumer, contextPropTypes } from 'vtex.store/OrderFormContext'
 import Modal from 'vtex.styleguide/Modal'
 import Button from 'vtex.styleguide/Button'
+import Spinner from 'vtex.styleguide/Spinner'
 import ChangeAddressIcon from './components/ChangeAddressIcon'
 import NewAddressIcon from './components/NewAddressIcon'
 import AddressList from './components/AddressList'
@@ -22,6 +23,53 @@ class AddressManager extends Component {
   state = {
     isModalOpen: false,
     isSearchingAddress: false,
+    isLoading: false,
+  }
+
+  /* Filters available addresses and returns only valid ones */
+  getValidAvailableAddresses = availableAddresses =>
+    availableAddresses.filter(address => address.city && address.street && address.number)
+
+  /* Get available addresses from orderform and returns it prepared to list */
+  getAvailableAddresses = () => {
+    /* It will set the max length of available addresses array */
+    const maxAddressesQuantity = 5
+
+    let { availableAddresses } = this.props.orderFormContext.orderForm.shippingData
+    availableAddresses = this.getValidAvailableAddresses(availableAddresses)
+      .reverse()
+      .slice(0, maxAddressesQuantity)
+
+    return availableAddresses
+  }
+
+  /**
+   * Updates the orderFormContext with the selected address
+   *
+   * @param {Object} address The selected address
+   */
+  handleSelectAddress = address => {
+    const { orderFormContext } = this.props
+    const { orderFormId } = orderFormContext.orderForm
+
+    this.setState({
+      isLoading: true,
+    })
+
+    orderFormContext
+      .updateOrderFormShipping({
+        variables: {
+          orderFormId,
+          address,
+        },
+      })
+      .then(() => {
+        orderFormContext.refetch()
+        this.setState({
+          isLoading: false,
+          isModalOpen: false,
+        })
+      })
   }
 
   handleOpenModal = () => {
@@ -49,7 +97,8 @@ class AddressManager extends Component {
     }
 
     const { street, number } = shippingData.address
-    const { isModalOpen, isSearchingAddress } = this.state
+    const { isModalOpen, isSearchingAddress, isLoading } = this.state
+    const availableAddresses = this.getAvailableAddresses()
 
     return (
       <div className="address-manager">
@@ -85,11 +134,17 @@ class AddressManager extends Component {
                   )}
                 </Adopt>
               </div>
-              <AddressList
-                availableAddresses={shippingData.availableAddresses}
-                orderFormContext={orderFormContext}
-                onOrderFormUpdated={this.handleCloseModal}
-              />
+              {!isLoading ? (
+                <AddressList
+                  availableAddresses={availableAddresses}
+                  onOrderFormUpdated={this.handleCloseModal}
+                  onSelectAddress={this.handleSelectAddress}
+                />
+              ) : (
+                <p className="tc">
+                  <Spinner />
+                </p>
+              )}
             </Fragment>
           ) : (
             <AddressSearch
