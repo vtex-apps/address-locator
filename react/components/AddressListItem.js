@@ -1,28 +1,29 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 
-class AddressListItem extends Component {
+export default class AddressListItem extends Component {
   static propTypes = {
+    /* Address object from available addresses */
     address: PropTypes.object,
+    /* Defines if it is the last address of the list */
     isLastAddress: PropTypes.bool,
+    /* Function that will be called when selecting the address */
     onSelectAddress: PropTypes.func,
   }
 
+  /* Picks selected fields from a source object */
   pick = (source, ...fields) =>
     fields.reduce((prev, field) => ((prev[field] = source[field]), prev), {})
   handleClick = () => {
     const { onSelectAddress, address } = this.props
-
     const addressFields = this.pick(
       address,
       'addressType',
       'city',
       'complement',
-      'country',
+      'neighborhood',
       'number',
       'postalCode',
-      'receiverName',
-      'state',
       'street'
     )
 
@@ -42,5 +43,3 @@ class AddressListItem extends Component {
     )
   }
 }
-
-export default AddressListItem
