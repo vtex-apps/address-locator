@@ -1,6 +1,7 @@
 import React, { Component, Fragment } from 'react'
 import { Adopt } from 'react-adopt'
 import { FormattedMessage } from 'react-intl'
+import _ from 'lodash'
 import { orderFormConsumer, contextPropTypes } from 'vtex.store/OrderFormContext'
 import Modal from 'vtex.styleguide/Modal'
 import Button from 'vtex.styleguide/Button'
@@ -36,6 +37,10 @@ class AddressManager extends Component {
     const maxAddressesQuantity = 5
 
     let { availableAddresses } = this.props.orderFormContext.orderForm.shippingData
+
+    /* Removing duplicate objects from array */
+    availableAddresses = _.uniqWith(availableAddresses, _.isEqual)
+
     availableAddresses = this.getValidAvailableAddresses(availableAddresses)
       .reverse()
       .slice(0, maxAddressesQuantity)
