@@ -128,7 +128,7 @@ class AddressSearch extends Component {
           address,
         },
       })
-      .then(({ data }) => {
+      .then(async ({ data }) => {
         const { address } = data.updateOrderFormShipping.shippingData
         if (!this.getIsAddressValid(address)) {
           return this.setState({
@@ -137,12 +137,8 @@ class AddressSearch extends Component {
           })
         }
 
-        this.setState({
-          isLoading: false,
-        })
-
         if (onOrderFormUpdated) {
-          onOrderFormUpdated()
+          await onOrderFormUpdated()
         }
       })
   }

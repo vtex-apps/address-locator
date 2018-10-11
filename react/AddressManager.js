@@ -38,12 +38,9 @@ class AddressManager extends Component {
 
     let { availableAddresses } = this.props.orderFormContext.orderForm.shippingData
 
+    availableAddresses = this.getValidAvailableAddresses(availableAddresses).reverse()
     /* Removing duplicate objects from array */
-    availableAddresses = _.uniqWith(availableAddresses, _.isEqual)
-
-    availableAddresses = this.getValidAvailableAddresses(availableAddresses)
-      .reverse()
-      .slice(0, maxAddressesQuantity)
+    availableAddresses = _.uniqWith(availableAddresses, _.isEqual).slice(0, maxAddressesQuantity)
 
     return availableAddresses
   }
@@ -68,16 +65,8 @@ class AddressManager extends Component {
           address,
         },
       })
-      .then(() => {
-        if (window.location.pathname !== '/order') {
-          return window.location.assign('/order')
-        }
-        orderFormContext.refetch()
-
-        this.setState({
-          isLoading: false,
-          isModalOpen: false,
-        })
+      .then(async () => {
+        await this.handleOrderFormUpdated()
       })
   }
 
@@ -89,7 +78,15 @@ class AddressManager extends Component {
     this.setState({
       isModalOpen: false,
       isSearchingAddress: false,
+      isLoading: false,
     })
+  }
+
+  handleOrderFormUpdated = async () => {
+    const { orderFormContext } = this.props
+
+    await orderFormContext.refetch()
+    this.handleCloseModal()
   }
 
   handleAddressSearch = () => {
@@ -157,7 +154,7 @@ class AddressManager extends Component {
             </Fragment>
           ) : (
             <AddressSearch
-              onOrderFormUpdated={this.handleCloseModal}
+              onOrderFormUpdated={this.handleOrderFormUpdated}
               orderFormContext={orderFormContext}
             />
           )}

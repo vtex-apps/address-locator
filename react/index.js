@@ -51,10 +51,10 @@ class AddressLocator extends Component {
     return !!runtime.pages[runtime.page].order
   }
 
-  handleOrderFormUpdated = () => {
+  handleOrderFormUpdated = async () => {
     const { orderFormContext, runtime } = this.props
 
-    orderFormContext.refetch()
+    await orderFormContext.refetch()
     if (!this.isOrderPage) {
       return runtime.navigate({
         fallbackToWindowLocation: false,
