@@ -1,16 +1,19 @@
 import React, { Component } from 'react'
 import { FormattedMessage } from 'react-intl'
 import { Adopt } from 'react-adopt'
+import { compose } from 'recompose'
+import { withRuntimeContext } from 'render'
+import PropTypes from 'prop-types'
+
 import Tabs from 'vtex.styleguide/Tabs'
 import Tab from 'vtex.styleguide/Tab'
-
 import { orderFormConsumer, contextPropTypes } from 'vtex.store/OrderFormContext'
 import AddressSearch from './components/AddressSearch'
 import AddressRedeem from './components/AddressRedeem'
 import './global.css'
 
 /**
- * Component that allows the user to locate his address, by inserting, searching, managing and
+ * Component that allows the user to locate his address, by inserting, searching and
  * saving it into orderform.
  * Configure the key for Google Geolocation API, by inserting it on the admin logistics section.
  */
@@ -18,6 +21,11 @@ class AddressLocator extends Component {
   static propTypes = {
     /* Context used to call address mutation and retrieve the orderForm */
     orderFormContext: contextPropTypes,
+    pageToRedirect: PropTypes.string,
+    runtime: PropTypes.shape({
+      page: PropTypes.string.isRequired,
+      pages: PropTypes.object.isRequired,
+    }).isRequired,
   }
   state = {
     currentTab: 1,
@@ -29,13 +37,30 @@ class AddressLocator extends Component {
     })
   }
 
+  static defaultProps = {
+    pageToRedirect: 'store/order',
+  }
+
+  get orderPagePath() {
+    const { runtime, pageToRedirect } = this.props
+    return runtime.pages[pageToRedirect].path
+  }
+
+  get isOrderPage() {
+    const { runtime } = this.props
+    return !!runtime.pages[runtime.page].order
+  }
+
   handleOrderFormUpdated = () => {
-    if (window.location.pathname !== '/order') {
-      return window.location.assign('/order')
-    }
-    const { orderFormContext } = this.props
+    const { orderFormContext, runtime } = this.props
 
     orderFormContext.refetch()
+    if (!this.isOrderPage) {
+      return runtime.navigate({
+        fallbackToWindowLocation: false,
+        to: this.orderPagePath,
+      })
+    }
   }
 
   render() {
@@ -89,4 +114,7 @@ class AddressLocator extends Component {
   }
 }
 
-export default orderFormConsumer(AddressLocator)
+export default compose(
+  withRuntimeContext,
+  orderFormConsumer
+)(AddressLocator)
