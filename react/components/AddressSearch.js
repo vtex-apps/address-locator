@@ -15,6 +15,10 @@ import Spinner from 'vtex.styleguide/Spinner'
 import { contextPropTypes } from 'vtex.store/OrderFormContext'
 import LocationInputIcon from './LocationInputIcon'
 
+/**
+ * Component responsible for searching the user address in Google Maps API, when
+ * inserting it or using navigator geolocation to get current position
+ */
 class AddressSearch extends Component {
   static propTypes = {
     /* Google Maps Geolocation API key */
@@ -40,6 +44,7 @@ class AddressSearch extends Component {
     this.setAddressProperties(place)
   }
 
+  /* Use the navigator geolocation to get the user position and retrieve his address using Google Maps API */
   handleSetCurrentPosition = () => {
     if (navigator.geolocation) {
       navigator.geolocation.getCurrentPosition(async position => {

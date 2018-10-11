@@ -31,15 +31,20 @@ class AddressManager extends Component {
   getValidAvailableAddresses = availableAddresses =>
     availableAddresses.filter(address => address.city && address.street && address.number)
 
-  /* Get available addresses from orderform and returns it prepared to list */
+  /**
+   * Prepare available addresses to list, by removing invalid and duplicate ones, as well reversing and slicing
+   *
+   * @returns {Array} The available addresses array prepared to list
+   */
   getAvailableAddresses = () => {
     /* It will set the max length of available addresses array */
     const maxAddressesQuantity = 5
 
     let { availableAddresses } = this.props.orderFormContext.orderForm.shippingData
 
+    /* Remove invalid addresses from array and then reverse it, to be sorted by the last selected */
     availableAddresses = this.getValidAvailableAddresses(availableAddresses).reverse()
-    /* Removing duplicate objects from array */
+    /* Remove duplicate objects from array and then slice by the setted max length */
     availableAddresses = _.uniqWith(availableAddresses, _.isEqual).slice(0, maxAddressesQuantity)
 
     return availableAddresses
@@ -82,6 +87,7 @@ class AddressManager extends Component {
     })
   }
 
+  /* Function that will be called when updating the orderform */
   handleOrderFormUpdated = async () => {
     const { orderFormContext } = this.props
 

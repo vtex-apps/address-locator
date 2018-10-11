@@ -16,6 +16,9 @@ const countries = {
   },
 }
 
+/**
+ * Component responsible for retrieving the user's address by his phone number
+ */
 class AddressRedeem extends Component {
   static propTypes = {
     /* Profile field rules */

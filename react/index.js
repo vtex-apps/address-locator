@@ -13,7 +13,7 @@ import AddressRedeem from './components/AddressRedeem'
 import './global.css'
 
 /**
- * Component that allows the user to locate his address, by inserting, searching and
+ * Component that allows the user to locate his address, by inserting, searching, retrieving and
  * saving it into orderform.
  * Configure the key for Google Geolocation API, by inserting it on the admin logistics section.
  */
@@ -51,6 +51,7 @@ class AddressLocator extends Component {
     return !!runtime.pages[runtime.page].order
   }
 
+  /* Function that will be called when updating the orderform */
   handleOrderFormUpdated = async () => {
     const { orderFormContext, runtime } = this.props
 
