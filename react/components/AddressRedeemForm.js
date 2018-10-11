@@ -11,7 +11,7 @@ import withImage from './withImage'
 class AddressRedeemForm extends Component {
   static propTypes = {
     /* Query loading state */
-    loading: PropTypes.bool.isRequired,
+    isLoading: PropTypes.bool.isRequired,
     /* Query documents data */
     data: PropTypes.shape({
       documents: PropTypes.arrayOf(
@@ -66,7 +66,7 @@ class AddressRedeemForm extends Component {
 
   render() {
     const {
-      loading,
+      isLoading,
       country: { code },
       rules,
       profile,
@@ -96,7 +96,7 @@ class AddressRedeemForm extends Component {
           />
           <this.Icon countryCode={code} />
         </div>
-        <Button type="submit" isLoading={loading} disabled={!profilePhone.touched} block>
+        <Button type="submit" isLoading={isLoading} disabled={!profilePhone.touched} block>
           <FormattedMessage id="address-locator.address-redeem-button" />
         </Button>
       </form>

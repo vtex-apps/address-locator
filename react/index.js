@@ -29,6 +29,15 @@ class AddressLocator extends Component {
     })
   }
 
+  handleOrderFormUpdated = () => {
+    if (window.location.pathname !== '/order') {
+      return window.location.assign('/order')
+    }
+    const { orderFormContext } = this.props
+
+    orderFormContext.refetch()
+  }
+
   render() {
     const { currentTab } = this.state
     const { orderFormContext } = this.props
@@ -56,14 +65,20 @@ class AddressLocator extends Component {
                   active={currentTab === 1}
                   onClick={() => this.handleTabChange(1)}
                 >
-                  <AddressSearch orderFormContext={orderFormContext} />
+                  <AddressSearch
+                    orderFormContext={orderFormContext}
+                    onOrderFormUpdated={this.handleOrderFormUpdated}
+                  />
                 </Tab>
                 <Tab
                   label={addressRedeemTab}
                   active={currentTab === 2}
                   onClick={() => this.handleTabChange(2)}
                 >
-                  <AddressRedeem orderFormContext={orderFormContext} />
+                  <AddressRedeem
+                    orderFormContext={orderFormContext}
+                    onOrderFormUpdated={this.handleOrderFormUpdated}
+                  />
                 </Tab>
               </Tabs>
             )}

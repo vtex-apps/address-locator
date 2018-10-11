@@ -17,7 +17,7 @@ const AddressList = ({ availableAddresses, onSelectAddress }) => (
       <AddressListItem
         key={key}
         address={address}
-        isLastAddress={key === availableAddresses.length}
+        isLastAddress={key === availableAddresses.length - 1}
         onSelectAddress={onSelectAddress}
       />
     ))}

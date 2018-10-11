@@ -137,7 +137,6 @@ class AddressSearch extends Component {
           })
         }
 
-        orderFormContext.refetch()
         this.setState({
           isLoading: false,
         })

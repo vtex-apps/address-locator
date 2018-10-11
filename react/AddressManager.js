@@ -69,7 +69,11 @@ class AddressManager extends Component {
         },
       })
       .then(() => {
+        if (window.location.pathname !== '/order') {
+          return window.location.assign('/order')
+        }
         orderFormContext.refetch()
+
         this.setState({
           isLoading: false,
           isModalOpen: false,
