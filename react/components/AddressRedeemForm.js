@@ -3,8 +3,8 @@ import PropTypes from 'prop-types'
 import { FormattedMessage } from 'react-intl'
 import Button from 'vtex.styleguide/Button'
 import ProfileField from '@vtex/profile-form/lib/ProfileField'
-import StyleguideInput from './StyleguideInput'
 
+import StyleguideInput from './StyleguideInput'
 import PhoneInputIcon from './PhoneInputIcon'
 import withImage from './withImage'
 
@@ -91,6 +91,8 @@ class AddressRedeemForm extends Component {
             options={{
               placeholder: '(99) 99999-9999',
               size: 'large',
+              inputmode: "numeric",
+              type: "tel"
             }}
             Input={StyleguideInput}
           />
