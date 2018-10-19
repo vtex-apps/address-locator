@@ -2,8 +2,7 @@ import React, { Component } from 'react'
 import { FormattedMessage } from 'react-intl'
 import { Query } from 'react-apollo'
 import { Adopt } from 'react-adopt'
-import Tabs from 'vtex.styleguide/Tabs'
-import Tab from 'vtex.styleguide/Tab'
+import { Tab, Tabs, Spinner } from 'vtex.styleguide'
 
 import logisticsQuery from './queries/logistics.gql'
 import AddressSearch from './components/AddressSearch'
@@ -46,7 +45,11 @@ class AddressLocator extends Component {
             <Tabs fullWidth>
               <Tab label={addressSearchTab} active={currentTab === 1} onClick={() => this.handleTabChange(1)}>
                 <Query query={logisticsQuery}>
-                  {({ data }) => {
+                  {({ data, loading }) => {
+                    if (loading) {
+                      return <Spinner />
+                    }
+
                     const { googleMapsKey } = data.logistics
 
                     return (
