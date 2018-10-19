@@ -1,11 +1,14 @@
-import React, { Component, createElement } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { Query } from 'react-apollo'
-import { orderFormConsumer, contextPropTypes } from 'vtex.store/OrderFormContext'
-import ProfileRules from '@vtex/profile-form/lib/ProfileRules'
+import { Query, compose } from 'react-apollo'
+import {
+  orderFormConsumer,
+  contextPropTypes,
+} from 'vtex.store/OrderFormContext'
 import addValidation from '@vtex/profile-form/lib/modules/addValidation'
-import RuleShape from '@vtex/profile-form/lib/RuleShape'
 
+import ProfileRules from './ProfileRules'
+import Loader from './Loader'
 import AddressRedeemForm from './AddressRedeemForm'
 import documentsQuery from '../queries/documents.gql'
 
@@ -20,15 +23,14 @@ class AddressRedeem extends Component {
   static propTypes = {
     /* Context used to call address mutation and retrieve the orderForm */
     orderFormContext: contextPropTypes,
-    /* Profile field rules */
-    rules: RuleShape,
     /* Event handler for when the user is identified */
     onIdentified: PropTypes.func,
   }
 
   state = {
     selectedCountry: countries.BRA,
-    profile: addValidation({ homePhone: '' }, this.props.rules),
+    profile: null,
+    loading: true,
   }
 
   updateProfile = async ({ email }) => {
@@ -41,7 +43,6 @@ class AddressRedeem extends Component {
       },
     })
 
-    /* TODO: user redirection */
     onIdentified && onIdentified(data)
   }
 
@@ -53,13 +54,17 @@ class AddressRedeem extends Component {
       homePhone: { ...profile.homePhone, error: 'NOT_FOUND' },
     }
 
-    if (profile.homePhone.error) return this.setState({ profile: profileNotFoundError })
+    if (profile.homePhone.error)
+      return this.setState({ profile: profileNotFoundError })
 
     try {
-      if (!data.documents) return this.setState({ errorMessage: profileNotFoundError })
-      if (!data.documents[0])throw new Error('Profile not found')
+      if (!data.documents)
+        return this.setState({ errorMessage: profileNotFoundError })
+      if (!data.documents[0]) throw new Error('Profile not found')
 
-      const { value: email } = data.documents[0].fields.find(item => item.key === 'email')
+      const { value: email } = data.documents[0].fields.find(
+        item => item.key === 'email'
+      )
       return await this.updateProfile({ email })
     } catch (e) {
       console.error(e)
@@ -67,16 +72,30 @@ class AddressRedeem extends Component {
     }
   }
 
-  handleFieldUpdate = field => {
-    field.homePhone.touched = true
-    this.setState(prevState => ({
-      profile: { ...prevState.profile, ...field },
-    }))
+  handleFieldUpdate = field =>
+    this.setState(state => ({ profile: { ...state.profile, ...field } }))
+
+  getLoadingStatus = () => {
+    const { orderFormContext, ruleContext } = this.props
+    return orderFormContext.loading || ruleContext.loading
+  }
+
+  componentDidUpdate({ ruleContext }, { loading }) {
+    if (loading)
+      if (!this.getLoadingStatus())
+        this.setState({
+          profile: addValidation({ homePhone: '' }, ruleContext.rules),
+          loading: false,
+        })
   }
 
   render() {
-    const { selectedCountry, profile } = this.state
-    const { orderFormContext, rules } = this.props
+    const { selectedCountry, profile, loading } = this.state
+    const {
+      ruleContext: { rules },
+    } = this.props
+
+    if (loading) return <Loader />
 
     return (
       <Query
@@ -84,20 +103,22 @@ class AddressRedeem extends Component {
         variables={{
           acronym: 'CL',
           fields: ['email'],
-          where: `homePhone=+${selectedCountry.code}${profile.homePhone.value.replace(/\D/g, '')}`,
+          where: `homePhone=+${
+            selectedCountry.code
+          }${profile.homePhone.value.replace(/\D/g, '')}`,
         }}
         skip={!profile.homePhone.touched || Boolean(profile.homePhone.error)}
       >
-        {({ loading: documentLoading, data }) => (
+        {({ loading, data }) => (
           <AddressRedeemForm
             {...{
               rules,
               profile,
               data,
+              loading,
               country: selectedCountry,
               onSubmit: this.handleSubmit,
               onFieldUpdate: this.handleFieldUpdate,
-              loading: documentLoading || orderFormContext.loading,
             }}
           />
         )}
@@ -106,11 +127,7 @@ class AddressRedeem extends Component {
   }
 }
 
-/* NOTE: Couldn't use compose here because ProfileRules is not a HOC and does not play nicely with HOC's */
-const ComposedAddressRedeem = () => (
-  <ProfileRules country={global.__RUNTIME__.culture.country} shouldUseIOFetching>
-    {createElement(orderFormConsumer(AddressRedeem))}
-  </ProfileRules>
-)
-
-export default ComposedAddressRedeem
+export default compose(
+  ProfileRules,
+  orderFormConsumer
+)(AddressRedeem)

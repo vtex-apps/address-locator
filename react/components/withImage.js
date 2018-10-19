@@ -22,7 +22,7 @@ export default function withImage(getImageFilename) {
       componentDidMount() {
         const imageName = getImageFilename(this.props)
         import(`../images/${imageName}`).then(imageSrc => {
-          this.setState({ imageSrc })
+          this.setState({ imageSrc: imageSrc.default })
         })
       }
 
