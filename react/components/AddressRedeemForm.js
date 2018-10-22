@@ -81,7 +81,7 @@ class AddressRedeemForm extends Component {
     const profilePhone = profile[homePhoneField.name]
 
     return (
-      <form className="vtex-address-locator__address-redeem w-100" onSubmit={this.handleSubmit}>
+      <form className="vtex-address-locator__address-redeem w-100 pv7 ph6 br2 bg-white" onSubmit={this.handleSubmit}>
         <div className="mb5 relative input--icon-left">
           <ProfileField
             key={homePhoneField.name}

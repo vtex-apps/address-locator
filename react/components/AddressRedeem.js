@@ -1,10 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Query, compose } from 'react-apollo'
-import {
-  orderFormConsumer,
-  contextPropTypes,
-} from 'vtex.store/OrderFormContext'
+import { orderFormConsumer, contextPropTypes } from 'vtex.store/OrderFormContext'
 import addValidation from '@vtex/profile-form/lib/modules/addValidation'
 
 import ProfileRules from './ProfileRules'
@@ -54,17 +51,13 @@ class AddressRedeem extends Component {
       homePhone: { ...profile.homePhone, error: 'NOT_FOUND' },
     }
 
-    if (profile.homePhone.error)
-      return this.setState({ profile: profileNotFoundError })
+    if (profile.homePhone.error) return this.setState({ profile: profileNotFoundError })
 
     try {
-      if (!data.documents)
-        return this.setState({ errorMessage: profileNotFoundError })
+      if (!data.documents) return this.setState({ errorMessage: profileNotFoundError })
       if (!data.documents[0]) throw new Error('Profile not found')
 
-      const { value: email } = data.documents[0].fields.find(
-        item => item.key === 'email'
-      )
+      const { value: email } = data.documents[0].fields.find(item => item.key === 'email')
       return await this.updateProfile({ email })
     } catch (e) {
       console.error(e)
@@ -72,8 +65,7 @@ class AddressRedeem extends Component {
     }
   }
 
-  handleFieldUpdate = field =>
-    this.setState(state => ({ profile: { ...state.profile, ...field } }))
+  handleFieldUpdate = field => this.setState(state => ({ profile: { ...state.profile, ...field } }))
 
   getLoadingStatus = () => {
     const { orderFormContext, ruleContext } = this.props
@@ -95,7 +87,11 @@ class AddressRedeem extends Component {
       ruleContext: { rules },
     } = this.props
 
-    if (loading) return <Loader />
+    if (loading) return (
+      <div className="pv7 ph6 br2 bg-white">
+        <Loader style={{width:'100%', height: '100%'}}/>
+      </div>
+    )
 
     return (
       <Query
@@ -103,9 +99,7 @@ class AddressRedeem extends Component {
         variables={{
           acronym: 'CL',
           fields: ['email'],
-          where: `homePhone=+${
-            selectedCountry.code
-          }${profile.homePhone.value.replace(/\D/g, '')}`,
+          where: `homePhone=+${selectedCountry.code}${profile.homePhone.value.replace(/\D/g, '')}`,
         }}
         skip={!profile.homePhone.touched || Boolean(profile.homePhone.error)}
       >
