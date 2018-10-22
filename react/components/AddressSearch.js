@@ -16,38 +16,51 @@ class AddressSearch extends Component {
     orderFormContext: contextPropTypes,
     /* Google Maps Geolocation API key */
     googleMapKey: PropTypes.string,
+    /* Function that will be called after updating the orderform */
+    onOrderFormUpdated: PropTypes.func,
   }
 
   state = {
     address: null,
     formattedAddress: '',
     shouldDisplayNumberInput: false,
+    errorMessage: false,
+    isLoading: false,
   }
 
-  handleSearchBoxMounted = ref => {
-    this.searchBox = ref
-  }
+  searchBox = React.createRef()
 
   handlePlacesChanged = () => {
-    const place = this.searchBox.getPlaces()[0]
+    const place = this.searchBox.current.getPlaces()[0]
     this.setAddressProperties(place)
   }
 
   handleSetCurrentPosition = () => {
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(position => {
-        (async () => {
-          const { latitude, longitude } = position.coords
-          const { googleMapKey } = this.props
-          const rawResponse = await fetch(
-            `https://maps.googleapis.com/maps/api/geocode/json?key=${googleMapKey}&latlng=${latitude},${longitude}`
-          )
-          const parsedResponse = await rawResponse.json()
-          const place = parsedResponse.results[0]
-          this.setAddressProperties(place)
-        })()
+      navigator.geolocation.getCurrentPosition(async (position) => {
+        const { latitude, longitude } = position.coords
+        const rawResponse = await fetch(this.getApiUrlFromCoordinates(latitude, longitude))
+        const parsedResponse = await rawResponse.json()
+
+        if (!parsedResponse.results.length) {
+          return this.setState({
+            errorMessage: true,
+          })
+        }
+
+        const place = parsedResponse.results[0]
+        this.setAddressProperties(place)
       })
     }
+  }
+
+  /**
+   * Returns Google Maps API geocode URL according to given latlng
+   */
+  getApiUrlFromCoordinates = (latitude, longitude) => {
+    const { googleMapKey } = this.props
+
+    return `https://maps.googleapis.com/maps/api/geocode/json?key=${googleMapKey}&latlng=${latitude},${longitude}`
   }
 
   setAddressProperties = place => {
@@ -56,20 +69,28 @@ class AddressSearch extends Component {
       address,
       formattedAddress: place.formatted_address,
       shouldDisplayNumberInput: !address.number,
+      errorMessage: false,
     })
   }
 
   /**
-   * Reduces Google Maps API of array address components into a simpler consumable object
+   * The place object returned from Google Maps API has some extra informations about the address that won't be used when sending
+   * to orderform. So, this function will reduce nested address information into a simpler consumable object.
+   *
+   * @param {Object} place The place object returned from Google Maps API
+   * @returns {Object} The reduced address data with only necessary fields/information
    */
   getParsedAddress = place => {
-    const parsedAddressComponents = place.address_components.reduce((prev, curr) => {
-      const parsedItem = curr.types.reduce(
-        (prev, type) => ({ ...prev, [type]: curr.short_name }),
-        {}
-      )
-      return { ...prev, ...parsedItem }
-    }, {})
+    const parsedAddressComponents = place.address_components.reduce(
+      (accumulator, address) => {
+        const parsedItem = address.types.reduce(
+          (accumulator, type) => ({ ...accumulator, [type]: address.short_name }),
+          {}
+        )
+        return { ...accumulator, ...parsedItem }
+      },
+      {}
+    )
 
     const address = {
       addressType: 'residential',
@@ -91,7 +112,11 @@ class AddressSearch extends Component {
   handleFormSubmit = e => {
     e.preventDefault()
 
-    const { orderFormContext } = this.props
+    this.setState({
+      isLoading: true,
+    })
+
+    const { orderFormContext, onOrderFormUpdated } = this.props
     const { address } = this.state
 
     orderFormContext
@@ -102,7 +127,13 @@ class AddressSearch extends Component {
         },
       })
       .then(() => {
-        /* TODO */
+        if (onOrderFormUpdated) {
+          onOrderFormUpdated()
+        }
+        orderFormContext.refetch()
+        this.setState({
+          isLoading: false,
+        })
       })
   }
 
@@ -120,26 +151,26 @@ class AddressSearch extends Component {
   }
 
   render() {
-    const { address, formattedAddress, shouldDisplayNumberInput } = this.state
+    const { address, formattedAddress, shouldDisplayNumberInput, errorMessage, isLoading } = this.state
 
     return (
-      <div className="w-100">
+      <div className="vtex-address-search w-100">
         <form onSubmit={this.handleFormSubmit}>
-          <div className="mb5 relative input--icon-right">
+          <div className="relative vtex-input--icon-right">
             <StandaloneSearchBox
-              ref={this.handleSearchBoxMounted}
+              ref={this.searchBox}
               onPlacesChanged={this.handlePlacesChanged}
             >
-              <Adopt
-                mapper={{
-                  placeholder: <FormattedMessage id="address-locator.address-search-placeholder" />,
-                  label: <FormattedMessage id="address-locator.address-search-label" />,
-                }}
-              >
-                {({ placeholder, label }) => (
+              <Adopt mapper={{
+                placeholder: <FormattedMessage id="address-locator.address-search-placeholder" />,
+                label: <FormattedMessage id="address-locator.address-search-label" />,
+                errorMessageText: <FormattedMessage id="address-locator.address-search-error" />,
+              }}>
+                {({ placeholder, label, errorMessageText }) => (
                   <Input
                     type="text"
                     value={formattedAddress}
+                    errorMessage={errorMessage ? errorMessageText : ''}
                     placeholder={placeholder}
                     size="large"
                     label={label}
@@ -161,16 +192,14 @@ class AddressSearch extends Component {
               }}
             >
               {({ placeholder, label }) => (
-                <div className="mb5">
-                  <Input
-                    type="number"
-                    value={address.number}
-                    placeholder={placeholder}
-                    size="large"
-                    label={label}
-                    onChange={e => this.handleAddressKeyChanged(e, 'number')}
-                  />
-                </div>
+                <Input
+                  type="text"
+                  value={address.number}
+                  placeholder={placeholder}
+                  size="large"
+                  label={label}
+                  onChange={e => this.handleAddressKeyChanged(e, 'number')}
+                />
               )}
             </Adopt>
           )}
@@ -203,9 +232,7 @@ class AddressSearch extends Component {
             }}
           >
             {({ text }) => (
-              <Button type="submit" disabled={!address || !address.number}>
-                {text}
-              </Button>
+              <Button type="submit" disabled={!address || !address.number} isLoading={isLoading}>{text}</Button>
             )}
           </Adopt>
         </form>

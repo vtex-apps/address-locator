@@ -28,7 +28,8 @@ export default function withImage(getImageFilename) {
 
       render() {
         const { imageSrc } = this.state
-        return <WrappedComponent {...this.props} imageSrc={imageSrc} />
+        const src = imageSrc && imageSrc.default || imageSrc
+        return <WrappedComponent {...this.props} imageSrc={src} />
       }
     }
 

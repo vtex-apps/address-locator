@@ -1,69 +1,66 @@
-.vtex-tab__button {
+.vtex-address-locator .vtex-tab__button {
   border: none;
   font-size: 12px;
   font-weight: normal;
   text-transform: uppercase;
 }
 
-.vtex-tabs__nav {
+.vtex-address-locator .vtex-tabs__nav {
   border: none;
 }
 
-.vtex-tabs__content,
-.vtex-tab__button.c-on-muted {
+.vtex-address-locator .vtex-address-search,
+.vtex-address-locator .vtex-tab__button.c-on-muted {
   background: #fff;
   border-top-left-radius: 0.25rem;
   border-top-right-radius: 0.25rem;
 }
 
-.vtex-tabs__content {
+.vtex-address-locator .vtex-address-search {
   padding: 2rem 1.6rem;
   border-bottom-left-radius: 0.25rem;
   border-bottom-right-radius: 0.25rem;
 }
 
-.vtex-input-prefix__group input {
-  font-size: 0.85rem;
+.vtex-address-locator .vtex-address-search .vtex-input-prefix__group {
+  margin-bottom: 1rem;
+}
+
+.vtex-address-locator .vtex-input-prefix__group input {
+  font-size: .85rem;
   padding-left: 1rem;
   padding-right: 1rem;
 }
 
-.vtex-input__label {
+.vtex-address-locator .vtex-input__label {
   color: #727273;
   font-size: 0.85rem;
 }
 
-.vtex-tabs__content button {
+.vtex-address-locator .vtex-address-search button {
   width: 100%;
 }
 
-.input--icon-right input {
+.vtex-address-locator .vtex-input--icon-right input {
   padding-right: 4rem;
   text-overflow: ellipsis;
 }
 
-.input--icon-left input {
+.vtex-address-locator .vtex-input--icon-left input {
   padding-left: 4rem;
   text-overflow: ellipsis;
 }
 
-.input-icon {
-  font-size: 0.85rem;
+.vtex-address-locator .vtex-input-icon {
+  top: 1.4rem;
+  font-size: .85rem;
   color: #3f3f40;
 }
 
-.input-icon--location img {
+.vtex-address-locator .vtex-input-icon--location img {
   border-left: 1px solid #f1f1f2;
 }
 
-.input--icon-left img {
-  width: 18px;
-}
-
-.input--icon-left .input-icon {
-  top: 1.4rem;
-}
-
-.vtex-profile-form__homePhone {
-  padding-bottom: 0;
+.vtex-address-locator .vtex-input-icon--brazil img {
+  width: 19px;
 }
