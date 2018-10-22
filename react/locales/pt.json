@@ -1,0 +1,15 @@
+{
+    "address-locator.order-title": "Peça de qualquer lugar",
+    "address-locator.address-search-tab": "Primeiro pedido",
+    "address-locator.address-search-label": "Digite o seu endereço abaixo",
+    "address-locator.address-search-placeholder": "Rua, cidade, estado",
+    "address-locator.address-search-number-label": "Número",
+    "address-locator.address-search-number-placeholder": "ex 90",
+    "address-locator.address-search-complement-label": "Complemento Opcional",
+    "address-locator.address-search-complement-placeholder": "ex 302",
+    "address-locator.address-search-error": "Endereço não encontrado. Por favor, digite-o manualmente.",
+    "address-locator.address-search-button": "Entregar neste endereço",
+    "address-locator.address-redeem-tab": "Recuperar endereço",
+    "address-locator.address-redeem-label": "Digite o seu telefone abaixo",
+    "address-locator.address-redeem-button": "Procurar endereço"
+}

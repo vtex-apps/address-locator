@@ -1,0 +1,15 @@
+{
+    "address-locator.order-title": "Order anywhere",
+    "address-locator.address-search-tab": "First order",
+    "address-locator.address-search-label": "Enter your address below",
+    "address-locator.address-search-placeholder": "Street, city, state",
+    "address-locator.address-search-number-label": "Number",
+    "address-locator.address-search-number-placeholder": "ex 90",
+    "address-locator.address-search-complement-label": "Complement Optional",
+    "address-locator.address-search-complement-placeholder": "ex 302",
+    "address-locator.address-search-error": "Address not found. Please enter it manually.",
+    "address-locator.address-search-button": "Order on this address",
+    "address-locator.address-redeem-tab": "Redeem address",
+    "address-locator.address-redeem-label": "Insert your phone below",
+    "address-locator.address-redeem-button": "Find address"
+}

@@ -1,0 +1,23 @@
+{
+  "vendor": "vtex",
+  "name": "address-locator",
+  "version": "0.1.0",
+  "builders": {
+    "pages": "0.x",
+    "react": "2.x"
+  },
+  "mustUpdateAt": "2019-04-02",
+  "categories": [],
+  "registries": [
+    "smartcheckout"
+  ],
+  "settingsSchema": {},
+  "dependencies": {
+    "vtex.styleguide": "7.x",
+    "vtex.store": "1.x",
+    "vtex.store-graphql": "2.x"
+  },
+  "scripts": {
+    "postreleasy": "vtex publish --verbose"
+  }
+}

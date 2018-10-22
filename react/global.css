@@ -1,0 +1,66 @@
+.vtex-address-locator .vtex-tab__button {
+  border: none;
+  font-size: 12px;
+  font-weight: normal;
+  text-transform: uppercase;
+}
+
+.vtex-address-locator .vtex-tabs__nav {
+  border: none;
+}
+
+.vtex-address-locator .vtex-address-search,
+.vtex-address-locator .vtex-tab__button.c-on-muted {
+  background: #fff;
+  border-top-left-radius: .25rem;
+  border-top-right-radius: .25rem;
+}
+
+.vtex-address-locator .vtex-address-search {
+  padding: 2rem 1.6rem;
+  border-bottom-left-radius: .25rem;
+  border-bottom-right-radius: .25rem;
+}
+
+.vtex-address-locator .vtex-address-search .vtex-input-prefix__group {
+  margin-bottom: 1rem;
+}
+
+.vtex-address-locator .vtex-input-prefix__group input {
+  font-size: .85rem;
+  padding-left: 1rem;
+  padding-right: 1rem;
+}
+
+.vtex-address-locator .vtex-input__label {
+  color: #727273;
+  font-size: .85rem;
+}
+
+.vtex-address-locator .vtex-address-search button {
+  width: 100%;
+}
+
+.vtex-address-locator .vtex-input--icon-right input {
+  padding-right: 4rem;
+  text-overflow: ellipsis;
+}
+
+.vtex-address-locator .vtex-input--icon-left input {
+  padding-left: 4rem;
+  text-overflow: ellipsis;
+}
+
+.vtex-address-locator .vtex-input-icon {
+  top: 1.4rem;
+  font-size: .85rem;
+  color: #3f3f40;
+}
+
+.vtex-address-locator .vtex-input-icon--location img {
+  border-left: 1px solid #f1f1f2;
+}
+
+.vtex-address-locator .vtex-input-icon--brazil img {
+  width: 19px;
+}
