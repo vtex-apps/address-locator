@@ -73,12 +73,11 @@ class AddressRedeem extends Component {
   }
 
   componentDidUpdate({ ruleContext }, { loading }) {
-    if (loading)
-      if (!this.getLoadingStatus())
-        this.setState({
-          profile: addValidation({ homePhone: '' }, ruleContext.rules),
-          loading: false,
-        })
+    if (loading && !this.getLoadingStatus())
+      this.setState({
+        profile: addValidation({ homePhone: '' }, ruleContext.rules),
+        loading: false,
+      })
   }
 
   render() {
@@ -87,11 +86,12 @@ class AddressRedeem extends Component {
       ruleContext: { rules },
     } = this.props
 
-    if (loading) return (
-      <div className="pv7 ph6 br2 bg-white">
-        <Loader style={{width:'100%', height: '100%'}}/>
-      </div>
-    )
+    if (loading)
+      return (
+        <div className="pv7 ph6 br2 bg-white">
+          <Loader style={{ width: '100%', height: '100%' }} />
+        </div>
+      )
 
     return (
       <Query

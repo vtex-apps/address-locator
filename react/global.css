@@ -57,3 +57,11 @@
 .vtex-address-locator .vtex-input-icon--brazil img {
   width: 19px;
 }
+
+.vtex-address-locator__address-redeem .vtex-profile-form__homePhone {
+  padding-bottom: 0;
+}
+
+.vtex-address-locator__address-redeem .vtex-button {
+  width: 100%;
+}
