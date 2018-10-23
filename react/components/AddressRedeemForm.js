@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { find, propEq } from 'ramda'
 import { FormattedMessage } from 'react-intl'
 import Button from 'vtex.styleguide/Button'
 import ProfileField from '@vtex/profile-form/lib/ProfileField'
@@ -12,16 +13,6 @@ class AddressRedeemForm extends Component {
   static propTypes = {
     /* Query loading state */
     loading: PropTypes.bool.isRequired,
-    /* Query documents data */
-    data: PropTypes.shape({
-      documents: PropTypes.arrayOf(
-        PropTypes.shape({
-          fields: PropTypes.arrayOf(
-            PropTypes.shape({ key: PropTypes.string, value: PropTypes.string })
-          ),
-        })
-      ),
-    }),
     /* Submit event handler */
     onSubmit: PropTypes.func.isRequired,
     /* Input error message */
@@ -59,11 +50,6 @@ class AddressRedeemForm extends Component {
 
   Icon = withImage(() => this.props.country.icon)(PhoneInputIcon)
 
-  handleSubmit = e => {
-    e.preventDefault()
-    this.props.onSubmit(this.props.data)
-  }
-
   render() {
     const {
       loading,
@@ -71,17 +57,21 @@ class AddressRedeemForm extends Component {
       rules,
       profile,
       onFieldUpdate,
+      onSubmit,
     } = this.props
 
     const homePhoneField = {
-      ...rules.personalFields.find(i => i.name === 'homePhone'),
+      ...find(propEq('name', 'homePhone'), rules.personalFields),
       required: true,
     }
 
     const profilePhone = profile[homePhoneField.name]
 
     return (
-      <form className="vtex-address-locator__address-redeem w-100 pv7 ph6 br2 bg-white" onSubmit={this.handleSubmit}>
+      <form
+        className="vtex-address-locator__address-redeem w-100 pv7 ph6 br2 bg-white"
+        onSubmit={onSubmit}
+      >
         <div className="mb5 relative input--icon-left">
           <ProfileField
             key={homePhoneField.name}
@@ -91,14 +81,18 @@ class AddressRedeemForm extends Component {
             options={{
               placeholder: '(99) 99999-9999',
               size: 'large',
-              inputmode: "numeric",
-              type: "tel"
+              inputmode: 'numeric',
+              type: 'tel',
             }}
             Input={StyleguideInput}
           />
           <this.Icon countryCode={code} />
         </div>
-        <Button type="submit" isLoading={loading} disabled={!profilePhone.touched}>
+        <Button
+          type="submit"
+          isLoading={loading}
+          disabled={!profilePhone.touched || !!profilePhone.error}
+        >
           <FormattedMessage id="address-locator.address-redeem-button" />
         </Button>
       </form>
