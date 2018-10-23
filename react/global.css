@@ -35,12 +35,12 @@
   font-size: 0.85rem;
 }
 
-.input--icon-right input {
+.vtex-address-locator .vtex-input--icon-right input {
   padding-right: 4rem;
   padding-left: 1rem;
 }
 
-.input--icon-left input {
+.vtex-address-locator .vtex-input--icon-left input {
   padding-left: 4rem;
   padding-right: 1rem;
 }
@@ -51,7 +51,7 @@
   color: #3f3f40;
 }
 
-.input-icon--location img {
+.vtex-address-locator .vtex-input-icon--location img {
   border-left: 1px solid #f1f1f2;
 }
 
@@ -88,10 +88,13 @@
   top: 1.4rem;
 }
 
-.vtex-profile-form__homePhone {
+.vtex-address-locator__address-redeem .vtex-profile-form__homePhone {
   padding-bottom: 0;
 }
 
+.vtex-address-locator__address-redeem .vtex-button {
+  width: 100%;
+}
 
 /* AddressList component */
 .vtex-address-locator__address-list {
