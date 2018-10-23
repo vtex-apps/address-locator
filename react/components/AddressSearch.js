@@ -148,9 +148,7 @@ class AddressSearch extends Component {
       })
   }
 
-  getIsAddressValid = address => {
-    return address.city && address.street && address.number
-  }
+  getIsAddressValid = address => address.city && address.street && address.number
 
   handleAddressKeyChanged = (e, key) => {
     const { address } = this.state
@@ -158,12 +156,11 @@ class AddressSearch extends Component {
     this.setState({ address })
   }
 
-  handleAddressChanged = e => {
+  handleAddressChanged = e =>
     this.setState({
       address: undefined,
       formattedAddress: e.target.value,
     })
-  }
 
   render() {
     const {
@@ -198,30 +195,32 @@ class AddressSearch extends Component {
               )}
             </Adopt>
           </StandaloneSearchBox>
-          <LocationInputIcon onClick={this.handleSetCurrentPosition} />
+          <span className="absolute bottom-0 pv4 right-1">
+            <LocationInputIcon onClick={this.handleSetCurrentPosition} />
+          </span>
         </div>
         {address &&
           shouldDisplayNumberInput && (
-          <Adopt
-            mapper={{
-              placeholder: (
-                <FormattedMessage id="address-locator.address-search-number-placeholder" />
-              ),
-              label: <FormattedMessage id="address-locator.address-search-number-label" />,
-            }}
-          >
-            {({ placeholder, label }) => (
-              <Input
-                type="number"
-                value={address.number}
-                placeholder={placeholder}
-                size="large"
-                label={label}
-                onChange={e => this.handleAddressKeyChanged(e, 'number')}
-              />
-            )}
-          </Adopt>
-        )}
+            <Adopt
+              mapper={{
+                placeholder: (
+                  <FormattedMessage id="address-locator.address-search-number-placeholder" />
+                ),
+                label: <FormattedMessage id="address-locator.address-search-number-label" />,
+              }}
+            >
+              {({ placeholder, label }) => (
+                <Input
+                  type="number"
+                  value={address.number}
+                  placeholder={placeholder}
+                  size="large"
+                  label={label}
+                  onChange={e => this.handleAddressKeyChanged(e, 'number')}
+                />
+              )}
+            </Adopt>
+          )}
         {address && (
           <Adopt
             mapper={{

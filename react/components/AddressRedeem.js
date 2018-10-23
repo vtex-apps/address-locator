@@ -72,7 +72,6 @@ class AddressRedeem extends Component {
       const { value: email } = data.documents[0].fields.find(item => item.key === 'email')
       return await this.updateProfile({ email })
     } catch (e) {
-      console.error(e)
       return this.setState({
         profile: profileNotFoundError,
         isLoading: false,

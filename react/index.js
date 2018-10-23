@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
-import { FormattedMessage } from 'react-intl'
-import { Adopt } from 'react-adopt'
+import { FormattedMessage, intlShape } from 'react-intl'
+import { Query } from 'react-apollo'
 import { compose } from 'recompose'
 import { withRuntimeContext } from 'render'
 import PropTypes from 'prop-types'
@@ -31,14 +31,14 @@ class AddressLocator extends Component {
     currentTab: 1,
   }
 
+  static defaultProps = { pageToRedirect: 'store/order' }
+
+  static contextTypes = { intl: intlShape }
+
   handleTabChange = tabIndex => {
     this.setState({
       currentTab: tabIndex,
     })
-  }
-
-  static defaultProps = {
-    pageToRedirect: 'store/order',
   }
 
   get orderPagePath() {
@@ -67,9 +67,12 @@ class AddressLocator extends Component {
   render() {
     const { currentTab } = this.state
     const { orderFormContext, hideTabs, hideTitle } = this.props
+    const { intl } = this.context
 
-    const addressSearchTab = <FormattedMessage id="address-locator.address-search-tab" />
-    const addressRedeemTab = <FormattedMessage id="address-locator.address-redeem-tab" />
+    /** The label HAS TO BE a string */
+    const addressSearchTab = intl.formatMessage({ id:"address-locator.address-search-tab" })
+    const addressRedeemTab = intl.formatMessage({ id:"address-locator.address-redeem-tab" })
+
     const addressSearch = (
       <Query query={logisticsQuery}>
         {({ data, loading }) => {
@@ -117,7 +120,7 @@ class AddressLocator extends Component {
     return (
       <div className="vtex-address-locator w-100 w-50-m center flex flex-column justify-center items-center pa6">
         {!hideTitle && (
-          <h1 className="db b f1 mb7 pa5 tl tc-m">
+          <h1 className="db b f1 mb7 mt0 pa5 tl tc-m">
             <FormattedMessage id="address-locator.order-title" />
           </h1>
         )}

@@ -59,16 +59,21 @@
   width: 19px;
 }
 
-.address-manager__bar {
+
+/* AddressManager component */
+.vtex-address-manager__bar {
   background: #25354d;
 }
 
-.address-manager__address {
+.vtex-address-manager__address {
   flex: 1;
   text-overflow: ellipsis;
 }
 
-/* AddressManager component */
+.vtex-address-manager__icon {
+  margin: auto;
+}
+
 .vtex-modal__modal, .vtex-modal__overlay {
   padding: 0!important;
 }
@@ -107,3 +112,4 @@
     top: 6rem;
   }
 }
+

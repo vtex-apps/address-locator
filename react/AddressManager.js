@@ -104,47 +104,37 @@ class AddressManager extends Component {
     const { shippingData } = orderFormContext.orderForm
 
     /* If there is no address, it means that the user isn't identified, and so the component won't render */
-    if (!shippingData || !shippingData.address) {
-      return null
-    }
+    if (!shippingData || !shippingData.address) return null
 
     const { street, number } = shippingData.address
     const { isModalOpen, isSearchingAddress, isLoading } = this.state
     const availableAddresses = this.getAvailableAddresses()
 
     return (
-      <div className="address-manager">
-        <div className="address-manager__bar flex ph5 white pointer" onClick={this.handleOpenModal}>
-          <p className="address-manager__address mr5 overflow-hidden nowrap">
+      <div className="vtex-address-manager">
+        <div className="vtex-address-manager__bar flex ph5 white pointer" onClick={this.handleOpenModal}>
+          <p className="vtex-address-manager__address mr5 overflow-hidden nowrap">
             {`${street}, ${number}`}
           </p>
-          <ChangeAddressIcon />
+          <div className="vtex-address-manager__icon"><ChangeAddressIcon /></div>
         </div>
         <Modal isOpen={isModalOpen} onClose={this.handleCloseModal}>
-          <Adopt
-            mapper={{
-              title: <FormattedMessage id="address-locator.address-manager-title" />,
-            }}
-          >
-            {({ title }) => <p className="f4 pa5 ma0 bb b--light-gray bw1 b near-black">{title}</p>}
-          </Adopt>
-          <p className={`${isSearchingAddress ? 'mt10' : 'mt8'} tc`}>
+          <FormattedMessage id="address-locator.address-manager-title">
+            {title => <p className="f4 pa5 ma0 bb b--light-gray bw1 b near-black">{title}</p>}
+          </FormattedMessage>
+          <i className={`${isSearchingAddress ? 'mt10' : 'mt8'} tc`}>
             <NewAddressIcon />
-          </p>
+          </i>
           {!isSearchingAddress ? (
             <Fragment>
               <div className="pa5 mb5">
-                <Adopt
-                  mapper={{
-                    text: <FormattedMessage id="address-locator.address-manager-button" />,
-                  }}
-                >
-                  {({ text }) => (
+                <FormattedMessage id="address-locator.address-manager-button">
+                  {text => (
                     <Button onClick={this.handleAddressSearch} block>
                       {text}
                     </Button>
                   )}
-                </Adopt>
+                </FormattedMessage>
               </div>
               {!isLoading ? (
                 <AddressList
@@ -153,9 +143,9 @@ class AddressManager extends Component {
                   onSelectAddress={this.handleSelectAddress}
                 />
               ) : (
-                <p className="tc">
+                <i className="tc">
                   <Spinner />
-                </p>
+                </i>
               )}
             </Fragment>
           ) : (

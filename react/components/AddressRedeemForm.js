@@ -5,13 +5,13 @@ import Button from 'vtex.styleguide/Button'
 import ProfileField from '@vtex/profile-form/lib/ProfileField'
 
 import StyleguideInput from './StyleguideInput'
-import PhoneInputIcon from './PhoneInputIcon'
+import TextWithImage from './TextWithImage'
 import withImage from './withImage'
 
 class AddressRedeemForm extends Component {
   static propTypes = {
     /* Query loading state */
-    isLoading: PropTypes.bool.isRequired,
+    loading: PropTypes.bool.isRequired,
     /* Query documents data */
     data: PropTypes.shape({
       documents: PropTypes.arrayOf(
@@ -57,7 +57,7 @@ class AddressRedeemForm extends Component {
     }).isRequired,
   }
 
-  Icon = withImage(() => this.props.country.icon)(PhoneInputIcon)
+  Icon = withImage(() => this.props.country.icon)(TextWithImage)
 
   handleSubmit = e => {
     e.preventDefault()
@@ -66,7 +66,7 @@ class AddressRedeemForm extends Component {
 
   render() {
     const {
-      isLoading,
+      loading,
       country: { code },
       rules,
       profile,
@@ -81,7 +81,10 @@ class AddressRedeemForm extends Component {
     const profilePhone = profile[homePhoneField.name]
 
     return (
-      <form className="vtex-address-locator__address-redeem w-100 pv7 ph6 br2 bg-white" onSubmit={this.handleSubmit}>
+      <form
+        className="vtex-address-locator__address-redeem w-100 pv7 ph6 br2 bg-white"
+        onSubmit={this.handleSubmit}
+      >
         <div className="mb5 relative input--icon-left">
           <ProfileField
             key={homePhoneField.name}
@@ -91,14 +94,16 @@ class AddressRedeemForm extends Component {
             options={{
               placeholder: '(99) 99999-9999',
               size: 'large',
-              inputmode: "numeric",
-              type: "tel"
+              inputmode: 'numeric',
+              type: 'tel',
             }}
             Input={StyleguideInput}
           />
-          <this.Icon countryCode={code} />
+          <div className="left-1 absolute pv4 flex items-center">
+            <this.Icon text={`+{code}`} />
+          </div>
         </div>
-        <Button type="submit" isLoading={isLoading} disabled={!profilePhone.touched} block>
+        <Button type="submit" isLoading={loading} disabled={!profilePhone.touched} block>
           <FormattedMessage id="address-locator.address-redeem-button" />
         </Button>
       </form>
