@@ -9,9 +9,7 @@ const ChangeAddressIcon = ({ imageSrc }) => {
   }
 
   return (
-    <i>
-      <img className="v-mid" src={imageSrc} />
-    </i>
+    <img className="v-mid" src={imageSrc} />
   )
 }
 

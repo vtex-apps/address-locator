@@ -119,22 +119,18 @@ class AddressManager extends Component {
           <div className="vtex-address-manager__icon"><ChangeAddressIcon /></div>
         </div>
         <Modal isOpen={isModalOpen} onClose={this.handleCloseModal}>
-          <FormattedMessage id="address-locator.address-manager-title">
-            {title => <p className="f4 pa5 ma0 bb b--light-gray bw1 b near-black">{title}</p>}
-          </FormattedMessage>
-          <i className={`${isSearchingAddress ? 'mt10' : 'mt8'} tc`}>
+          <p className="f4 pa5 ma0 bb b--light-gray bw1 b near-black">
+            <FormattedMessage id="address-locator.address-manager-title" />
+          </p>
+          <span className={`${isSearchingAddress ? 'mt10' : 'mt8'} db mb5 tc`}>
             <NewAddressIcon />
-          </i>
+          </span>
           {!isSearchingAddress ? (
             <Fragment>
               <div className="pa5 mb5">
-                <FormattedMessage id="address-locator.address-manager-button">
-                  {text => (
-                    <Button onClick={this.handleAddressSearch} block>
-                      {text}
-                    </Button>
-                  )}
-                </FormattedMessage>
+                <Button onClick={this.handleAddressSearch} block>
+                  <FormattedMessage id="address-locator.address-manager-button" />
+                </Button>
               </div>
               {!isLoading ? (
                 <AddressList
