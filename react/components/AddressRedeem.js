@@ -133,6 +133,5 @@ class AddressRedeem extends Component {
 
 export default compose(
   ProfileRules,
-  orderFormConsumer,
   withApollo
 )(AddressRedeem)
