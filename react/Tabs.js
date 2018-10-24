@@ -8,8 +8,8 @@ import { orderFormConsumer, contextPropTypes } from 'vtex.store/OrderFormContext
 import { Tab, Tabs, Spinner } from 'vtex.styleguide'
 
 import logisticsQuery from './queries/logistics.gql'
-import AddressSearch from './components/AddressSearch'
-import AddressRedeem from './components/AddressRedeem'
+import AddressSearch from './components/Search'
+import AddressRedeem from './components/Redeem'
 import './global.css'
 
 /**
@@ -17,7 +17,7 @@ import './global.css'
  * saving it into orderform.
  * Configure the key for Google Geolocation API, by inserting it on the admin logistics section.
  */
-class AddressLocator extends Component {
+class AddressLocatorTabs extends Component {
   static propTypes = {
     /* Context used to call address mutation and retrieve the orderForm */
     orderFormContext: contextPropTypes,
@@ -35,12 +35,8 @@ class AddressLocator extends Component {
 
   static contextTypes = { intl: intlShape }
 
-  handleTabChange = tabIndex => {
-    this.setState({
-      currentTab: tabIndex,
-    })
-  }
-
+  handleTabChange = tabIndex => this.setState({ currentTab: tabIndex })
+  
   get orderPagePath() {
     const { runtime, pageToRedirect } = this.props
     return runtime.pages[pageToRedirect].path
@@ -66,65 +62,55 @@ class AddressLocator extends Component {
 
   render() {
     const { currentTab } = this.state
-    const { orderFormContext, hideTabs, hideTitle } = this.props
+    const { orderFormContext } = this.props
     const { intl } = this.context
 
     /** The label HAS TO BE a string */
-    const addressSearchTab = intl.formatMessage({ id:"address-locator.address-search-tab" })
-    const addressRedeemTab = intl.formatMessage({ id:"address-locator.address-redeem-tab" })
-
-    const addressSearch = (
-      <Query query={logisticsQuery}>
-        {({ data, loading }) => {
-          if (loading) {
-            return <Spinner />
-          }
-
-          const { googleMapsKey } = data.logistics
-
-          return (
-            <AddressSearch
-              googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${googleMapsKey}&v=3.exp&libraries=places`}
-              googleMapKey={googleMapsKey}
-              loadingElement={<div className="h-100" />}
-              orderFormContext={orderFormContext}
-              onOrderFormUpdated={this.handleOrderFormUpdated}
-            />
-          )
-        }}
-      </Query>
-    )
-
-    const tabs = (
-      <Tabs fullWidth>
-        <Tab
-          label={addressSearchTab}
-          active={currentTab === 1}
-          onClick={() => this.handleTabChange(1)}
-        >
-          {addressSearch}
-        </Tab>
-        <Tab
-          label={addressRedeemTab}
-          active={currentTab === 2}
-          onClick={() => this.handleTabChange(2)}
-        >
-          <AddressRedeem
-            orderFormContext={orderFormContext}
-            onOrderFormUpdated={this.handleOrderFormUpdated}
-          />
-        </Tab>
-      </Tabs>
-    )
+    const addressSearchTab = intl.formatMessage({ id: 'address-locator.address-search-tab' })
+    const addressRedeemTab = intl.formatMessage({ id: 'address-locator.address-redeem-tab' })
 
     return (
       <div className="vtex-address-locator w-100 w-50-m center flex flex-column justify-center items-center pa6">
-        {!hideTitle && (
-          <h1 className="db b f1 mb7 mt0 pa5 tl tc-m">
-            <FormattedMessage id="address-locator.order-title" />
-          </h1>
-        )}
-        {hideTabs ? addressSearch : tabs}
+        <h1 className="db b f1 mb7 mt0 pa5 tl tc-m">
+          <FormattedMessage id="address-locator.order-title" />
+        </h1>
+        <Tabs fullWidth>
+          <Tab
+            label={addressSearchTab}
+            active={currentTab === 1}
+            onClick={() => this.handleTabChange(1)}
+          >
+            <Query query={logisticsQuery}>
+              {({ data, loading }) => {
+                if (loading) {
+                  return <Spinner />
+                }
+
+                const { googleMapsKey } = data.logistics
+
+                return (
+                  <AddressSearch
+                    googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${googleMapsKey}&v=3.exp&libraries=places`}
+                    googleMapKey={googleMapsKey}
+                    loadingElement={<div className="h-100" />}
+                    orderFormContext={orderFormContext}
+                    onOrderFormUpdated={this.handleOrderFormUpdated}
+                  />
+                )
+              }}
+            </Query>
+          </Tab>
+          <Tab
+            label={addressRedeemTab}
+            active={currentTab === 2}
+            onClick={() => this.handleTabChange(2)}
+          >
+            <AddressRedeem
+              orderFormContext={orderFormContext}
+              onOrderFormUpdated={this.handleOrderFormUpdated}
+            />
+          </Tab>
+        </Tabs>
       </div>
     )
   }
@@ -133,4 +119,4 @@ class AddressLocator extends Component {
 export default compose(
   withRuntimeContext,
   orderFormConsumer
-)(AddressLocator)
+)(AddressLocatorTabs)

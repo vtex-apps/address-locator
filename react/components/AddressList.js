@@ -1,6 +1,5 @@
 import React from 'react'
 import PropTypes from 'prop-types'
-import { Adopt } from 'react-adopt'
 import { FormattedMessage } from 'react-intl'
 import AddressListItem from './AddressListItem'
 
