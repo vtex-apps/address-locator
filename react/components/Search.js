@@ -34,7 +34,7 @@ class AddressSearch extends Component {
     shouldDisplayNumberInput: false,
     isLoading: false,
     inputError: false,
-    showInvalidAddressAlert: false,
+    AlertMessage: false,
   }
 
   searchBox = React.createRef()
@@ -81,7 +81,7 @@ class AddressSearch extends Component {
      */
     if (!address.postalCode) {
       return this.setState({
-        showInvalidAddressAlert: true,
+        AlertMessage: <FormattedMessage id="" />,
         address: null,
         formattedAddress: '',
         shouldDisplayNumberInput: false,
@@ -96,7 +96,7 @@ class AddressSearch extends Component {
       shouldDisplayNumberInput: !address.number,
       isLoading: false,
       inputError: false,
-      showInvalidAddressAlert: false
+      AlertMessage: null,
     })
   }
 
@@ -133,36 +133,42 @@ class AddressSearch extends Component {
     return address
   }
 
-  handleFormSubmit = e => {
+  handleFormSubmit = async e => {
     e.preventDefault()
 
     this.setState({
       isLoading: true,
       inputError: false,
+      AlertMessage: null,
     })
     const { orderFormContext, onOrderFormUpdated } = this.props
     const { address } = this.state
 
-    orderFormContext
-      .updateOrderFormShipping({
+    try {
+      const response = await orderFormContext.updateOrderFormShipping({
         variables: {
           orderFormId: orderFormContext.orderForm.orderFormId,
           address,
         },
       })
-      .then(async ({ data }) => {
-        const { address } = data.updateOrderFormShipping.shippingData
-        if (!this.getIsAddressValid(address)) {
-          return this.setState({
-            isLoading: false,
-            inputError: true,
-          })
-        }
 
-        if (onOrderFormUpdated) {
-          onOrderFormUpdated()
-        }
+      const { shippingData } = response.data.updateOrderFormShipping
+      if (!this.getIsAddressValid(shippingData.address)) {
+        return this.setState({
+          isLoading: false,
+          inputError: true,
+        })
+      }
+
+      if (onOrderFormUpdated) {
+        onOrderFormUpdated()
+      }
+    } catch (e) {
+      this.setState({
+        isLoading: false,
+        AlertMessage: <FormattedMessage id="address-locator.graphql-error" />,
       })
+    }
   }
 
   getIsAddressValid = address => address.city && address.street && address.number
@@ -179,7 +185,7 @@ class AddressSearch extends Component {
       formattedAddress: e.target.value,
     })
 
-  handleCloseAlert = () => this.setState({ showInvalidAddressAlert: false })
+  handleCloseAlert = () => this.setState({ AlertMessage: null })
 
   canUsePortal = () => Boolean(document && document.body)
 
@@ -190,17 +196,17 @@ class AddressSearch extends Component {
       shouldDisplayNumberInput,
       isLoading,
       inputError,
-      showInvalidAddressAlert,
+      AlertMessage,
     } = this.state
 
     return (
       <Fragment>
-        {showInvalidAddressAlert &&
+        {AlertMessage &&
           this.canUsePortal() &&
           createPortal(
             <div className="fixed top-0">
               <Alert type="warning" onClose={this.handleCloseAlert}>
-                <FormattedMessage id="address-locator.address-search-invalid-address" />
+                {AlertMessage}
               </Alert>
             </div>,
             document.body
@@ -282,7 +288,7 @@ class AddressSearch extends Component {
             isLoading={isLoading}
             block
           >
-            <FormattedMessage id="address-locator.address-search-button" />>
+            <FormattedMessage id="address-locator.address-search-button" />
           </Button>
         </form>
       </Fragment>

@@ -15,6 +15,7 @@
     "address-locator.address-manager-title": "Seus Endereços",
     "address-locator.address-manager-button": "Adicionar novo endereço",
     "address-manager.address-list": "Endereços anteriores",
+    "address-locator.graphql-error": "Encontramos problemas. Por favor, tente novamente",
     "profile-form.field.homePhone": "Digite o seu telefone abaixo",
     "profile-form.error.INVALID_FIELD": "Número de telefone inválido",
     "profile-form.error.EMPTY_FIELD": "Campo obrigatório",

@@ -14,6 +14,7 @@
     "address-locator.address-redeem-button": "Buscar dirección",
     "address-locator.address-manager-title": "Sus Direcciones",
     "address-locator.address-manager-button": "Añadir nueva dirección",
+    "address-locator.graphql-error": "Encontramos problemas. Por favor, inténtelo de nuevo",
     "address-manager.address-list": "Direcciones anteriores",
     "profile-form.field.homePhone": "Introduzca su teléfono a continuación",
     "profile-form.error.INVALID_FIELD": "Numero de telefono invalido",

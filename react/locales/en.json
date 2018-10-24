@@ -15,6 +15,7 @@
     "address-locator.address-redeem-button": "Find address",
     "address-locator.address-manager-title": "Your Addresses",
     "address-locator.address-manager-button": "Add new address",
+    "address-locator.graphql-error": "An error has ocurred. Please try again",
     "address-manager.address-list": "Previous addresses",
     "profile-form.field.homePhone": "Type your phone below",
     "profile-form.error.INVALID_FIELD": "Invalid phone number",
