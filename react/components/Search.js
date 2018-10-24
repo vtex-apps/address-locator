@@ -81,7 +81,7 @@ class AddressSearch extends Component {
      */
     if (!address.postalCode) {
       return this.setState({
-        AlertMessage: <FormattedMessage id="" />,
+        AlertMessage: <FormattedMessage id="address-locator.address-search-invalid-address" />,
         address: null,
         formattedAddress: '',
         shouldDisplayNumberInput: false,
