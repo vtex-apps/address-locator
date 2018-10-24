@@ -9,7 +9,7 @@ import { compose, branch, mapProps, renderComponent } from 'recompose'
 import logisticsQuery from '../queries/logistics.gql'
 import { StandaloneSearchBox } from 'react-google-maps/lib/components/places/StandaloneSearchBox'
 import alpha2ToAlpha3 from 'country-iso-2-to-3'
-import { Button, Input, Spinner } from 'vtex.styleguide'
+import { Alert, Button, Input, Spinner } from 'vtex.styleguide'
 import { contextPropTypes } from 'vtex.store/OrderFormContext'
 import LocationInputIcon from './LocationInputIcon'
 
@@ -32,7 +32,7 @@ class AddressSearch extends Component {
     formattedAddress: '',
     shouldDisplayNumberInput: false,
     isLoading: false,
-    errorMessage: null,
+    inputError: false,
   }
 
   searchBox = React.createRef()
@@ -51,9 +51,7 @@ class AddressSearch extends Component {
         const parsedResponse = await rawResponse.json()
 
         if (!parsedResponse.results.length) {
-          return this.setState({
-            errorMessage: true,
-          })
+          return this.setState({ inputError: true })
         }
 
         const place = parsedResponse.results[0]
@@ -78,7 +76,7 @@ class AddressSearch extends Component {
       address,
       formattedAddress: place.formatted_address,
       shouldDisplayNumberInput: !address.number,
-      errorMessage: null,
+      inputError: false,
     })
   }
 
@@ -120,7 +118,7 @@ class AddressSearch extends Component {
 
     this.setState({
       isLoading: true,
-      errorMessage: null,
+      inputError: false,
     })
     const { orderFormContext, onOrderFormUpdated } = this.props
     const { address } = this.state
@@ -137,7 +135,7 @@ class AddressSearch extends Component {
         if (!this.getIsAddressValid(address)) {
           return this.setState({
             isLoading: false,
-            errorMessage: true,
+            inputError: true,
           })
         }
 
@@ -167,7 +165,7 @@ class AddressSearch extends Component {
       formattedAddress,
       shouldDisplayNumberInput,
       isLoading,
-      errorMessage,
+      inputError,
     } = this.state
 
     return (
@@ -178,14 +176,14 @@ class AddressSearch extends Component {
               mapper={{
                 placeholder: <FormattedMessage id="address-locator.address-search-placeholder" />,
                 label: <FormattedMessage id="address-locator.address-search-label" />,
-                errorMessageText: <FormattedMessage id="address-locator.address-search-error" />,
+                errorMessage: <FormattedMessage id="address-locator.address-search-error" />,
               }}
             >
-              {({ placeholder, label, errorMessageText }) => (
+              {({ placeholder, label, errorMessage }) => (
                 <Input
                   type="text"
                   value={formattedAddress}
-                  errorMessage={errorMessage ? errorMessageText : ''}
+                  errorMessage={inputError ? errorMessage : ''}
                   placeholder={placeholder}
                   size="large"
                   label={label}
