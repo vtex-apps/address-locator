@@ -47,13 +47,14 @@ class AddressSearch extends Component {
   /* Use the navigator geolocation to get the user position and retrieve his address using Google Maps API */
   handleSetCurrentPosition = () => {
     if (navigator.geolocation) {
+      this.setState({ isLoading: true })
       navigator.geolocation.getCurrentPosition(async position => {
         const { latitude, longitude } = position.coords
         const rawResponse = await fetch(this.getApiUrlFromCoordinates(latitude, longitude))
         const parsedResponse = await rawResponse.json()
 
         if (!parsedResponse.results.length) {
-          return this.setState({ inputError: true })
+          return this.setState({ inputError: true, isLoading: false })
         }
 
         const place = parsedResponse.results[0]
