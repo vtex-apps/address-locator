@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+
 import { FormattedMessage, intlShape } from 'react-intl'
 import { Query } from 'react-apollo'
 import { compose } from 'recompose'
@@ -120,6 +120,7 @@ class AddressLocator extends Component {
     return (
       <div className="vtex-address-locator w-100 w-50-m center flex flex-column justify-center items-center pa6">
         {!hideTitle && (
+          <h1 className="db b f1 mb7">
           <h1 className="db b f1 mb7 mt0 pa5 tl tc-m">
             <FormattedMessage id="address-locator.order-title" />
           </h1>
