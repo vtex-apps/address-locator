@@ -17,12 +17,17 @@ const countries = {
   },
 }
 
+/**
+ * Component responsible for retrieving the user's address by his phone number
+ */
 class AddressRedeem extends Component {
   static propTypes = {
     /* Context used to call address mutation and retrieve the orderForm */
     orderFormContext: contextPropTypes,
     /* Event handler for when the user is identified */
-    onIdentified: PropTypes.func,
+    onOrderFormUpdated: PropTypes.func,
+    /* Context used to call address mutation and retrieve the orderForm */
+    orderFormContext: contextPropTypes,
   }
 
   state = {
@@ -33,9 +38,9 @@ class AddressRedeem extends Component {
   }
 
   updateProfile = async ({ email }) => {
-    const { orderFormContext, onIdentified } = this.props
+    const { orderFormContext, onOrderFormUpdated } = this.props
 
-    const { data } = await orderFormContext.updateOrderFormProfile({
+    orderFormContext.updateOrderFormProfile({
       variables: {
         orderFormId: orderFormContext.orderForm.orderFormId,
         fields: { email },

@@ -1,7 +1,10 @@
 import React, { Component } from 'react'
-import { FormattedMessage } from 'react-intl'
+import { FormattedMessage, intlShape } from 'react-intl'
 import { Query } from 'react-apollo'
-import { Adopt } from 'react-adopt'
+import { compose } from 'recompose'
+import { withRuntimeContext } from 'render'
+import PropTypes from 'prop-types'
+import { orderFormConsumer, contextPropTypes } from 'vtex.store/OrderFormContext'
 import { Tab, Tabs, Spinner } from 'vtex.styleguide'
 
 import logisticsQuery from './queries/logistics.gql'
@@ -10,14 +13,27 @@ import AddressRedeem from './components/AddressRedeem'
 import './global.css'
 
 /**
- * Component that allows the user to locate his address, by inserting, searching, managing and
+ * Component that allows the user to locate his address, by inserting, searching, retrieving and
  * saving it into orderform.
  * Configure the key for Google Geolocation API, by inserting it on the admin logistics section.
  */
 class AddressLocator extends Component {
+  static propTypes = {
+    /* Context used to call address mutation and retrieve the orderForm */
+    orderFormContext: contextPropTypes,
+    pageToRedirect: PropTypes.string,
+    runtime: PropTypes.shape({
+      page: PropTypes.string.isRequired,
+      pages: PropTypes.object.isRequired,
+    }).isRequired,
+  }
   state = {
     currentTab: 1,
   }
+
+  static defaultProps = { pageToRedirect: 'store/order' }
+
+  static contextTypes = { intl: intlShape }
 
   handleTabChange = tabIndex => {
     this.setState({
@@ -25,12 +41,38 @@ class AddressLocator extends Component {
     })
   }
 
+  get orderPagePath() {
+    const { runtime, pageToRedirect } = this.props
+    return runtime.pages[pageToRedirect].path
+  }
+
+  get isOrderPage() {
+    const { runtime } = this.props
+    return !!runtime.pages[runtime.page].order
+  }
+
+  /* Function that will be called when updating the orderform */
+  handleOrderFormUpdated = async () => {
+    const { orderFormContext, runtime } = this.props
+
+    await orderFormContext.refetch()
+    if (!this.isOrderPage) {
+      return runtime.navigate({
+        fallbackToWindowLocation: false,
+        to: this.orderPagePath,
+      })
+    }
+  }
+
   render() {
     const { currentTab } = this.state
-    const { hideTabs, hideTitle } = this.props
+    const { orderFormContext, hideTabs, hideTitle } = this.props
+    const { intl } = this.context
 
-    const addressSearchTab = <FormattedMessage id="address-locator.address-search-tab" />
-    const addressRedeemTab = <FormattedMessage id="address-locator.address-redeem-tab" />
+    /** The label HAS TO BE a string */
+    const addressSearchTab = intl.formatMessage({ id:"address-locator.address-search-tab" })
+    const addressRedeemTab = intl.formatMessage({ id:"address-locator.address-redeem-tab" })
+
     const addressSearch = (
       <Query query={logisticsQuery}>
         {({ data, loading }) => {
@@ -45,6 +87,8 @@ class AddressLocator extends Component {
               googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${googleMapsKey}&v=3.exp&libraries=places`}
               googleMapKey={googleMapsKey}
               loadingElement={<div className="h-100" />}
+              orderFormContext={orderFormContext}
+              onOrderFormUpdated={this.handleOrderFormUpdated}
             />
           )
         }}
@@ -53,11 +97,22 @@ class AddressLocator extends Component {
 
     const tabs = (
       <Tabs fullWidth>
-        <Tab label={addressSearchTab} active={currentTab === 1} onClick={() => this.handleTabChange(1)}>
+        <Tab
+          label={addressSearchTab}
+          active={currentTab === 1}
+          onClick={() => this.handleTabChange(1)}
+        >
           {addressSearch}
         </Tab>
-        <Tab label={addressRedeemTab} active={currentTab === 2} onClick={() => this.handleTabChange(2)}>
-          <AddressRedeem />
+        <Tab
+          label={addressRedeemTab}
+          active={currentTab === 2}
+          onClick={() => this.handleTabChange(2)}
+        >
+          <AddressRedeem
+            orderFormContext={orderFormContext}
+            onOrderFormUpdated={this.handleOrderFormUpdated}
+          />
         </Tab>
       </Tabs>
     )
@@ -65,7 +120,7 @@ class AddressLocator extends Component {
     return (
       <div className="vtex-address-locator w-100 w-50-m center flex flex-column justify-center items-center pa6">
         {!hideTitle && (
-          <h1 className="db b f1 mb7 mt0">
+          <h1 className="db b f1 mb7 mt0 pa5 tl tc-m">
             <FormattedMessage id="address-locator.order-title" />
           </h1>
         )}
@@ -75,4 +130,7 @@ class AddressLocator extends Component {
   }
 }
 
-export default AddressLocator
+export default compose(
+  withRuntimeContext,
+  orderFormConsumer
+)(AddressLocator)

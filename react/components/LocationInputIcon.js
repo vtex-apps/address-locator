@@ -9,7 +9,7 @@ const LocationInputIcon = ({ onClick, imageSrc }) => {
   }
 
   return (
-    <span onClick={onClick} className="absolute bottom-0 pv4 right-1 pointer vtex-input-icon vtex-input-icon--location">
+    <span onClick={onClick} className="pointer vtex-input-icon vtex-input-icon--location">
       <img className="v-mid pl3" src={imageSrc} />
     </span>
   )

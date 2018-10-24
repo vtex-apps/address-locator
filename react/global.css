@@ -9,42 +9,43 @@
   border: none;
 }
 
+.vtex-address-locator .vtex-tabs__content,
 .vtex-address-locator .vtex-tab__button.c-on-muted {
   background: #fff;
   border-top-left-radius: 0.25rem;
   border-top-right-radius: 0.25rem;
 }
 
-.vtex-address-locator .vtex-address-search .vtex-input-prefix__group {
+.vtex-address-locator .vtex-tabs__content {
+  border-bottom-left-radius: .25rem;
+  border-bottom-right-radius: .25rem;
+}
+
+.address-search .vtex-input-prefix__group, .vtex-address-locator__address-redeem .vtex-input-prefix__group {
   margin-bottom: 1rem;
 }
 
-.vtex-address-locator .vtex-input-prefix__group input {
+.address-search .vtex-input-prefix__group input, .vtex-address-locator__address-redeem .vtex-input-prefix__group input {
   font-size: .85rem;
-  padding-left: 1rem;
-  padding-right: 1rem;
+  text-overflow: ellipsis;
 }
 
-.vtex-address-locator .vtex-input__label {
+.address-search .vtex-input__label, .vtex-address-locator__address-redeem .vtex-input__label {
   color: #727273;
   font-size: 0.85rem;
 }
 
-.vtex-address-locator .vtex-address-search button {
-  width: 100%;
-}
-
 .vtex-address-locator .vtex-input--icon-right input {
   padding-right: 4rem;
-  text-overflow: ellipsis;
+  padding-left: 1rem;
 }
 
 .vtex-address-locator .vtex-input--icon-left input {
   padding-left: 4rem;
-  text-overflow: ellipsis;
+  padding-right: 1rem;
 }
 
-.vtex-address-locator .vtex-input-icon {
+.input-icon {
   top: 1.4rem;
   font-size: .85rem;
   color: #3f3f40;
@@ -54,8 +55,42 @@
   border-left: 1px solid #f1f1f2;
 }
 
-.vtex-address-locator .vtex-input-icon--brazil img {
+.input-icon--brazil img {
   width: 19px;
+}
+
+
+/* AddressManager component */
+.vtex-address-manager__bar {
+  background: #25354d;
+}
+
+.vtex-address-manager__address {
+  flex: 1;
+  text-overflow: ellipsis;
+}
+
+.vtex-address-manager__icon {
+  margin: auto;
+}
+
+.vtex-modal__modal, .vtex-modal__overlay {
+  padding: 0!important;
+}
+
+.vtex-modal__modal {
+  width: 100%;
+  height: 100%;
+  overflow: auto;
+  border-radius: 0;
+}
+
+.pac-container {
+  z-index: 10001;
+}
+
+.input--icon-left .input-icon {
+  top: 1.4rem;
 }
 
 .vtex-address-locator__address-redeem .vtex-profile-form__homePhone {
@@ -65,3 +100,16 @@
 .vtex-address-locator__address-redeem .vtex-button {
   width: 100%;
 }
+
+/* AddressList component */
+.vtex-address-locator__address-list {
+  background: #f2f4f5;
+}
+
+@media (min-width: 768px) {
+  .vtex-modal__modal {
+    height: auto;
+    top: 6rem;
+  }
+}
+

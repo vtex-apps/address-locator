@@ -6,7 +6,7 @@ import Button from 'vtex.styleguide/Button'
 import ProfileField from '@vtex/profile-form/lib/ProfileField'
 
 import StyleguideInput from './StyleguideInput'
-import PhoneInputIcon from './PhoneInputIcon'
+import TextWithImage from './TextWithImage'
 import withImage from './withImage'
 
 class AddressRedeemForm extends Component {
@@ -48,7 +48,7 @@ class AddressRedeemForm extends Component {
     }).isRequired,
   }
 
-  Icon = withImage(() => this.props.country.icon)(PhoneInputIcon)
+  Icon = withImage(() => this.props.country.icon)(TextWithImage)
 
   render() {
     const {
@@ -86,7 +86,9 @@ class AddressRedeemForm extends Component {
             }}
             Input={StyleguideInput}
           />
-          <this.Icon countryCode={code} />
+          <div className="left-1 absolute pv4 flex items-center">
+            <this.Icon text={`+{code}`} />
+          </div>
         </div>
         <Button
           type="submit"

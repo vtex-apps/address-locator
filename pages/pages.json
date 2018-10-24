@@ -1,12 +1,12 @@
 {
-    "pages": {
-        "address-locator": {
-            "path": "/_v/address-locator"
-        }
-    },
-    "extensions": {
-        "address-locator": {
-            "component": "index"
-        }
+  "pages": {
+    "address-locator": {
+      "path": "/_v/address-locator"
     }
+  },
+  "extensions": {
+    "address-locator": {
+      "component": "index"
+    }
+  }
 }
