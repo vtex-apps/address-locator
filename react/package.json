@@ -1,9 +1,12 @@
 {
   "dependencies": {
+    "@vtex/profile-form": "^2.0.3",
     "classnames": "^2.2.6",
-    "i18n-iso-countries": "^3.7.8",
+    "country-iso-2-to-3": "^1.0.1",
     "react": "^16.5.2",
     "react-adopt": "^0.6.0",
-    "react-google-maps": "^9.4.5"
+    "react-content-loader": "^3.2.0",
+    "react-google-maps": "^9.4.5",
+    "recompose": "^0.30.0"
   }
 }

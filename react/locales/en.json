@@ -10,6 +10,9 @@
     "address-locator.address-search-error": "Address not found. Please enter it manually.",
     "address-locator.address-search-button": "Order on this address",
     "address-locator.address-redeem-tab": "Redeem address",
-    "address-locator.address-redeem-label": "Insert your phone below",
-    "address-locator.address-redeem-button": "Find address"
+    "address-locator.address-redeem-button": "Find address",
+    "profile-form.field.homePhone": "Type your phone below",
+    "profile-form.error.INVALID_FIELD": "Invalid phone number",
+    "profile-form.error.EMPTY_FIELD": "Required field",
+    "profile-form.error.NOT_FOUND": "We couldn't find an account with this phone"
 }

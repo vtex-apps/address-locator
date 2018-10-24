@@ -9,17 +9,10 @@
   border: none;
 }
 
-.vtex-address-locator .vtex-address-search,
 .vtex-address-locator .vtex-tab__button.c-on-muted {
   background: #fff;
-  border-top-left-radius: .25rem;
-  border-top-right-radius: .25rem;
-}
-
-.vtex-address-locator .vtex-address-search {
-  padding: 2rem 1.6rem;
-  border-bottom-left-radius: .25rem;
-  border-bottom-right-radius: .25rem;
+  border-top-left-radius: 0.25rem;
+  border-top-right-radius: 0.25rem;
 }
 
 .vtex-address-locator .vtex-address-search .vtex-input-prefix__group {
@@ -34,7 +27,7 @@
 
 .vtex-address-locator .vtex-input__label {
   color: #727273;
-  font-size: .85rem;
+  font-size: 0.85rem;
 }
 
 .vtex-address-locator .vtex-address-search button {
@@ -63,4 +56,12 @@
 
 .vtex-address-locator .vtex-input-icon--brazil img {
   width: 19px;
+}
+
+.vtex-address-locator__address-redeem .vtex-profile-form__homePhone {
+  padding-bottom: 0;
+}
+
+.vtex-address-locator__address-redeem .vtex-button {
+  width: 100%;
 }

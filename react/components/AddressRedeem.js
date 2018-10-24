@@ -1,27 +1,133 @@
-import React from 'react'
-import { injectIntl, intlShape } from 'react-intl'
+import React, { Component } from 'react'
+import PropTypes from 'prop-types'
+import { find, head, prop, propEq } from 'ramda'
+import { compose, withApollo } from 'react-apollo'
+import { orderFormConsumer, contextPropTypes } from 'vtex.store/OrderFormContext'
+import addValidation from '@vtex/profile-form/lib/modules/addValidation'
 
-import BrazilInputIcon from './BrazilInputIcon'
-import Input from 'vtex.styleguide/Input'
-import Button from 'vtex.styleguide/Button'
+import ProfileRules from './ProfileRules'
+import Loader from './Loader'
+import AddressRedeemForm from './AddressRedeemForm'
+import documentsQuery from '../queries/documents.gql'
 
-const AddressRedeem = ({ intl }) => {
-  const label = intl.formatMessage({ id: 'address-locator.address-redeem-label' })
-  const buttonText = intl.formatMessage({ id: 'address-locator.address-redeem-button' })
-
-  return (
-    <div className="w-100">
-      <div className="relative vtex-input--icon-left">
-        <Input type="text" size="large" placeholder="(99) 99999-9999" label={label} />
-        <BrazilInputIcon />
-      </div>
-      <Button>{buttonText}</Button>
-    </div>
-  )
+const countries = {
+  BRA: {
+    icon: 'brazil.svg',
+    code: 55,
+  },
 }
 
-AddressRedeem.propTypes = {
-  intl: intlShape.isRequired,
+class AddressRedeem extends Component {
+  static propTypes = {
+    /* Context used to call address mutation and retrieve the orderForm */
+    orderFormContext: contextPropTypes,
+    /* Event handler for when the user is identified */
+    onIdentified: PropTypes.func,
+  }
+
+  state = {
+    selectedCountry: countries.BRA,
+    profile: null,
+    contextLoading: true,
+    queryLoading: false,
+  }
+
+  updateProfile = async ({ email }) => {
+    const { orderFormContext, onIdentified } = this.props
+
+    const { data } = await orderFormContext.updateOrderFormProfile({
+      variables: {
+        orderFormId: orderFormContext.orderForm.orderFormId,
+        fields: { email },
+      },
+    })
+
+    onIdentified && onIdentified(data)
+  }
+
+  handleSubmit = async e => {
+    e.preventDefault()
+
+    const {
+      state: { profile, selectedCountry },
+      props: { client },
+    } = this
+    if (profile.homePhone.error) return
+
+    this.setState({ queryLoading: true })
+
+    const { data = { documents: [] } } = await client.query({
+      query: documentsQuery,
+      variables: {
+        acronym: 'CL',
+        fields: ['email'],
+        where: `homePhone=+${selectedCountry.code}${profile.homePhone.value.replace(/\D/g, '')}`,
+      },
+    })
+
+    try {
+      const fields = prop('fields', head(data.documents))
+      if (!fields) throw new Error('Profile not found')
+
+      const { value: email } = find(propEq('key', 'email'), fields)
+      await this.updateProfile({ email })
+      this.setState({ queryLoading: false })
+    } catch (e) {
+      this.setState({
+        profile: {
+          ...profile,
+          homePhone: { ...profile.homePhone, error: 'NOT_FOUND' },
+        },
+        queryLoading: false,
+      })
+    }
+  }
+
+  handleFieldUpdate = field => this.setState(state => ({ profile: { ...state.profile, ...field } }))
+
+  getContextLoadingStatus = () => {
+    const { orderFormContext, ruleContext } = this.props
+    return orderFormContext.loading || ruleContext.loading
+  }
+
+  componentDidUpdate({ ruleContext }, { contextLoading }) {
+    if (contextLoading && !this.getContextLoadingStatus())
+      this.setState({
+        profile: addValidation({ homePhone: '' }, ruleContext.rules),
+        contextLoading: false,
+      })
+  }
+
+  render() {
+    const { selectedCountry, profile, contextLoading, queryLoading } = this.state
+    const {
+      ruleContext: { rules },
+    } = this.props
+
+    if (contextLoading)
+      return (
+        <div className="pv7 ph6 br2 bg-white">
+          <Loader style={{ width: '100%', height: '100%' }} />
+        </div>
+      )
+
+    return (
+      <AddressRedeemForm
+        {...{
+          rules,
+          profile,
+          loading: queryLoading,
+          country: selectedCountry,
+          onSubmit: this.handleSubmit,
+          onFieldUpdate: this.handleFieldUpdate,
+        }}
+      />
+    )
+  }
 }
 
-export default injectIntl(AddressRedeem)
+export default compose(
+  ProfileRules,
+  orderFormConsumer,
+  withApollo
+)(AddressRedeem)

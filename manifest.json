@@ -1,7 +1,7 @@
 {
   "vendor": "vtex",
   "name": "address-locator",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "builders": {
     "pages": "0.x",
     "react": "2.x"
@@ -15,7 +15,8 @@
   "dependencies": {
     "vtex.styleguide": "7.x",
     "vtex.store": "1.x",
-    "vtex.store-graphql": "2.x"
+    "vtex.store-graphql": "2.x",
+    "vtex.profile-form": "2.x"
   },
   "scripts": {
     "postreleasy": "vtex publish --verbose"

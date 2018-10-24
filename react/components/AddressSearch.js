@@ -4,13 +4,10 @@ import PropTypes from 'prop-types'
 import { withScriptjs } from 'react-google-maps'
 import { Adopt } from 'react-adopt'
 import { StandaloneSearchBox } from 'react-google-maps/lib/components/places/StandaloneSearchBox'
-import { alpha2ToAlpha3 } from 'i18n-iso-countries'
+import alpha2ToAlpha3 from 'country-iso-2-to-3'
 import Input from 'vtex.styleguide/Input'
 import Button from 'vtex.styleguide/Button'
-import {
-  orderFormConsumer,
-  contextPropTypes,
-} from 'vtex.store/OrderFormContext'
+import { orderFormConsumer, contextPropTypes } from 'vtex.store/OrderFormContext'
 import LocationInputIcon from './LocationInputIcon'
 
 class AddressSearch extends Component {
@@ -157,7 +154,7 @@ class AddressSearch extends Component {
     const { address, formattedAddress, shouldDisplayNumberInput, errorMessage, isLoading } = this.state
 
     return (
-      <div className="vtex-address-search w-100">
+      <div className="vtex-address-search w-100 pv7 ph6 br2 bg-white">
         <form onSubmit={this.handleFormSubmit}>
           <div className="relative vtex-input--icon-right">
             <StandaloneSearchBox
@@ -184,11 +181,16 @@ class AddressSearch extends Component {
             </StandaloneSearchBox>
             <LocationInputIcon onClick={this.handleSetCurrentPosition} />
           </div>
-          {(address && shouldDisplayNumberInput) && (
-            <Adopt mapper={{
-              placeholder: <FormattedMessage id="address-locator.address-search-number-placeholder" />,
-              label: <FormattedMessage id="address-locator.address-search-number-label" />,
-            }}>
+          {address &&
+            shouldDisplayNumberInput && (
+            <Adopt
+              mapper={{
+                placeholder: (
+                  <FormattedMessage id="address-locator.address-search-number-placeholder" />
+                ),
+                label: <FormattedMessage id="address-locator.address-search-number-label" />,
+              }}
+            >
               {({ placeholder, label }) => (
                 <Input
                   type="text"
@@ -202,25 +204,33 @@ class AddressSearch extends Component {
             </Adopt>
           )}
           {address && (
-            <Adopt mapper={{
-              placeholder: <FormattedMessage id="address-locator.address-search-complement-placeholder" />,
-              label: <FormattedMessage id="address-locator.address-search-complement-label" />,
-            }}>
+            <Adopt
+              mapper={{
+                placeholder: (
+                  <FormattedMessage id="address-locator.address-search-complement-placeholder" />
+                ),
+                label: <FormattedMessage id="address-locator.address-search-complement-label" />,
+              }}
+            >
               {({ placeholder, label }) => (
-                <Input
-                  type="text"
-                  value={address.complement}
-                  placeholder={placeholder}
-                  size="large"
-                  label={label}
-                  onChange={e => this.handleAddressKeyChanged(e, 'complement')}
-                />
+                <div className="mb5">
+                  <Input
+                    type="text"
+                    value={address.complement}
+                    placeholder={placeholder}
+                    size="large"
+                    label={label}
+                    onChange={e => this.handleAddressKeyChanged(e, 'complement')}
+                  />
+                </div>
               )}
             </Adopt>
           )}
-          <Adopt mapper={{
-            text: <FormattedMessage id="address-locator.address-search-button" />,
-          }}>
+          <Adopt
+            mapper={{
+              text: <FormattedMessage id="address-locator.address-search-button" />,
+            }}
+          >
             {({ text }) => (
               <Button type="submit" disabled={!address || !address.number} isLoading={isLoading}>{text}</Button>
             )}

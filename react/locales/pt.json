@@ -10,6 +10,9 @@
     "address-locator.address-search-error": "Endereço não encontrado. Por favor, digite-o manualmente.",
     "address-locator.address-search-button": "Entregar neste endereço",
     "address-locator.address-redeem-tab": "Recuperar endereço",
-    "address-locator.address-redeem-label": "Digite o seu telefone abaixo",
-    "address-locator.address-redeem-button": "Procurar endereço"
+    "address-locator.address-redeem-button": "Buscar endereço",
+    "profile-form.field.homePhone": "Insira o seu telefone abaixo",
+    "profile-form.error.INVALID_FIELD": "Número de telefone inválido",
+    "profile-form.error.EMPTY_FIELD": "Campo obrigatório",
+    "profile-form.error.NOT_FOUND": "Não encontramos uma conta com este telefone"
 }
