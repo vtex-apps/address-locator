@@ -47,7 +47,7 @@ class AddressRedeem extends Component {
       },
     })
 
-    onIdentified && onIdentified(data)
+    onOrderFormUpdated && onOrderFormUpdated(data)
   }
 
   handleSubmit = async e => {
