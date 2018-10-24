@@ -1,13 +1,11 @@
 import React, { Component } from 'react'
 import { FormattedMessage, intlShape } from 'react-intl'
-import { Query } from 'react-apollo'
 import { compose } from 'recompose'
 import { withRuntimeContext } from 'render'
 import PropTypes from 'prop-types'
 import { orderFormConsumer, contextPropTypes } from 'vtex.store/OrderFormContext'
-import { Tab, Tabs, Spinner } from 'vtex.styleguide'
+import { Tab, Tabs } from 'vtex.styleguide'
 
-import logisticsQuery from './queries/logistics.gql'
 import AddressSearch from './components/Search'
 import AddressRedeem from './components/Redeem'
 import './global.css'
@@ -36,7 +34,7 @@ class AddressLocatorTabs extends Component {
   static contextTypes = { intl: intlShape }
 
   handleTabChange = tabIndex => this.setState({ currentTab: tabIndex })
-  
+
   get orderPagePath() {
     const { runtime, pageToRedirect } = this.props
     return runtime.pages[pageToRedirect].path
@@ -80,25 +78,10 @@ class AddressLocatorTabs extends Component {
             active={currentTab === 1}
             onClick={() => this.handleTabChange(1)}
           >
-            <Query query={logisticsQuery}>
-              {({ data, loading }) => {
-                if (loading) {
-                  return <Spinner />
-                }
-
-                const { googleMapsKey } = data.logistics
-
-                return (
-                  <AddressSearch
-                    googleMapURL={`https://maps.googleapis.com/maps/api/js?key=${googleMapsKey}&v=3.exp&libraries=places`}
-                    googleMapKey={googleMapsKey}
-                    loadingElement={<div className="h-100" />}
-                    orderFormContext={orderFormContext}
-                    onOrderFormUpdated={this.handleOrderFormUpdated}
-                  />
-                )
-              }}
-            </Query>
+            <AddressSearch
+              orderFormContext={orderFormContext}
+              onOrderFormUpdated={this.handleOrderFormUpdated}
+            />
           </Tab>
           <Tab
             label={addressRedeemTab}
