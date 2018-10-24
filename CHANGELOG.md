@@ -10,3 +10,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - MVP of `Address Locator` app.
 - Added component to locate address and insert data into orderform
 - Redeem addresses by phone number
+
+### Changed
+- Exports all feature components to be imported on other apps
+
+### Removed
+- `hideTitle` and `hideTabs` prop from the main view, now it's possible to import only `vtex.address-locator/Search`
