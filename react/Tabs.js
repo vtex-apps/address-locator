@@ -41,14 +41,15 @@ class AddressLocatorTabs extends Component {
     const {
       orderFormContext,
       pageToRedirect,
-      runtime: { navigate, pages, route },
+      runtime: { navigate, pages, history },
     } = this.props
-
+    
     await orderFormContext.refetch()
 
     /** pageToRedirect is just a fallback, the url parameter returnUrl takes priority */
-    const returnUrl = queryString.parse(route.path)
-    const pathToRedirect = returnUrl ? returnUrl : pages[pageToRedirect].path
+    const { returnUrl } = queryString.parse(history.location.search)
+    console.log(returnUrl)
+    const pathToRedirect = returnUrl ? decodeURIComponent(returnUrl) : pages[pageToRedirect].path
 
     navigate({
       fallbackToWindowLocation: false,
