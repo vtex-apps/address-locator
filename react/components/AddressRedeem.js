@@ -67,8 +67,6 @@ class AddressRedeem extends Component {
 
     try {
       const fields = prop('fields', head(data.documents))
-      console.warn(data.documents)
-      console.warn(head(data.documents))
       if (!fields) throw new Error('Profile not found')
 
       const { value: email } = find(propEq('key', 'email'), fields)
