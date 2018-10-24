@@ -9,6 +9,7 @@
     "address-locator.address-search-complement-placeholder": "ex 302",
     "address-locator.address-search-error": "Address not found. Please try another address.",
     "address-locator.address-search-button": "Order on this address",
+    "address-locator.address-search-invalid-address": "The address must contain street, neighborhood, city and state names",
     "address-locator.address-redeem-tab": "Redeem address",
     "address-locator.address-redeem-label": "Insert your phone below",
     "address-locator.address-redeem-button": "Find address",

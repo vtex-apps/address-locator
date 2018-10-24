@@ -1,4 +1,5 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
+import { createPortal } from 'react-dom'
 import { FormattedMessage } from 'react-intl'
 import PropTypes from 'prop-types'
 import { withScriptjs } from 'react-google-maps'
@@ -33,6 +34,7 @@ class AddressSearch extends Component {
     shouldDisplayNumberInput: false,
     isLoading: false,
     inputError: false,
+    showInvalidAddressAlert: false,
   }
 
   searchBox = React.createRef()
@@ -72,11 +74,29 @@ class AddressSearch extends Component {
   setAddressProperties = place => {
     const address = this.getParsedAddress(place)
 
+    /**
+     * If Google Maps API doesn't return a postal code, it means that the address provided is not fully valid
+     * eg.: only inputting the neighborhood or city name without a proper street name
+     * The UI shows an Alert message in this case
+     */
+    if (!address.postalCode) {
+      return this.setState({
+        showInvalidAddressAlert: true,
+        address: null,
+        formattedAddress: '',
+        shouldDisplayNumberInput: false,
+        isLoading: false,
+        inputError: false,
+      })
+    }
+
     this.setState({
       address,
       formattedAddress: place.formatted_address,
       shouldDisplayNumberInput: !address.number,
+      isLoading: false,
       inputError: false,
+      showInvalidAddressAlert: false
     })
   }
 
@@ -140,7 +160,7 @@ class AddressSearch extends Component {
         }
 
         if (onOrderFormUpdated) {
-          await onOrderFormUpdated()
+          onOrderFormUpdated()
         }
       })
   }
@@ -159,6 +179,10 @@ class AddressSearch extends Component {
       formattedAddress: e.target.value,
     })
 
+  handleCloseAlert = () => this.setState({ showInvalidAddressAlert: false })
+
+  canUsePortal = () => Boolean(document && document.body)
+
   render() {
     const {
       address,
@@ -166,89 +190,102 @@ class AddressSearch extends Component {
       shouldDisplayNumberInput,
       isLoading,
       inputError,
+      showInvalidAddressAlert,
     } = this.state
 
     return (
-      <form className="address-search w-100 pv7 ph6" onSubmit={this.handleFormSubmit}>
-        <div className="relative input--icon-right">
-          <StandaloneSearchBox ref={this.searchBox} onPlacesChanged={this.handlePlacesChanged}>
-            <Adopt
-              mapper={{
-                placeholder: <FormattedMessage id="address-locator.address-search-placeholder" />,
-                label: <FormattedMessage id="address-locator.address-search-label" />,
-                errorMessage: <FormattedMessage id="address-locator.address-search-error" />,
-              }}
-            >
-              {({ placeholder, label, errorMessage }) => (
-                <Input
-                  type="text"
-                  value={formattedAddress}
-                  errorMessage={inputError ? errorMessage : ''}
-                  placeholder={placeholder}
-                  size="large"
-                  label={label}
-                  onChange={this.handleAddressChanged}
-                />
-              )}
-            </Adopt>
-          </StandaloneSearchBox>
-          <span className="absolute bottom-0 pv4 right-1">
-            <LocationInputIcon onClick={this.handleSetCurrentPosition} />
-          </span>
-        </div>
-        {address &&
-          shouldDisplayNumberInput && (
+      <Fragment>
+        {showInvalidAddressAlert &&
+          this.canUsePortal() &&
+          createPortal(
+            <div className="fixed top-0">
+              <Alert type="warning" onClose={this.handleCloseAlert}>
+                <FormattedMessage id="address-locator.address-search-invalid-address" />
+              </Alert>
+            </div>,
+            document.body
+          )}
+        <form className="address-search w-100 pv7 ph6" onSubmit={this.handleFormSubmit}>
+          <div className="relative input--icon-right">
+            <StandaloneSearchBox ref={this.searchBox} onPlacesChanged={this.handlePlacesChanged}>
+              <Adopt
+                mapper={{
+                  placeholder: <FormattedMessage id="address-locator.address-search-placeholder" />,
+                  label: <FormattedMessage id="address-locator.address-search-label" />,
+                  errorMessage: <FormattedMessage id="address-locator.address-search-error" />,
+                }}
+              >
+                {({ placeholder, label, errorMessage }) => (
+                  <Input
+                    type="text"
+                    value={formattedAddress}
+                    errorMessage={inputError ? errorMessage : ''}
+                    placeholder={placeholder}
+                    size="large"
+                    label={label}
+                    onChange={this.handleAddressChanged}
+                  />
+                )}
+              </Adopt>
+            </StandaloneSearchBox>
+            <span className="absolute bottom-0 pv4 right-1">
+              <LocationInputIcon onClick={this.handleSetCurrentPosition} />
+            </span>
+          </div>
+          {address &&
+            shouldDisplayNumberInput && (
+              <Adopt
+                mapper={{
+                  placeholder: (
+                    <FormattedMessage id="address-locator.address-search-number-placeholder" />
+                  ),
+                  label: <FormattedMessage id="address-locator.address-search-number-label" />,
+                }}
+              >
+                {({ placeholder, label }) => (
+                  <Input
+                    type="number"
+                    value={address.number}
+                    placeholder={placeholder}
+                    size="large"
+                    label={label}
+                    onChange={e => this.handleAddressKeyChanged(e, 'number')}
+                  />
+                )}
+              </Adopt>
+            )}
+          {address && (
             <Adopt
               mapper={{
                 placeholder: (
-                  <FormattedMessage id="address-locator.address-search-number-placeholder" />
+                  <FormattedMessage id="address-locator.address-search-complement-placeholder" />
                 ),
-                label: <FormattedMessage id="address-locator.address-search-number-label" />,
+                label: <FormattedMessage id="address-locator.address-search-complement-label" />,
               }}
             >
               {({ placeholder, label }) => (
                 <Input
-                  type="number"
-                  value={address.number}
+                  type="text"
+                  value={address.complement}
                   placeholder={placeholder}
                   size="large"
                   label={label}
-                  onChange={e => this.handleAddressKeyChanged(e, 'number')}
+                  onChange={e => this.handleAddressKeyChanged(e, 'complement')}
                 />
               )}
             </Adopt>
           )}
-        {address && (
-          <Adopt
-            mapper={{
-              placeholder: (
-                <FormattedMessage id="address-locator.address-search-complement-placeholder" />
-              ),
-              label: <FormattedMessage id="address-locator.address-search-complement-label" />,
-            }}
+          <Button
+            className="w-100"
+            type="submit"
+            disabled={!address || !address.number}
+            isLoading={isLoading}
+            block
           >
-            {({ placeholder, label }) => (
-              <Input
-                type="text"
-                value={address.complement}
-                placeholder={placeholder}
-                size="large"
-                label={label}
-                onChange={e => this.handleAddressKeyChanged(e, 'complement')}
-              />
-            )}
-          </Adopt>
-        )}
-        <Button
-          className="w-100"
-          type="submit"
-          disabled={!address || !address.number}
-          isLoading={isLoading}
-          block
-        >
-          <FormattedMessage id="address-locator.address-search-button" />>
-        </Button>
-      </form>
+            <FormattedMessage id="address-locator.address-search-button" />>
+          </Button>
+        </form>
+      </Fragment>
     )
   }
 }

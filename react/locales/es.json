@@ -9,6 +9,7 @@
     "address-locator.address-search-complement-placeholder": "ex 302",
     "address-locator.address-search-error": "Dirección no encontrada. Por favor, pruebe otra dirección.",
     "address-locator.address-search-button": "Entregar en esta dirección",
+    "address-locator.address-search-invalid-address": "La ubicación indicada debe contener el nombre de la calle, el barrio, la ciudad y el estado",
     "address-locator.address-redeem-tab": "Recuperar dirección",
     "address-locator.address-redeem-button": "Buscar dirección",
     "address-locator.address-manager-title": "Sus Direcciones",
