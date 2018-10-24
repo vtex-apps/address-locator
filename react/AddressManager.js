@@ -1,7 +1,6 @@
 import React, { Component, Fragment } from 'react'
-import { Adopt } from 'react-adopt'
 import { FormattedMessage } from 'react-intl'
-import _ from 'lodash'
+import _ from 'lodash' //TODO: Replace with ramda
 import { orderFormConsumer, contextPropTypes } from 'vtex.store/OrderFormContext'
 import Modal from 'vtex.styleguide/Modal'
 import Button from 'vtex.styleguide/Button'
