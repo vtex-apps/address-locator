@@ -5,6 +5,7 @@ import { withRuntimeContext } from 'render'
 import PropTypes from 'prop-types'
 import { orderFormConsumer, contextPropTypes } from 'vtex.store/OrderFormContext'
 import { Tab, Tabs } from 'vtex.styleguide'
+import queryString from 'query-string'
 
 import AddressSearch from './components/Search'
 import AddressRedeem from './components/Redeem'
@@ -35,27 +36,24 @@ class AddressLocatorTabs extends Component {
 
   handleTabChange = tabIndex => this.setState({ currentTab: tabIndex })
 
-  get orderPagePath() {
-    const { runtime, pageToRedirect } = this.props
-    return runtime.pages[pageToRedirect].path
-  }
-
-  get isOrderPage() {
-    const { runtime } = this.props
-    return !!runtime.pages[runtime.page].order
-  }
-
   /* Function that will be called when updating the orderform */
   handleOrderFormUpdated = async () => {
-    const { orderFormContext, runtime } = this.props
+    const {
+      orderFormContext,
+      pageToRedirect,
+      runtime: { navigate, pages, route },
+    } = this.props
 
     await orderFormContext.refetch()
-    if (!this.isOrderPage) {
-      return runtime.navigate({
-        fallbackToWindowLocation: false,
-        to: this.orderPagePath,
-      })
-    }
+
+    /** pageToRedirect is just a fallback, the url parameter returnUrl takes priority */
+    const returnUrl = queryString.parse(route.path)
+    const pathToRedirect = returnUrl ? returnUrl : pages[pageToRedirect].path
+
+    navigate({
+      fallbackToWindowLocation: false,
+      to: pathToRedirect,
+    })
   }
 
   render() {
