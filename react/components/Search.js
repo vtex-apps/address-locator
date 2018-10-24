@@ -9,9 +9,7 @@ import { compose, branch, mapProps, renderComponent } from 'recompose'
 import logisticsQuery from '../queries/logistics.gql'
 import { StandaloneSearchBox } from 'react-google-maps/lib/components/places/StandaloneSearchBox'
 import alpha2ToAlpha3 from 'country-iso-2-to-3'
-import Input from 'vtex.styleguide/Input'
-import Button from 'vtex.styleguide/Button'
-import Spinner from 'vtex.styleguide/Spinner'
+import { Button, Input, Spinner } from 'vtex.styleguide'
 import { contextPropTypes } from 'vtex.store/OrderFormContext'
 import LocationInputIcon from './LocationInputIcon'
 
@@ -75,6 +73,7 @@ class AddressSearch extends Component {
 
   setAddressProperties = place => {
     const address = this.getParsedAddress(place)
+
     this.setState({
       address,
       formattedAddress: place.formatted_address,
@@ -242,23 +241,15 @@ class AddressSearch extends Component {
             )}
           </Adopt>
         )}
-        <Adopt
-          mapper={{
-            text: <FormattedMessage id="address-locator.address-search-button" />,
-          }}
+        <Button
+          className="w-100"
+          type="submit"
+          disabled={!address || !address.number}
+          isLoading={isLoading}
+          block
         >
-          {({ text }) => (
-            <Button
-              className="w-100"
-              type="submit"
-              disabled={!address || !address.number}
-              isLoading={isLoading}
-              block
-            >
-              {text}
-            </Button>
-          )}
-        </Adopt>
+          <FormattedMessage id="address-locator.address-search-button" />>
+        </Button>
       </form>
     )
   }
