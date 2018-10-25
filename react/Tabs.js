@@ -48,7 +48,6 @@ class AddressLocatorTabs extends Component {
 
     /** pageToRedirect is just a fallback, the url parameter returnUrl takes priority */
     const { returnUrl } = queryString.parse(history.location.search)
-    console.log(returnUrl)
     const pathToRedirect = returnUrl ? decodeURIComponent(returnUrl) : pages[pageToRedirect].path
 
     navigate({
