@@ -55,8 +55,12 @@
   border-left: 1px solid #f1f1f2;
 }
 
-.input-icon--brazil img {
+.input-icon--flag img {
   width: 19px;
+}
+
+.vtex-address-locator__address-redeem input[name="homePhone"] {
+  padding-left: 4rem;
 }
 
 

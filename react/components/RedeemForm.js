@@ -86,9 +86,9 @@ class AddressRedeemForm extends Component {
             }}
             Input={StyleguideInput}
           />
-          <div className="left-1 absolute pv4 flex items-center">
-            <this.Icon text={`+{code}`} />
-          </div>
+          <span className="left-1 absolute pv4 bottom-0">
+            <this.Icon text={`+${code}`} />
+          </span>
         </div>
         <Button
           type="submit"

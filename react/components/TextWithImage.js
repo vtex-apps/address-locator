@@ -5,7 +5,7 @@ const PhoneInputIconWithText = ({ imageSrc, text }) => {
   if (!imageSrc) return null
 
   return (
-    <span className="input-icon input-icon--flag">
+    <span className="input-icon input-icon--flag flex items-center">
       <img src={imageSrc} className="w-20 pr2" />
       <span className="pt1">{text}</span>
     </span>

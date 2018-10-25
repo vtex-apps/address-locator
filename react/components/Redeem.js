@@ -2,12 +2,12 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { find, head, prop, propEq } from 'ramda'
 import { compose, withApollo } from 'react-apollo'
-import { orderFormConsumer, contextPropTypes } from 'vtex.store/OrderFormContext'
+import { contextPropTypes } from 'vtex.store/OrderFormContext'
 import addValidation from '@vtex/profile-form/lib/modules/addValidation'
 
 import ProfileRules from './ProfileRules'
 import Loader from './Loader'
-import AddressRedeemForm from './AddressRedeemForm'
+import AddressRedeemForm from './RedeemForm'
 import documentsQuery from '../queries/documents.gql'
 
 const countries = {
@@ -47,7 +47,7 @@ class AddressRedeem extends Component {
       },
     })
 
-    onIdentified && onIdentified(data)
+    onOrderFormUpdated && onOrderFormUpdated(data)
   }
 
   handleSubmit = async e => {
@@ -105,9 +105,7 @@ class AddressRedeem extends Component {
 
   render() {
     const { selectedCountry, profile, contextLoading, queryLoading } = this.state
-    const {
-      ruleContext: { rules },
-    } = this.props
+    const { ruleContext: { rules } } = this.props
 
     if (contextLoading)
       return (
@@ -133,6 +131,5 @@ class AddressRedeem extends Component {
 
 export default compose(
   ProfileRules,
-  orderFormConsumer,
   withApollo
 )(AddressRedeem)

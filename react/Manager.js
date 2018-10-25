@@ -8,7 +8,7 @@ import Spinner from 'vtex.styleguide/Spinner'
 import ChangeAddressIcon from './components/ChangeAddressIcon'
 import NewAddressIcon from './components/NewAddressIcon'
 import AddressList from './components/AddressList'
-import AddressSearch from './components/AddressSearch'
+import AddressSearch from './components/Search'
 import './global.css'
 
 /**
@@ -74,17 +74,14 @@ class AddressManager extends Component {
       })
   }
 
-  handleOpenModal = () => {
-    this.setState({ isModalOpen: true })
-  }
+  handleOpenModal = () => this.setState({ isModalOpen: true })
 
-  handleCloseModal = () => {
+  handleCloseModal = () =>
     this.setState({
       isModalOpen: false,
       isSearchingAddress: false,
       isLoading: false,
     })
-  }
 
   /* Function that will be called when updating the orderform */
   handleOrderFormUpdated = async () => {
@@ -94,9 +91,7 @@ class AddressManager extends Component {
     this.handleCloseModal()
   }
 
-  handleAddressSearch = () => {
-    this.setState({ isSearchingAddress: true })
-  }
+  handleAddressSearch = () => this.setState({ isSearchingAddress: true })
 
   render() {
     const { orderFormContext } = this.props
@@ -111,11 +106,16 @@ class AddressManager extends Component {
 
     return (
       <div className="vtex-address-manager">
-        <div className="vtex-address-manager__bar flex ph5 white pointer" onClick={this.handleOpenModal}>
+        <div
+          className="vtex-address-manager__bar flex ph5 white pointer"
+          onClick={this.handleOpenModal}
+        >
           <p className="vtex-address-manager__address mr5 overflow-hidden nowrap">
             {`${street}, ${number}`}
           </p>
-          <div className="vtex-address-manager__icon"><ChangeAddressIcon /></div>
+          <div className="vtex-address-manager__icon">
+            <ChangeAddressIcon />
+          </div>
         </div>
         <Modal isOpen={isModalOpen} onClose={this.handleCloseModal}>
           <p className="f4 pa5 ma0 bb b--light-gray bw1 b near-black">

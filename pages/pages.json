@@ -5,8 +5,17 @@
     }
   },
   "extensions": {
-    "address-locator": {
-      "component": "index"
+    "tabs": {
+      "component": "Tabs"
+    },
+    "search": {
+      "component": "Search"
+    },
+    "redeem": {
+      "component": "Redeem"
+    },
+    "manager": {
+      "component": "Manager"
     }
   }
 }
