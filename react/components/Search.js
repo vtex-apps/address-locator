@@ -15,7 +15,7 @@ import { contextPropTypes } from 'vtex.store/OrderFormContext'
 import LocationInputIcon from './LocationInputIcon'
 
 /**
- * Error codes can be found here:
+ * Geolocation error codes. Can be found here:
  * https://developer.mozilla.org/en-US/docs/Web/API/PositionError
  */
 const ERROR_POSITION_DENIED = 1
