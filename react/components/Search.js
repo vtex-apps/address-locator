@@ -15,6 +15,15 @@ import { contextPropTypes } from 'vtex.store/OrderFormContext'
 import LocationInputIcon from './LocationInputIcon'
 
 /**
+ * Error codes can be found here:
+ * https://developer.mozilla.org/en-US/docs/Web/API/PositionError
+ */
+const ERROR_POSITION_DENIED = 1
+const ERROR_POSITION_UNAVAILABLE = 2
+const ERROR_TIMEOUT = 3
+const ERROR_ADDRESS_NOT_FOUND = 9
+
+/**
  * Component responsible for searching the user address in Google Maps API, when
  * inserting it or using navigator geolocation to get current position
  */
