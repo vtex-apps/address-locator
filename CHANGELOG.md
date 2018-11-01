@@ -6,8 +6,6 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
-### Fixed
-- Removed flicker when changing tabs to "First Order"
 
 ### Added
 - Error handling for geolocation
@@ -16,7 +14,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Set timeout and high accuracy for geolocation
 
 ### Fixed
+- Removed flicker when changing tabs to "First Order"
 - Fix input prefix and suffix breaking with error messages
+
+### Fixed
 
 ## [0.3.2] - 2018-11-01
 ### Fixed
