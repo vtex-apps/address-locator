@@ -23,6 +23,8 @@ const ERROR_POSITION_UNAVAILABLE = 2
 const ERROR_TIMEOUT = 3
 const ERROR_ADDRESS_NOT_FOUND = 9 // custom ad hoc error code
 
+const GEOLOCATION_TIMEOUT = 30*1000
+
 /**
  * Component responsible for searching the user address in Google Maps API, when
  * inserting it or using navigator geolocation to get current position
@@ -59,6 +61,12 @@ class AddressSearch extends Component {
   handleSetCurrentPosition = () => {
     if (navigator.geolocation) {
       this.setState({ isLoading: true })
+      const geolocationOptions = {
+        enableHighAccuracy: true,
+        timeout: GEOLOCATION_TIMEOUT,
+        maximumAge: 0,
+      }
+
       navigator.geolocation.getCurrentPosition(async position => {
         const { latitude, longitude } = position.coords
         const rawResponse = await fetch(this.getApiUrlFromCoordinates(latitude, longitude))
@@ -78,7 +86,7 @@ class AddressSearch extends Component {
           inputError: error.code,
           isLoading: false,
         })
-      })
+      }, geolocationOptions)
     }
   }
 
