@@ -244,16 +244,28 @@ class AddressSearch extends Component {
 
     const isDisabled = this.props.loading
 
-    const SearchWrapper = ({children}) =>
-      isDisabled 
-        ? (
-          <div>{children}</div>
-        )
-        : (
-          <StandaloneSearchBox ref={this.searchBox} onPlacesChanged={this.handlePlacesChanged}>
-            {children}
-          </StandaloneSearchBox>
-        )
+    const searchInput = (
+      <Adopt
+        mapper={{
+          placeholder: <FormattedMessage id="address-locator.address-search-placeholder" />,
+          label: <FormattedMessage id="address-locator.address-search-label" />,
+        }}
+      >
+        {({ placeholder, label }) => (
+          <Input
+            key="input"
+            type="text"
+            value={formattedAddress}
+            errorMessage={this.getErrorMessage(inputError)}
+            placeholder={placeholder}
+            size="large"
+            label={label}
+            onChange={this.handleAddressChanged}
+            suffix={<LocationInputIcon onClick={this.handleSetCurrentPosition} />}
+          />
+        )}
+      </Adopt>
+    )
 
     return (
       <Fragment>
@@ -269,28 +281,14 @@ class AddressSearch extends Component {
           )}
         <form className="address-search w-100 pv7 ph6" onSubmit={this.handleFormSubmit}>
           <div className="relative input--icon-right">
-            <SearchWrapper>
-              <Adopt
-                mapper={{
-                  placeholder: <FormattedMessage id="address-locator.address-search-placeholder" />,
-                  label: <FormattedMessage id="address-locator.address-search-label" />,
-                }}
-              >
-                {({ placeholder, label }) => (
-                  <Input
-                    key="input"
-                    type="text"
-                    value={formattedAddress}
-                    errorMessage={this.getErrorMessage(inputError)}
-                    placeholder={placeholder}
-                    size="large"
-                    label={label}
-                    onChange={this.handleAddressChanged}
-                    suffix={<LocationInputIcon onClick={this.handleSetCurrentPosition} />}
-                  />
-                )}
-              </Adopt>
-            </SearchWrapper>
+            { isDisabled 
+              ? searchInput
+              : (
+                <StandaloneSearchBox ref={this.searchBox} onPlacesChanged={this.handlePlacesChanged}>
+                  {searchInput}
+                </StandaloneSearchBox>
+              )
+            }
           </div>
           {address &&
             shouldDisplayNumberInput && (
