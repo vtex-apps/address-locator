@@ -268,7 +268,7 @@ class AddressSearch extends Component {
                   label: <FormattedMessage id="address-locator.address-search-label" />,
                 }}
               >
-                {({ placeholder, label, errorMessage }) => (
+                {({ placeholder, label }) => (
                   <Input
                     key="input"
                     type="text"
