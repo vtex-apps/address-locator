@@ -21,7 +21,7 @@ import LocationInputIcon from './LocationInputIcon'
 const ERROR_POSITION_DENIED = 1
 const ERROR_POSITION_UNAVAILABLE = 2
 const ERROR_TIMEOUT = 3
-const ERROR_ADDRESS_NOT_FOUND = 9 // ad hoc error code
+const ERROR_ADDRESS_NOT_FOUND = 9 // custom ad hoc error code
 
 /**
  * Component responsible for searching the user address in Google Maps API, when
