@@ -286,13 +286,11 @@ class AddressSearch extends Component {
                     size="large"
                     label={label}
                     onChange={this.handleAddressChanged}
+                    suffix={<LocationInputIcon onClick={this.handleSetCurrentPosition} />}
                   />
                 )}
               </Adopt>
             </SearchWrapper>
-            <span className="absolute bottom-0 pv4 right-1">
-              <LocationInputIcon onClick={this.handleSetCurrentPosition} />
-            </span>
           </div>
           {address &&
             shouldDisplayNumberInput && (
