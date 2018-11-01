@@ -15,6 +15,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Changed
 - Set timeout and high accuracy for geolocation
 
+### Fixed
+- Fix input prefix and suffix breaking with error messages
+
 ## [0.3.2] - 2018-11-01
 ### Fixed
 - Bug on Redeem Address when the page was not redirected
