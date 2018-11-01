@@ -83,12 +83,10 @@ class AddressRedeemForm extends Component {
               size: 'large',
               inputmode: 'numeric',
               type: 'tel',
+              prefix: <this.Icon text={`+${code}`} />,
             }}
             Input={StyleguideInput}
           />
-          <span className="left-1 absolute pv4 bottom-0">
-            <this.Icon text={`+${code}`} />
-          </span>
         </div>
         <Button
           type="submit"
