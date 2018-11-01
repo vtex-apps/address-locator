@@ -15,6 +15,17 @@ import { contextPropTypes } from 'vtex.store/OrderFormContext'
 import LocationInputIcon from './LocationInputIcon'
 
 /**
+ * Geolocation error codes. Can be found here:
+ * https://developer.mozilla.org/en-US/docs/Web/API/PositionError
+ */
+const ERROR_POSITION_DENIED = 1
+const ERROR_POSITION_UNAVAILABLE = 2
+const ERROR_TIMEOUT = 3
+const ERROR_ADDRESS_NOT_FOUND = 9 // custom ad hoc error code
+
+const GEOLOCATION_TIMEOUT = 30*1000
+
+/**
  * Component responsible for searching the user address in Google Maps API, when
  * inserting it or using navigator geolocation to get current position
  */
@@ -35,7 +46,7 @@ class AddressSearch extends Component {
     formattedAddress: '',
     shouldDisplayNumberInput: false,
     isLoading: false,
-    inputError: false,
+    inputError: null,
     AlertMessage: false,
   }
 
@@ -50,18 +61,32 @@ class AddressSearch extends Component {
   handleSetCurrentPosition = () => {
     if (navigator.geolocation) {
       this.setState({ isLoading: true })
+      const geolocationOptions = {
+        enableHighAccuracy: true,
+        timeout: GEOLOCATION_TIMEOUT,
+        maximumAge: 0,
+      }
+
       navigator.geolocation.getCurrentPosition(async position => {
         const { latitude, longitude } = position.coords
         const rawResponse = await fetch(this.getApiUrlFromCoordinates(latitude, longitude))
         const parsedResponse = await rawResponse.json()
 
         if (!parsedResponse.results.length) {
-          return this.setState({ inputError: true, isLoading: false })
+          return this.setState({
+            inputError: ERROR_ADDRESS_NOT_FOUND,
+            isLoading: false,
+          })
         }
 
         const place = parsedResponse.results[0]
         this.setAddressProperties(place)
-      })
+      }, error => {
+        this.setState({
+          inputError: error.code,
+          isLoading: false,
+        })
+      }, geolocationOptions)
     }
   }
 
@@ -89,7 +114,7 @@ class AddressSearch extends Component {
         formattedAddress: '',
         shouldDisplayNumberInput: false,
         isLoading: false,
-        inputError: false,
+        inputError: null,
       })
     }
 
@@ -98,7 +123,7 @@ class AddressSearch extends Component {
       formattedAddress: place.formatted_address,
       shouldDisplayNumberInput: !address.number,
       isLoading: false,
-      inputError: false,
+      inputError: null,
       AlertMessage: null,
     })
   }
@@ -141,7 +166,7 @@ class AddressSearch extends Component {
 
     this.setState({
       isLoading: true,
-      inputError: false,
+      inputError: null,
       AlertMessage: null,
     })
     const { orderFormContext, onOrderFormUpdated } = this.props
@@ -159,7 +184,7 @@ class AddressSearch extends Component {
       if (!this.getIsAddressValid(shippingData.address)) {
         return this.setState({
           isLoading: false,
-          inputError: true,
+          inputError: ERROR_ADDRESS_NOT_FOUND,
         })
       }
 
@@ -191,6 +216,21 @@ class AddressSearch extends Component {
   handleCloseAlert = () => this.setState({ AlertMessage: null })
 
   canUsePortal = () => Boolean(document && document.body)
+
+  getErrorMessage = errorCode => {
+    switch (errorCode) {
+      case ERROR_ADDRESS_NOT_FOUND:
+        return <FormattedMessage id="address-locator.address-search-not-found-error" />
+      case ERROR_TIMEOUT:
+        return <FormattedMessage id="address-locator.address-search-timeout-error" />
+      case ERROR_POSITION_UNAVAILABLE:
+        return <FormattedMessage id="address-locator.address-search-position-unavailable-error" />
+      case ERROR_POSITION_DENIED:
+        return <FormattedMessage id="address-locator.address-search-position-denied-error" />
+      default:
+        return null
+    }
+  }
 
   render() {
     const {
@@ -234,15 +274,14 @@ class AddressSearch extends Component {
                 mapper={{
                   placeholder: <FormattedMessage id="address-locator.address-search-placeholder" />,
                   label: <FormattedMessage id="address-locator.address-search-label" />,
-                  errorMessage: <FormattedMessage id="address-locator.address-search-error" />,
                 }}
               >
-                {({ placeholder, label, errorMessage }) => (
+                {({ placeholder, label }) => (
                   <Input
                     key="input"
                     type="text"
                     value={formattedAddress}
-                    errorMessage={inputError ? errorMessage : ''}
+                    errorMessage={this.getErrorMessage(inputError)}
                     placeholder={placeholder}
                     size="large"
                     label={label}

@@ -9,6 +9,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ### Fixed
 - Removed flicker when changing tabs to "First Order"
 
+### Added
+- Error handling for geolocation
+
+### Changed
+- Set timeout and high accuracy for geolocation
+
 ## [0.3.2] - 2018-11-01
 ### Fixed
 - Bug on Redeem Address when the page was not redirected
