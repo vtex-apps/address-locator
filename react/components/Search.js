@@ -26,6 +26,8 @@ class AddressSearch extends Component {
     onOrderFormUpdated: PropTypes.func,
     /* Context used to call address mutation and retrieve the orderForm */
     orderFormContext: contextPropTypes,
+    /* Set to loading mode */
+    loading: PropTypes.bool,
   }
 
   state = {
@@ -200,6 +202,19 @@ class AddressSearch extends Component {
       AlertMessage,
     } = this.state
 
+    const isDisabled = this.props.loading
+
+    const SearchWrapper = ({children}) =>
+      isDisabled 
+        ? (
+          <div>{children}</div>
+        )
+        : (
+          <StandaloneSearchBox ref={this.searchBox} onPlacesChanged={this.handlePlacesChanged}>
+            {children}
+          </StandaloneSearchBox>
+        )
+
     return (
       <Fragment>
         {AlertMessage &&
@@ -214,7 +229,7 @@ class AddressSearch extends Component {
           )}
         <form className="address-search w-100 pv7 ph6" onSubmit={this.handleFormSubmit}>
           <div className="relative input--icon-right">
-            <StandaloneSearchBox ref={this.searchBox} onPlacesChanged={this.handlePlacesChanged}>
+            <SearchWrapper>
               <Adopt
                 mapper={{
                   placeholder: <FormattedMessage id="address-locator.address-search-placeholder" />,
@@ -224,6 +239,7 @@ class AddressSearch extends Component {
               >
                 {({ placeholder, label, errorMessage }) => (
                   <Input
+                    key="input"
                     type="text"
                     value={formattedAddress}
                     errorMessage={inputError ? errorMessage : ''}
@@ -234,7 +250,7 @@ class AddressSearch extends Component {
                   />
                 )}
               </Adopt>
-            </StandaloneSearchBox>
+            </SearchWrapper>
             <span className="absolute bottom-0 pv4 right-1">
               <LocationInputIcon onClick={this.handleSetCurrentPosition} />
             </span>
@@ -287,6 +303,7 @@ class AddressSearch extends Component {
             type="submit"
             disabled={!address || !address.number}
             isLoading={isLoading}
+            disabled={isDisabled}
             block
           >
             <FormattedMessage id="address-locator.address-search-button" />
@@ -311,7 +328,7 @@ export default compose(
         return {
           googleMapKey: googleMapsKey,
           googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${googleMapsKey}&v=3.exp&libraries=places`,
-          loadingElement: <div className="h-100" />,
+          loadingElement: <AddressSearch loading />,
           onOrderFormUpdated: onOrderFormUpdated,
           orderFormContext: orderFormContext,
         }
