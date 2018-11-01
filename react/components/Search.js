@@ -204,6 +204,17 @@ class AddressSearch extends Component {
 
     const isDisabled = this.props.loading
 
+    const SearchWrapper = ({children}) =>
+      isDisabled 
+        ? (
+          <div>{children}</div>
+        )
+        : (
+          <StandaloneSearchBox ref={this.searchBox} onPlacesChanged={this.handlePlacesChanged}>
+            {children}
+          </StandaloneSearchBox>
+        )
+
     return (
       <Fragment>
         {AlertMessage &&
@@ -218,7 +229,7 @@ class AddressSearch extends Component {
           )}
         <form className="address-search w-100 pv7 ph6" onSubmit={this.handleFormSubmit}>
           <div className="relative input--icon-right">
-            <StandaloneSearchBox ref={this.searchBox} onPlacesChanged={this.handlePlacesChanged}>
+            <SearchWrapper>
               <Adopt
                 mapper={{
                   placeholder: <FormattedMessage id="address-locator.address-search-placeholder" />,
@@ -228,6 +239,7 @@ class AddressSearch extends Component {
               >
                 {({ placeholder, label, errorMessage }) => (
                   <Input
+                    key="input"
                     type="text"
                     value={formattedAddress}
                     errorMessage={inputError ? errorMessage : ''}
@@ -235,16 +247,13 @@ class AddressSearch extends Component {
                     size="large"
                     label={label}
                     onChange={this.handleAddressChanged}
-                    disabled={isDisabled}
                   />
                 )}
               </Adopt>
-            </StandaloneSearchBox>
-            {!isDisabled && (
-              <span className="absolute bottom-0 pv4 right-1">
-                <LocationInputIcon onClick={this.handleSetCurrentPosition} />
-              </span>
-            )}
+            </SearchWrapper>
+            <span className="absolute bottom-0 pv4 right-1">
+              <LocationInputIcon onClick={this.handleSetCurrentPosition} />
+            </span>
           </div>
           {address &&
             shouldDisplayNumberInput && (
