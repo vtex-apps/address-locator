@@ -40,7 +40,7 @@ class AddressRedeem extends Component {
   updateProfile = async ({ email }) => {
     const { orderFormContext, onOrderFormUpdated } = this.props
 
-    orderFormContext.updateOrderFormProfile({
+    const data = await orderFormContext.updateOrderFormProfile({
       variables: {
         orderFormId: orderFormContext.orderForm.orderFormId,
         fields: { email },
