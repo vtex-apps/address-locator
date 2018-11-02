@@ -40,20 +40,15 @@ class AddressLocatorTabs extends Component {
   handleOrderFormUpdated = async () => {
     const {
       orderFormContext,
-      pageToRedirect,
-      runtime: { navigate, pages, history },
+      toggleLeanMode,
+      leanMode
     } = this.props
-    
+
     await orderFormContext.refetch()
 
-    /** pageToRedirect is just a fallback, the url parameter returnUrl takes priority */
-    const { returnUrl } = queryString.parse(history.location.search)
-    const pathToRedirect = returnUrl ? decodeURIComponent(returnUrl) : pages[pageToRedirect].path
-
-    navigate({
-      fallbackToWindowLocation: false,
-      to: pathToRedirect,
-    })
+    if (leanMode === true) {
+      toggleLeanMode()
+    }
   }
 
   render() {
