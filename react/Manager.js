@@ -6,7 +6,6 @@ import ChangeAddressModal from './components/ChangeAddressModal'
 import AddressModal from './components/AddressModal'
 import './global.css'
 
-
 /**
  * Component responsible for displaying and managing user's address using orderFormContext.
  */
