@@ -48,18 +48,23 @@ class AddressModal extends Component {
     return (
       <Modal {...{ isOpen: this.needAddress(), closeOnEsc: false, closeOnOverlayClick: false, showCloseIcon: false, onClose: () => {} }} >
         <div className="vtex-address-modal">
-          <h1 className="db b f1 mb7 mt0 pa5 tl tc-m">
-            <FormattedMessage id="address-locator.order-title" />
-          </h1>
-          <div className="vtex-address-locator w-100 w-50-m center flex flex-column justify-center items-center pa6">
-            <AddressSearch
-              orderFormContext={this.props.orderFormContext}
-              onOrderFormUpdated={this.handleOrderFormUpdated}
-            />
-            <AddressRedeem
-              orderFormContext={this.props.orderFormContext}
-              onOrderFormUpdated={this.handleOrderFormUpdated}
-            />
+          <div className="vtex-logo-bar bg-white w-100 pv5 tc">
+            Logo
+          </div>
+          <div className="vtex-address-form">
+            <h1 className="db b f1 mb7 mt0 pa5 tl tc-m">
+              <FormattedMessage id="address-locator.order-title" />
+            </h1>
+            <div className="vtex-address-locator w-100 w-50-m center flex flex-column justify-center items-center pa6">
+              <AddressSearch
+                orderFormContext={this.props.orderFormContext}
+                onOrderFormUpdated={this.handleOrderFormUpdated}
+              />
+              <AddressRedeem
+                orderFormContext={this.props.orderFormContext}
+                onOrderFormUpdated={this.handleOrderFormUpdated}
+              />
+            </div>
           </div>
         </div>
       </Modal>
