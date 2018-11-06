@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.4.0] - 2018-11-06
+
 ## [0.3.4] - 2018-11-01
 ### Fixed
 - Fixed address search input bug, where one character was being input at time

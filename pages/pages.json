@@ -5,9 +5,6 @@
     }
   },
   "extensions": {
-    "tabs": {
-      "component": "Tabs"
-    },
     "search": {
       "component": "Search"
     },
