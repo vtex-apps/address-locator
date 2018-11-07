@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
-import { FormattedMessage, intlShape } from 'react-intl'
 import { compose } from 'recompose'
 import { withRuntimeContext } from 'render'
+import { FormattedMessage } from 'react-intl'
 import PropTypes from 'prop-types'
 import { orderFormConsumer, contextPropTypes } from 'vtex.store/OrderFormContext'
 import { Modal } from 'vtex.styleguide'
@@ -19,19 +19,8 @@ class AddressModal extends Component {
   static propTypes = {
     /* Context used to call address mutation and retrieve the orderForm */
     orderFormContext: contextPropTypes,
-    pageToRedirect: PropTypes.string,
-    runtime: PropTypes.shape({
-      page: PropTypes.string.isRequired,
-      pages: PropTypes.object.isRequired,
-    }).isRequired,
-  }
-
-  static defaultProps = { pageToRedirect: 'store/order' }
-
-  static contextTypes = { intl: intlShape }
-
-  state = {
-    isOpen: false,
+    /* URL for the store logo */
+    logoUrl: PropTypes.string,
   }
 
   needAddress() {
@@ -80,23 +69,23 @@ class AddressModal extends Component {
     return (
       <Modal {...{ isOpen: this.needAddress(), closeOnEsc: false, closeOnOverlayClick: false, showCloseIcon: false, onClose: () => {} }} >
         <div className="vtex-address-modal">
-          <div className="vtex-logo-bar bg-white w-100 pv5 tc">
-            Logo
+          <div className="w-100 bg-base">
+            <img className="vtex-address-modal__logo" src={this.props.logoUrl} />
           </div>
-          <div className="vtex-address-form">
-            <h1 className="db b f1 mb7 mt0 pa5 tl tc-m">
-              <FormattedMessage id="address-locator.order-title" />
-            </h1>
-            <div className="vtex-address-locator w-100 w-50-m center flex flex-column justify-center items-center pa6">
-              <AddressSearch
-                orderFormContext={this.props.orderFormContext}
-                onOrderFormUpdated={this.handleOrderFormUpdated}
-              />
-              <AddressRedeem
-                orderFormContext={this.props.orderFormContext}
-                onOrderFormUpdated={this.handleOrderFormUpdated}
-              />
-            </div>
+          <div className="vtex-address-modal__new">
+            <AddressSearch
+              orderFormContext={this.props.orderFormContext}
+              onOrderFormUpdated={this.handleOrderFormUpdated}
+            />
+          </div>
+          <h2 className="vtex-address-modal__recurring-title">
+            <FormattedMessage id="address-locator.address-redeem-recurring" />
+          </h2>
+          <div className="vtex-address-modal__redeem">
+            <AddressRedeem
+              orderFormContext={this.props.orderFormContext}
+              onOrderFormUpdated={this.handleOrderFormUpdated}
+            />
           </div>
         </div>
       </Modal>
