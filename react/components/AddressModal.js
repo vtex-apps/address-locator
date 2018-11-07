@@ -72,20 +72,19 @@ class AddressModal extends Component {
           <div className="w-100 bg-base">
             <img className="vtex-address-modal__logo" src={this.props.logoUrl} />
           </div>
-          <div className="vtex-address-modal__new">
-            <AddressSearch
-              orderFormContext={this.props.orderFormContext}
-              onOrderFormUpdated={this.handleOrderFormUpdated}
-            />
-          </div>
-          <h2 className="vtex-address-modal__recurring-title">
-            <FormattedMessage id="address-locator.address-redeem-recurring" />
-          </h2>
-          <div className="vtex-address-modal__redeem">
-            <AddressRedeem
-              orderFormContext={this.props.orderFormContext}
-              onOrderFormUpdated={this.handleOrderFormUpdated}
-            />
+          <div className="vtex-address-modal__form">
+            <div className="vtex-address-modal__new">
+              <AddressSearch
+                orderFormContext={this.props.orderFormContext}
+                onOrderFormUpdated={this.handleOrderFormUpdated}
+              />
+            </div>
+            <div className="vtex-address-modal__redeem">
+              <AddressRedeem
+                orderFormContext={this.props.orderFormContext}
+                onOrderFormUpdated={this.handleOrderFormUpdated}
+              />
+            </div>
           </div>
         </div>
       </Modal>
