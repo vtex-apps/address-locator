@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+
+- Clicks outside of the modal now shake the modal in order to call for the user attention
+
 ## [0.4.0] - 2018-11-06
 
 ## [0.3.4] - 2018-11-01
