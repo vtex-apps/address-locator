@@ -41,6 +41,38 @@ class AddressModal extends Component {
 
   handleClose = () => this.setState({ isOpen: false })
 
+  componentDidMount() {
+    const overlayElement = document && document.querySelector('.vtex-modal__overlay')
+
+    if(overlayElement){
+      overlayElement.addEventListener('click', this.shakeModal)
+    }
+  }
+
+  componentWillUnmount() {
+    const overlayElement = document && document.querySelector('.vtex-modal__overlay')
+
+    if(overlayElement){
+      overlayElement.removeEventListener('click', this.shakeModal)
+    }
+  }
+
+  shakeModal = e => {
+    const modalElement = document && document.querySelector('.vtex-modal__modal')
+
+    if (modalElement) {
+      if (e.target !== e.currentTarget) {
+        return
+      }
+
+      modalElement.classList.add('animated', 'shake')
+
+      setTimeout(() => {
+        modalElement.classList.remove('shake')
+      }, 1000)
+    }
+  }
+
   /* Function that will be called when updating the orderform */
   handleOrderFormUpdated = async () => await this.props.orderFormContext.refetch()
 
