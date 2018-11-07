@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.5.1] - 2018-11-07
+### Added
+- Added logo to address modal
+- Added classes to address modal components to allow CSS customization
+
 ## [0.5.0] - 2018-11-07
 
 ### Added
