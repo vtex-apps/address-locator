@@ -73,6 +73,9 @@ class AddressRedeemForm extends Component {
         onSubmit={onSubmit}
       >
         <div className="mb5 relative input--icon-left">
+          <h2 className="vtex-address-modal__recurring-title f4 pb5 c-muted-2">
+            <FormattedMessage id="address-locator.address-redeem-recurring" />
+          </h2>
           <ProfileField
             key={homePhoneField.name}
             field={homePhoneField}

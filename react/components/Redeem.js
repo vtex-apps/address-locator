@@ -115,16 +115,18 @@ class AddressRedeem extends Component {
       )
 
     return (
-      <AddressRedeemForm
-        {...{
-          rules,
-          profile,
-          loading: queryLoading,
-          country: selectedCountry,
-          onSubmit: this.handleSubmit,
-          onFieldUpdate: this.handleFieldUpdate,
-        }}
-      />
+      <div>
+        <AddressRedeemForm
+          {...{
+            rules,
+            profile,
+            loading: queryLoading,
+            country: selectedCountry,
+            onSubmit: this.handleSubmit,
+            onFieldUpdate: this.handleFieldUpdate,
+          }}
+        />
+      </div>
     )
   }
 }
