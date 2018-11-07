@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Fixed
+
+- Increased the z-index of the Alert so it can appear on top of elements that were covering it previously
+
 ## [0.5.2] - 2018-11-07
 
 ## [0.5.1] - 2018-11-07
