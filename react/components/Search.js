@@ -272,7 +272,7 @@ class AddressSearch extends Component {
         {AlertMessage &&
           this.canUsePortal() &&
           createPortal(
-            <div className="fixed top-0">
+            <div className="fixed top-0 z-max">
               <Alert type="warning" onClose={this.handleCloseAlert}>
                 {AlertMessage}
               </Alert>
