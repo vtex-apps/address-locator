@@ -47,7 +47,10 @@ class AddressSearch extends Component {
     shouldDisplayNumberInput: false,
     isLoading: false,
     inputError: null,
+    inputPostalCodeError: null,
     AlertMessage: false,
+    shouldDisplayPostalCodeInput: false,
+    hasSearchedPostalCode: false,
   }
 
   searchBox = React.createRef()
@@ -99,15 +102,16 @@ class AddressSearch extends Component {
     return `https://maps.googleapis.com/maps/api/geocode/json?key=${googleMapKey}&latlng=${latitude},${longitude}`
   }
 
+  getApiUrlFromPostalCode = (postalCode) => {
+    const { googleMapKey } = this.props
+
+    return `https://maps.googleapis.com/maps/api/geocode/json?key=${googleMapKey}&address=${postalCode}`
+  }
+
   setAddressProperties = place => {
     const address = this.getParsedAddress(place)
 
-    /**
-     * If Google Maps API doesn't return a postal code, it means that the address provided is not fully valid
-     * eg.: only inputting the neighborhood or city name without a proper street name
-     * The UI shows an Alert message in this case
-     */
-    if (!address.postalCode) {
+    if (!address.city) {
       return this.setState({
         AlertMessage: <FormattedMessage id="address-locator.address-search-invalid-address" />,
         address: null,
@@ -115,16 +119,22 @@ class AddressSearch extends Component {
         shouldDisplayNumberInput: false,
         isLoading: false,
         inputError: null,
+        inputPostalCodeError: null,
+        shouldDisplayPostalCodeInput: false,
+        hasSearchedPostalCode: false,
       })
     }
 
     this.setState({
       address,
       formattedAddress: place.formatted_address,
-      shouldDisplayNumberInput: !address.number,
+      shouldDisplayNumberInput: address.postalCode ? !address.number : false,
       isLoading: false,
       inputError: null,
+      inputPostalCodeError: null,
       AlertMessage: null,
+      shouldDisplayPostalCodeInput: !address.postalCode,
+      hasSearchedPostalCode: false,
     })
   }
 
@@ -232,14 +242,113 @@ class AddressSearch extends Component {
     }
   }
 
+  renderExtraDataInput = (field, type) => {
+    const { address } = this.state;
+    if (!address) return null;
+
+    return (
+      <Adopt
+        mapper={{
+          placeholder: (
+            <FormattedMessage id={`address-locator.address-search-${field}-placeholder`} />
+          ),
+          label: <FormattedMessage id={`address-locator.address-search-${field}-label`} />,
+        }}
+      >
+        {({ placeholder, label }) => (
+          <Input
+            type={type}
+            value={address[field]}
+            placeholder={placeholder}
+            size="large"
+            label={label}
+            onChange={e => this.handleAddressKeyChanged(e, field)}
+          />
+        )}
+      </Adopt>
+    );
+  }
+
+  canSubmit = () => {
+    const { address } = this.state;
+    return address && address.number && address.street && address.neighborhood && address.postalCode;
+  }
+
+  validatePostalCode = async () => {
+    const { address } = this.state;
+    try {
+      const rawResponse = await fetch(this.getApiUrlFromPostalCode(address.postalCode))
+      const parsedResponse = await rawResponse.json()
+      if (!parsedResponse.results.length) {
+        return this.setState({
+          inputPostalCodeError: ERROR_ADDRESS_NOT_FOUND,
+          isLoading: false,
+        })
+      }
+
+      const place = parsedResponse.results[0]
+      const newAddress = this.getParsedAddress(place)
+      this.setState({
+        address: newAddress,
+        shouldDisplayNumberInput: true,
+        isLoading: false,
+        inputError: null,
+        inputPostalCodeError: null,
+        AlertMessage: null,
+        shouldDisplayPostalCodeInput: true,
+        hasSearchedPostalCode: true,
+      })
+    } catch(err) {
+      return this.setState({
+        inputPostalCodeError: ERROR_ADDRESS_NOT_FOUND,
+        isLoading: false,
+      })
+    }
+  }
+
+  onPostalCodeKeyPress = (e) => {
+    if (e.key === 'Enter') {
+      this.validatePostalCode();
+    }
+  }
+
+  renderPostalCodeInput = () => {
+    const { shouldDisplayPostalCodeInput, inputPostalCodeError } = this.state;
+    if (!shouldDisplayPostalCodeInput) return null;
+    return (
+      <Adopt
+        mapper={{
+          placeholder: (
+            <FormattedMessage id={`address-locator.address-search-postalCode-placeholder`} />
+          ),
+          label: <FormattedMessage id={`address-locator.address-search-postalCode-label`} />,
+        }}
+      >
+        {({ placeholder, label }) => (
+          <Input
+            type="text"
+            errorMessage={this.getErrorMessage(inputPostalCodeError)}
+            placeholder={placeholder}
+            size="large"
+            label={label}
+            onChange={e => this.handleAddressKeyChanged(e, 'postalCode')}
+            suffix={<LocationInputIcon onClick={this.validatePostalCode} />}
+            onKeyPress={this.onPostalCodeKeyPress}
+          />
+        )}
+      </Adopt>
+    );
+  }
+
   render() {
     const {
-      address,
       formattedAddress,
-      shouldDisplayNumberInput,
       isLoading,
       inputError,
       AlertMessage,
+      shouldDisplayPostalCodeInput,
+      hasSearchedPostalCode,
+      shouldDisplayNumberInput,
     } = this.state
 
     const isDisabled = this.props.loading
@@ -290,55 +399,16 @@ class AddressSearch extends Component {
               )
             }
           </div>
-          {address &&
-            shouldDisplayNumberInput && (
-              <Adopt
-                mapper={{
-                  placeholder: (
-                    <FormattedMessage id="address-locator.address-search-number-placeholder" />
-                  ),
-                  label: <FormattedMessage id="address-locator.address-search-number-label" />,
-                }}
-              >
-                {({ placeholder, label }) => (
-                  <Input
-                    type="number"
-                    value={address.number}
-                    placeholder={placeholder}
-                    size="large"
-                    label={label}
-                    onChange={e => this.handleAddressKeyChanged(e, 'number')}
-                  />
-                )}
-              </Adopt>
-            )}
-          {address && (
-            <Adopt
-              mapper={{
-                placeholder: (
-                  <FormattedMessage id="address-locator.address-search-complement-placeholder" />
-                ),
-                label: <FormattedMessage id="address-locator.address-search-complement-label" />,
-              }}
-            >
-              {({ placeholder, label }) => (
-                <Input
-                  type="text"
-                  value={address.complement}
-                  placeholder={placeholder}
-                  size="large"
-                  label={label}
-                  onChange={e => this.handleAddressKeyChanged(e, 'complement')}
-                />
-              )}
-            </Adopt>
-          )}
+          {this.renderPostalCodeInput()}
+          {shouldDisplayPostalCodeInput && hasSearchedPostalCode && this.renderExtraDataInput('neighborhood', 'text')}
+          {shouldDisplayPostalCodeInput && hasSearchedPostalCode && this.renderExtraDataInput('street', 'text')}
+          {shouldDisplayNumberInput && this.renderExtraDataInput('number', 'number')}
+          {(!shouldDisplayPostalCodeInput || hasSearchedPostalCode) && this.renderExtraDataInput('complement', 'text')}
           <Button
             className="w-100"
             type="submit"
-            disabled={!address || !address.number}
+            disabled={!this.canSubmit() || isDisabled}
             isLoading={isLoading}
-            disabled={isDisabled}
             block
           >
             <FormattedMessage id="address-locator.address-search-button" />
