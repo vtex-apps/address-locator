@@ -25,6 +25,21 @@ const ERROR_ADDRESS_NOT_FOUND = 9 // custom ad hoc error code
 
 const GEOLOCATION_TIMEOUT = 30*1000
 
+const googleMapsApiUrl = (key, suffix) => `https://maps.googleapis.com/maps/api/geocode/json?key=${key}&${suffix}`;
+
+const getCurrentPositionAsPromise = () => {
+  const geolocationOptions = {
+    enableHighAccuracy: true,
+    timeout: GEOLOCATION_TIMEOUT,
+    maximumAge: 0,
+  }
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(position => {
+      resolve(position)
+    }, error => reject(error.code), geolocationOptions);
+  });
+}
+
 /**
  * Component responsible for searching the user address in Google Maps API, when
  * inserting it or using navigator geolocation to get current position
@@ -47,10 +62,10 @@ class AddressSearch extends Component {
     shouldDisplayNumberInput: false,
     isLoading: false,
     inputError: null,
-    inputPostalCodeError: null,
+    inputAddressError: null,
     AlertMessage: false,
-    shouldDisplayPostalCodeInput: false,
-    hasSearchedPostalCode: false,
+    shouldDisplayStreetInput: false,
+    hasSearchedStreet: false,
   }
 
   searchBox = React.createRef()
@@ -61,16 +76,11 @@ class AddressSearch extends Component {
   }
 
   /* Use the navigator geolocation to get the user position and retrieve his address using Google Maps API */
-  handleSetCurrentPosition = () => {
+  handleSetCurrentPosition = async () => {
     if (navigator.geolocation) {
       this.setState({ isLoading: true })
-      const geolocationOptions = {
-        enableHighAccuracy: true,
-        timeout: GEOLOCATION_TIMEOUT,
-        maximumAge: 0,
-      }
-
-      navigator.geolocation.getCurrentPosition(async position => {
+      try {
+        const position = await getCurrentPositionAsPromise();
         const { latitude, longitude } = position.coords
         const rawResponse = await fetch(this.getApiUrlFromCoordinates(latitude, longitude))
         const parsedResponse = await rawResponse.json()
@@ -83,13 +93,30 @@ class AddressSearch extends Component {
         }
 
         const place = parsedResponse.results[0]
-        this.setAddressProperties(place)
-      }, error => {
+        const newAddress = this.getParsedAddress(place)
+        if (!newAddress.postalCode) {
+          return this.setState({
+            inputAddressError: ERROR_ADDRESS_NOT_FOUND,
+            isLoading: false,
+          })
+        }
         this.setState({
-          inputError: error.code,
+          address: newAddress,
+          shouldDisplayNumberInput: true,
+          isLoading: false,
+          inputError: null,
+          inputAddressError: null,
+          AlertMessage: null,
+          shouldDisplayStreetInput: true,
+          hasSearchedStreet: true,
+          formattedAddress: place.formatted_address,
+        })
+      } catch (error) {
+        this.setState({
+          inputError: error,
           isLoading: false,
         })
-      }, geolocationOptions)
+      }
     }
   }
 
@@ -99,13 +126,13 @@ class AddressSearch extends Component {
   getApiUrlFromCoordinates = (latitude, longitude) => {
     const { googleMapKey } = this.props
 
-    return `https://maps.googleapis.com/maps/api/geocode/json?key=${googleMapKey}&latlng=${latitude},${longitude}`
+    return googleMapsApiUrl(googleMapKey, `latlng=${latitude},${longitude}`);
   }
 
-  getApiUrlFromPostalCode = (postalCode) => {
+  getApiUrlFromAddress = (address) => {
     const { googleMapKey } = this.props
 
-    return `https://maps.googleapis.com/maps/api/geocode/json?key=${googleMapKey}&address=${postalCode}`
+    return googleMapsApiUrl(googleMapKey, `address=${address}`);
   }
 
   setAddressProperties = place => {
@@ -119,9 +146,9 @@ class AddressSearch extends Component {
         shouldDisplayNumberInput: false,
         isLoading: false,
         inputError: null,
-        inputPostalCodeError: null,
-        shouldDisplayPostalCodeInput: false,
-        hasSearchedPostalCode: false,
+        inputAddressError: null,
+        shouldDisplayStreetInput: false,
+        hasSearchedStreet: false,
       })
     }
 
@@ -131,10 +158,10 @@ class AddressSearch extends Component {
       shouldDisplayNumberInput: address.postalCode ? !address.number : false,
       isLoading: false,
       inputError: null,
-      inputPostalCodeError: null,
+      inputAddressError: null,
       AlertMessage: null,
-      shouldDisplayPostalCodeInput: !address.postalCode,
-      hasSearchedPostalCode: false,
+      shouldDisplayStreetInput: !address.postalCode,
+      hasSearchedStreet: false,
     })
   }
 
@@ -153,6 +180,8 @@ class AddressSearch extends Component {
       )
       return { ...accumulator, ...parsedItem }
     }, {})
+    const latitude = place.geometry.location.lat;
+    const longitude = place.geometry.location.lng;
 
     const address = {
       addressType: 'residential',
@@ -166,9 +195,37 @@ class AddressSearch extends Component {
       receiverName: '',
       state: parsedAddressComponents.administrative_area_level_1,
       street: parsedAddressComponents.route,
+      geoCoordinate: [latitude, longitude],
     }
 
     return address
+  }
+
+  checkAddressWithGoogle = async () => {
+    const { address } = this.state;
+    try {
+      const rawResponse = await fetch(this.getApiUrlFromAddress(`${address.street} ${address.number}`))
+      const parsedResponse = await rawResponse.json()
+      if (!parsedResponse.results.length) {
+        return;
+      }
+
+      const place = parsedResponse.results[0]
+      const googleAddress = this.getParsedAddress(place)
+      if (!googleAddress.postalCode) {
+        return;
+      }
+
+      if (googleAddress.postalCode !== address.postalCode) {
+        //  TODO use sentry to log
+      }
+      if (address.geoCoordinate[0] !== googleAddress.geoCoordinate[0] || address.geoCoordinate[1] !== googleAddress.geoCoordinate[1]) {
+        // TODO use sentry to log
+      }
+      return googleAddress.geoCoordinate;
+    } catch(err) {
+      return null;
+    }
   }
 
   handleFormSubmit = async e => {
@@ -183,15 +240,23 @@ class AddressSearch extends Component {
     const { address } = this.state
 
     try {
+      const googleCoords = await this.checkAddressWithGoogle();
+
       const response = await orderFormContext.updateOrderFormShipping({
         variables: {
           orderFormId: orderFormContext.orderForm.orderFormId,
-          address,
+          address: {
+            ...address,
+            geoCoordinate: googleCoords || address.geoCoordinate,
+          },
         },
-      })
+      });
 
       const { shippingData } = response.data.updateOrderFormShipping
-      if (!this.getIsAddressValid(shippingData.address)) {
+      const [selectedAddress] = shippingData.selectedAddresses;
+
+
+      if (!selectedAddress || !this.getIsAddressValid(selectedAddress)) {
         return this.setState({
           isLoading: false,
           inputError: ERROR_ADDRESS_NOT_FOUND,
@@ -213,6 +278,7 @@ class AddressSearch extends Component {
 
   handleAddressKeyChanged = (e, key) => {
     const { address } = this.state
+    if (!address) return;
     address[key] = e.target.value
     this.setState({ address })
   }
@@ -271,69 +337,77 @@ class AddressSearch extends Component {
 
   canSubmit = () => {
     const { address } = this.state;
-    return address && address.number && address.street && address.neighborhood && address.postalCode;
+    return address && address.number && address.street && address.postalCode;
   }
 
   validatePostalCode = async () => {
     const { address } = this.state;
     try {
-      const rawResponse = await fetch(this.getApiUrlFromPostalCode(address.postalCode))
+      const rawResponse = await fetch(this.getApiUrlFromAddress(address.street))
       const parsedResponse = await rawResponse.json()
       if (!parsedResponse.results.length) {
         return this.setState({
-          inputPostalCodeError: ERROR_ADDRESS_NOT_FOUND,
+          inputAddressError: ERROR_ADDRESS_NOT_FOUND,
           isLoading: false,
         })
       }
 
       const place = parsedResponse.results[0]
       const newAddress = this.getParsedAddress(place)
+      if (!newAddress.postalCode) {
+        return this.setState({
+          inputAddressError: ERROR_ADDRESS_NOT_FOUND,
+          isLoading: false,
+        })
+      }
       this.setState({
         address: newAddress,
         shouldDisplayNumberInput: true,
         isLoading: false,
         inputError: null,
-        inputPostalCodeError: null,
+        inputAddressError: null,
         AlertMessage: null,
-        shouldDisplayPostalCodeInput: true,
-        hasSearchedPostalCode: true,
+        shouldDisplayStreetInput: true,
+        hasSearchedStreet: true,
+        formattedAddress: place.formatted_address,
       })
     } catch(err) {
       return this.setState({
-        inputPostalCodeError: ERROR_ADDRESS_NOT_FOUND,
+        inputAddressError: ERROR_ADDRESS_NOT_FOUND,
         isLoading: false,
       })
     }
   }
 
-  onPostalCodeKeyPress = (e) => {
+  onStreetKeyPress = (e) => {
     if (e.key === 'Enter') {
       this.validatePostalCode();
     }
   }
 
-  renderPostalCodeInput = () => {
-    const { shouldDisplayPostalCodeInput, inputPostalCodeError } = this.state;
-    if (!shouldDisplayPostalCodeInput) return null;
+  renderStreetInput = () => {
+    const { shouldDisplayStreetInput, inputAddressError, address } = this.state;
+    if (!shouldDisplayStreetInput || !address) return null;
     return (
       <Adopt
         mapper={{
           placeholder: (
-            <FormattedMessage id={`address-locator.address-search-postalCode-placeholder`} />
+            <FormattedMessage id={`address-locator.address-search-street-placeholder`} />
           ),
-          label: <FormattedMessage id={`address-locator.address-search-postalCode-label`} />,
+          label: <FormattedMessage id={`address-locator.address-search-street-label`} />,
         }}
       >
         {({ placeholder, label }) => (
           <Input
             type="text"
-            errorMessage={this.getErrorMessage(inputPostalCodeError)}
+            value={address.street}
+            errorMessage={this.getErrorMessage(inputAddressError)}
             placeholder={placeholder}
             size="large"
             label={label}
-            onChange={e => this.handleAddressKeyChanged(e, 'postalCode')}
+            onChange={e => this.handleAddressKeyChanged(e, 'street')}
             suffix={<LocationInputIcon onClick={this.validatePostalCode} />}
-            onKeyPress={this.onPostalCodeKeyPress}
+            onKeyPress={this.onStreetKeyPress}
           />
         )}
       </Adopt>
@@ -346,8 +420,8 @@ class AddressSearch extends Component {
       isLoading,
       inputError,
       AlertMessage,
-      shouldDisplayPostalCodeInput,
-      hasSearchedPostalCode,
+      shouldDisplayStreetInput,
+      hasSearchedStreet,
       shouldDisplayNumberInput,
     } = this.state
 
@@ -399,11 +473,11 @@ class AddressSearch extends Component {
               )
             }
           </div>
-          {this.renderPostalCodeInput()}
-          {shouldDisplayPostalCodeInput && hasSearchedPostalCode && this.renderExtraDataInput('neighborhood', 'text')}
-          {shouldDisplayPostalCodeInput && hasSearchedPostalCode && this.renderExtraDataInput('street', 'text')}
+          {this.renderStreetInput()}
+          {shouldDisplayStreetInput && hasSearchedStreet && this.renderExtraDataInput('neighborhood', 'text')}
+          {shouldDisplayStreetInput && hasSearchedStreet && this.renderExtraDataInput('postalCode', 'text')}
           {shouldDisplayNumberInput && this.renderExtraDataInput('number', 'number')}
-          {(!shouldDisplayPostalCodeInput || hasSearchedPostalCode) && this.renderExtraDataInput('complement', 'text')}
+          {(!shouldDisplayStreetInput || hasSearchedStreet) && this.renderExtraDataInput('complement', 'text')}
           <Button
             className="w-100"
             type="submit"
