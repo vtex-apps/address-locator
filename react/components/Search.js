@@ -25,9 +25,7 @@ const ERROR_ADDRESS_NOT_FOUND = 9 // custom ad hoc error code
 
 const GEOLOCATION_TIMEOUT = 30*1000
 
-const googleMapsApiUrl = (key, suffix) => `https://maps.googleapis.com/maps/api/geocode/json?key=${key}&${suffix}`;
-
-const getCurrentPositionAsPromise = () => {
+const getCurrentPosition = () => {
   const geolocationOptions = {
     enableHighAccuracy: true,
     timeout: GEOLOCATION_TIMEOUT,
@@ -36,10 +34,9 @@ const getCurrentPositionAsPromise = () => {
   return new Promise((resolve, reject) => {
     navigator.geolocation.getCurrentPosition(position => {
       resolve(position)
-    }, error => reject(error.code), geolocationOptions);
-  });
+    }, error => reject(error.code), geolocationOptions)
+  })
 }
-
 /**
  * Component responsible for searching the user address in Google Maps API, when
  * inserting it or using navigator geolocation to get current position
@@ -75,15 +72,32 @@ class AddressSearch extends Component {
     this.setAddressProperties(place)
   }
 
+  requestGooleMapsApi = async (params) => {
+    const { lat, long, address } = params
+    const { googleMapKey } = this.props
+    const baseUrl = `https://maps.googleapis.com/maps/api/geocode/json?key=${googleMapKey}&`
+    let suffix = ''
+    if (address) {
+      suffix = `address=${address}`
+    } else if (lat && long) {
+      suffix = `latlng=${lat},${long}`
+    }
+    try {
+      const response = await fetch(baseUrl + suffix)
+      return await response.json()
+    } catch (err) {
+      return { results: [] }
+    }
+  }
+
   /* Use the navigator geolocation to get the user position and retrieve his address using Google Maps API */
   handleSetCurrentPosition = async () => {
     if (navigator.geolocation) {
       this.setState({ isLoading: true })
       try {
-        const position = await getCurrentPositionAsPromise();
+        const position = await getCurrentPosition()
         const { latitude, longitude } = position.coords
-        const rawResponse = await fetch(this.getApiUrlFromCoordinates(latitude, longitude))
-        const parsedResponse = await rawResponse.json()
+        const parsedResponse = await this.requestGooleMapsApi({ lat: latitude, long: longitude })
 
         if (!parsedResponse.results.length) {
           return this.setState({
@@ -112,27 +126,13 @@ class AddressSearch extends Component {
           formattedAddress: place.formatted_address,
         })
       } catch (error) {
-        this.setState({
-          inputError: error,
-          isLoading: false,
-        })
+        this.setState({ inputError: error, isLoading: false })
       }
     }
   }
 
-  /**
-   * Returns Google Maps API geocode URL according to given latlng
-   */
-  getApiUrlFromCoordinates = (latitude, longitude) => {
-    const { googleMapKey } = this.props
-
-    return googleMapsApiUrl(googleMapKey, `latlng=${latitude},${longitude}`);
-  }
-
-  getApiUrlFromAddress = (address) => {
-    const { googleMapKey } = this.props
-
-    return googleMapsApiUrl(googleMapKey, `address=${address}`);
+  componentDidMount() {
+    console.log(<FormattedMessage id="address-locator.address-search-invalid-address" />);
   }
 
   setAddressProperties = place => {
@@ -180,8 +180,7 @@ class AddressSearch extends Component {
       )
       return { ...accumulator, ...parsedItem }
     }, {})
-    const latitude = place.geometry.location.lat;
-    const longitude = place.geometry.location.lng;
+    const { lat, lng } = place.geometry.location
 
     const address = {
       addressType: 'residential',
@@ -195,36 +194,35 @@ class AddressSearch extends Component {
       receiverName: '',
       state: parsedAddressComponents.administrative_area_level_1,
       street: parsedAddressComponents.route,
-      geoCoordinate: [latitude, longitude],
+      geoCoordinates: lat && lng ? [lat, lng] : null,
     }
 
     return address
   }
 
   checkAddressWithGoogle = async () => {
-    const { address } = this.state;
+    const { address } = this.state
     try {
-      const rawResponse = await fetch(this.getApiUrlFromAddress(`${address.street} ${address.number}`))
-      const parsedResponse = await rawResponse.json()
+      const parsedResponse = await this.requestGooleMapsApi({ address: `${address.street} ${address.number}` })
       if (!parsedResponse.results.length) {
-        return;
+        return
       }
 
       const place = parsedResponse.results[0]
       const googleAddress = this.getParsedAddress(place)
       if (!googleAddress.postalCode) {
-        return;
+        return
       }
 
       if (googleAddress.postalCode !== address.postalCode) {
         //  TODO use sentry to log
       }
-      if (address.geoCoordinate[0] !== googleAddress.geoCoordinate[0] || address.geoCoordinate[1] !== googleAddress.geoCoordinate[1]) {
+      if (address.geoCoordinates[0] !== googleAddress.geoCoordinates[0] || address.geoCoordinates[1] !== googleAddress.geoCoordinates[1]) {
         // TODO use sentry to log
       }
-      return googleAddress.geoCoordinate;
+      return googleAddress.geoCoordinates
     } catch(err) {
-      return null;
+      return null
     }
   }
 
@@ -240,21 +238,20 @@ class AddressSearch extends Component {
     const { address } = this.state
 
     try {
-      const googleCoords = await this.checkAddressWithGoogle();
+      const googleCoords = await this.checkAddressWithGoogle()
 
       const response = await orderFormContext.updateOrderFormShipping({
         variables: {
           orderFormId: orderFormContext.orderForm.orderFormId,
           address: {
             ...address,
-            geoCoordinate: googleCoords || address.geoCoordinate,
+            geoCoordinates: googleCoords || address.geoCoordinates,
           },
         },
-      });
+      })
 
       const { shippingData } = response.data.updateOrderFormShipping
-      const [selectedAddress] = shippingData.selectedAddresses;
-
+      const [ selectedAddress ] = shippingData.selectedAddresses
 
       if (!selectedAddress || !this.getIsAddressValid(selectedAddress)) {
         return this.setState({
@@ -278,7 +275,7 @@ class AddressSearch extends Component {
 
   handleAddressKeyChanged = (e, key) => {
     const { address } = this.state
-    if (!address) return;
+    if (!address) return
     address[key] = e.target.value
     this.setState({ address })
   }
@@ -309,8 +306,8 @@ class AddressSearch extends Component {
   }
 
   renderExtraDataInput = (field, type) => {
-    const { address } = this.state;
-    if (!address) return null;
+    const { address } = this.state
+    if (!address) return null
 
     return (
       <Adopt
@@ -332,19 +329,18 @@ class AddressSearch extends Component {
           />
         )}
       </Adopt>
-    );
+    )
   }
 
   canSubmit = () => {
-    const { address } = this.state;
-    return address && address.number && address.street && address.postalCode;
+    const { address } = this.state
+    return address && address.number && address.street && address.postalCode
   }
 
   validatePostalCode = async () => {
-    const { address } = this.state;
+    const { address } = this.state
     try {
-      const rawResponse = await fetch(this.getApiUrlFromAddress(address.street))
-      const parsedResponse = await rawResponse.json()
+      const parsedResponse = await this.requestGooleMapsApi({ address: address.street })
       if (!parsedResponse.results.length) {
         return this.setState({
           inputAddressError: ERROR_ADDRESS_NOT_FOUND,
@@ -381,13 +377,13 @@ class AddressSearch extends Component {
 
   onStreetKeyPress = (e) => {
     if (e.key === 'Enter') {
-      this.validatePostalCode();
+      this.validatePostalCode()
     }
   }
 
   renderStreetInput = () => {
-    const { shouldDisplayStreetInput, inputAddressError, address } = this.state;
-    if (!shouldDisplayStreetInput || !address) return null;
+    const { shouldDisplayStreetInput, inputAddressError, address } = this.state
+    if (!shouldDisplayStreetInput || !address) return null
     return (
       <Adopt
         mapper={{
@@ -411,7 +407,7 @@ class AddressSearch extends Component {
           />
         )}
       </Adopt>
-    );
+    )
   }
 
   render() {
