@@ -131,10 +131,6 @@ class AddressSearch extends Component {
     }
   }
 
-  componentDidMount() {
-    console.log(<FormattedMessage id="address-locator.address-search-invalid-address" />);
-  }
-
   setAddressProperties = place => {
     const address = this.getParsedAddress(place)
 
