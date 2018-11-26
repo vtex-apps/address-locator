@@ -6,7 +6,7 @@ import { withScriptjs } from 'react-google-maps'
 import { Adopt } from 'react-adopt'
 import { graphql } from 'react-apollo'
 import { compose, branch, mapProps, renderComponent } from 'recompose'
-import _ from 'lodash'
+import { path } from 'ramda'
 
 import logisticsQuery from '../queries/logistics.gql'
 import { StandaloneSearchBox } from 'react-google-maps/lib/components/places/StandaloneSearchBox'
@@ -178,7 +178,7 @@ class AddressSearch extends Component {
       return { ...accumulator, ...parsedItem }
     }, {})
 
-    const { lat, lng } = _.get(place, 'geometry.location', {})
+    const { lat, lng } = path(['geometry', 'location'], place) || {};
     const address = {
       addressType: 'residential',
       city: parsedAddressComponents.administrative_area_level_2,
