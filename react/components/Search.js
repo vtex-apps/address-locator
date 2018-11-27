@@ -6,7 +6,7 @@ import { withScriptjs } from 'react-google-maps'
 import { Adopt } from 'react-adopt'
 import { graphql } from 'react-apollo'
 import { compose, branch, mapProps, renderComponent } from 'recompose'
-import { path } from 'ramda'
+import { path, mergeDeepWithKey, reject, isNil } from 'ramda'
 
 import logisticsQuery from '../queries/logistics.gql'
 import { StandaloneSearchBox } from 'react-google-maps/lib/components/places/StandaloneSearchBox'
@@ -148,16 +148,16 @@ class AddressSearch extends Component {
         hasSearchedStreet: false,
       })
     }
-
+    const isComplete = address.postalCode && address.street
     this.setState({
       address,
       formattedAddress: place.formatted_address,
-      shouldDisplayNumberInput: address.postalCode ? !address.number : false,
+      shouldDisplayNumberInput: isComplete ? !address.number : false,
       isLoading: false,
       inputError: null,
       inputAddressError: null,
       AlertMessage: null,
-      shouldDisplayStreetInput: !address.postalCode,
+      shouldDisplayStreetInput: !isComplete,
       hasSearchedStreet: false,
     })
   }
@@ -179,6 +179,10 @@ class AddressSearch extends Component {
     }, {})
 
     const { lat, lng } = path(['geometry', 'location'], place) || {};
+    // lat and lng may come as a function or a double
+    const latitude = typeof lat === 'function' ? lat() : lat
+    const longitude = typeof lng === 'function' ? lng() : lng
+
     const address = {
       addressType: 'residential',
       city: parsedAddressComponents.administrative_area_level_2,
@@ -191,7 +195,7 @@ class AddressSearch extends Component {
       receiverName: '',
       state: parsedAddressComponents.administrative_area_level_1,
       street: parsedAddressComponents.route,
-      geoCoordinates: lat && lng ? [lat, lng] : null,
+      geoCoordinates: latitude && longitude ? [latitude, longitude] : null,
     }
 
     return address
@@ -353,8 +357,11 @@ class AddressSearch extends Component {
           isLoading: false,
         })
       }
+      
+      const leftValue = (_, l) => l
+      const cleanNils = obj => reject(isNil, obj)
       this.setState({
-        address: newAddress,
+        address: mergeDeepWithKey(leftValue, cleanNils(newAddress), cleanNils(this.state.address)),
         shouldDisplayNumberInput: true,
         isLoading: false,
         inputError: null,
@@ -457,16 +464,18 @@ class AddressSearch extends Component {
             document.body
           )}
         <form className="address-search w-100 pv7 ph6" onSubmit={this.handleFormSubmit}>
-          <div className="relative input--icon-right">
-            { isDisabled 
-              ? searchInput
-              : (
-                <StandaloneSearchBox ref={this.searchBox} onPlacesChanged={this.handlePlacesChanged}>
-                  {searchInput}
-                </StandaloneSearchBox>
-              )
-            }
-          </div>
+          {!hasSearchedStreet && (
+              <div className="relative input--icon-right">
+              { isDisabled
+                ? searchInput
+                : (
+                  <StandaloneSearchBox ref={this.searchBox} onPlacesChanged={this.handlePlacesChanged}>
+                    {searchInput}
+                  </StandaloneSearchBox>
+                )
+              }
+            </div>)
+          }
           {this.renderStreetInput()}
           {shouldDisplayStreetInput && hasSearchedStreet && this.renderExtraDataInput('neighborhood', 'text')}
           {shouldDisplayStreetInput && hasSearchedStreet && this.renderExtraDataInput('postalCode', 'text')}
