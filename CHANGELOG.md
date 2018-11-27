@@ -7,6 +7,9 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Added
+- Add possibility to search for street address when postal code not found in search box result
+
 ## [0.5.3] - 2018-11-07
 
 ### Fixed
