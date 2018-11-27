@@ -374,6 +374,7 @@ class AddressSearch extends Component {
 
   onStreetKeyPress = (e) => {
     if (e.key === 'Enter') {
+      e.stopPropagation();
       this.validatePostalCode()
     }
   }
