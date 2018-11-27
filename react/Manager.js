@@ -1,10 +1,10 @@
 import React, { Component } from 'react'
-import _ from 'lodash' //TODO: Replace with ramda
 import { orderFormConsumer, contextPropTypes } from 'vtex.store/OrderFormContext'
-import ChangeAddressIcon from './components/ChangeAddressIcon'
 import ChangeAddressModal from './components/ChangeAddressModal'
+import AddressBar from './components/AddressBar'
 import AddressModal from './components/AddressModal'
 import hoistNonReactStatics from 'hoist-non-react-statics'
+import { Spinner } from 'vtex.styleguide'
 import './global.css'
 
 /**
@@ -25,15 +25,41 @@ class AddressManager extends Component {
   handleOpenModal = () => this.setState({ isModalOpen: true })
   handleCloseModal = () => this.setState({ isModalOpen: false })
 
+  componentDidUpdate(prevProps) {
+    const prevShippingData = prevProps.orderFormContext.orderForm.shippingData
+    const curShippingData = prevProps.orderFormContext.orderForm.shippingData
+
+    const hasReceivedShippingData = prevShippingData === undefined && curShippingData !== undefined
+  }
+
   render() {
     const { orderFormContext, logoUrl } = this.props
     const { shippingData } = orderFormContext.orderForm
 
     // If we don't know if there is an address or not we shouldn't load anything
-    if (shippingData === undefined) return null
+    if (shippingData === undefined) {
+      return (
+        <React.Fragment>
+          <AddressBar />
+          <div className="flex items-center justify-center fixed absolute--fill z-999 c-action-primary">
+            <div className="absolute absolute--fill bg-black-30" />
+            <div className="relative bg-base br3 flex items-center justify-center w4 h4">
+              <Spinner />
+            </div>
+          </div>
+        </React.Fragment>
+      )
+    }
 
     // If there is no address, it means that the user isn't identified, and so the component won't render
-    if (!shippingData || !shippingData.address) return <AddressModal logoUrl={logoUrl}/>
+    if (!shippingData || !shippingData.address) {
+      return (
+        <React.Fragment>
+          <AddressBar />
+          <AddressModal logoUrl={logoUrl}/>
+        </React.Fragment>
+      )
+    }
 
     const { street, number } = shippingData.address
     const modalProps = {
@@ -44,20 +70,12 @@ class AddressManager extends Component {
     }
 
     return (
-      <div className="vtex-address-manager">
-        <div
-          className="vtex-address-manager__bar flex ph5 white pointer"
-          onClick={this.handleOpenModal}
-        >
-          <p className="vtex-address-manager__address mr5 overflow-hidden nowrap">
-            {`${street}, ${number}`}
-          </p>
-          <div className="vtex-address-manager__icon">
-            <ChangeAddressIcon />
-          </div>
-        </div>
+      <React.Fragment>
+        <AddressBar onClick={this.handleOpenModal}>
+          {`${street}, ${number}`}
+        </AddressBar>
         <ChangeAddressModal {...modalProps}/>
-      </div>
+      </React.Fragment>
     )
   }
 }
