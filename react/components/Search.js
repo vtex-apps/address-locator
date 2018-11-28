@@ -6,14 +6,13 @@ import { withScriptjs } from 'react-google-maps'
 import { Adopt } from 'react-adopt'
 import { graphql } from 'react-apollo'
 import { compose, branch, mapProps, renderComponent } from 'recompose'
-import { path, mergeDeepWithKey, reject, isNil } from 'ramda'
+import { path } from 'ramda'
 
+import Autocomplete from './Autocomplete';
 import logisticsQuery from '../queries/logistics.gql'
-import { StandaloneSearchBox } from 'react-google-maps/lib/components/places/StandaloneSearchBox'
 import alpha2ToAlpha3 from 'country-iso-2-to-3'
 import { Alert, Button, Input, Spinner } from 'vtex.styleguide'
 import { contextPropTypes } from 'vtex.store/OrderFormContext'
-import LocationInputIcon from './LocationInputIcon'
 
 /**
  * Geolocation error codes. Can be found here:
@@ -64,13 +63,6 @@ class AddressSearch extends Component {
     AlertMessage: false,
     shouldDisplayStreetInput: false,
     hasSearchedStreet: false,
-  }
-
-  searchBox = React.createRef()
-
-  handlePlacesChanged = () => {
-    const place = this.searchBox.current.getPlaces()[0]
-    this.setAddressProperties(place)
   }
 
   requestGooleMapsApi = async (params) => {
@@ -152,7 +144,7 @@ class AddressSearch extends Component {
     this.setState({
       address,
       formattedAddress: place.formatted_address,
-      shouldDisplayNumberInput: isComplete ? !address.number : false,
+      shouldDisplayNumberInput: true,
       isLoading: false,
       inputError: null,
       inputAddressError: null,
@@ -338,83 +330,6 @@ class AddressSearch extends Component {
     return address && address.number && address.street && address.postalCode
   }
 
-  validatePostalCode = async () => {
-    const { address } = this.state
-    try {
-      const parsedResponse = await this.requestGooleMapsApi({ address: address.street })
-      if (!parsedResponse.results.length) {
-        return this.setState({
-          inputAddressError: ERROR_ADDRESS_NOT_FOUND,
-          isLoading: false,
-        })
-      }
-
-      const place = parsedResponse.results[0]
-      const newAddress = this.getParsedAddress(place)
-      if (!newAddress.postalCode) {
-        return this.setState({
-          inputAddressError: ERROR_ADDRESS_NOT_FOUND,
-          isLoading: false,
-        })
-      }
-      
-      const leftValue = (_, l) => l
-      const cleanNils = obj => reject(isNil, obj)
-      this.setState({
-        address: mergeDeepWithKey(leftValue, cleanNils(newAddress), cleanNils(this.state.address)),
-        shouldDisplayNumberInput: true,
-        isLoading: false,
-        inputError: null,
-        inputAddressError: null,
-        AlertMessage: null,
-        shouldDisplayStreetInput: true,
-        hasSearchedStreet: true,
-        formattedAddress: place.formatted_address,
-      })
-    } catch(err) {
-      return this.setState({
-        inputAddressError: ERROR_ADDRESS_NOT_FOUND,
-        isLoading: false,
-      })
-    }
-  }
-
-  onStreetKeyPress = (e) => {
-    if (e.key === 'Enter') {
-      e.stopPropagation();
-      this.validatePostalCode()
-    }
-  }
-
-  renderStreetInput = () => {
-    const { shouldDisplayStreetInput, inputAddressError, address } = this.state
-    if (!shouldDisplayStreetInput || !address) return null
-    return (
-      <Adopt
-        mapper={{
-          placeholder: (
-            <FormattedMessage id={`address-locator.address-search-street-placeholder`} />
-          ),
-          label: <FormattedMessage id={`address-locator.address-search-street-label`} />,
-        }}
-      >
-        {({ placeholder, label }) => (
-          <Input
-            type="text"
-            value={address.street}
-            errorMessage={this.getErrorMessage(inputAddressError)}
-            placeholder={placeholder}
-            size="large"
-            label={label}
-            onChange={e => this.handleAddressKeyChanged(e, 'street')}
-            suffix={<LocationInputIcon onClick={this.validatePostalCode} />}
-            onKeyPress={this.onStreetKeyPress}
-          />
-        )}
-      </Adopt>
-    )
-  }
-
   render() {
     const {
       formattedAddress,
@@ -427,29 +342,7 @@ class AddressSearch extends Component {
     } = this.state
 
     const isDisabled = this.props.loading
-
-    const searchInput = (
-      <Adopt
-        mapper={{
-          placeholder: <FormattedMessage id="address-locator.address-search-placeholder" />,
-          label: <FormattedMessage id="address-locator.address-search-label" />,
-        }}
-      >
-        {({ placeholder, label }) => (
-          <Input
-            key="input"
-            type="text"
-            value={formattedAddress}
-            errorMessage={this.getErrorMessage(inputError)}
-            placeholder={placeholder}
-            size="large"
-            label={label}
-            onChange={this.handleAddressChanged}
-            suffix={<LocationInputIcon onClick={this.handleSetCurrentPosition} />}
-          />
-        )}
-      </Adopt>
-    )
+    const countryCode = path(['orderForm', 'storePreferencesData', 'countryCode'], this.props.orderFormContext) || 'BRA'
 
     return (
       <Fragment>
@@ -466,17 +359,19 @@ class AddressSearch extends Component {
         <form className="address-search w-100 pv7 ph6" onSubmit={this.handleFormSubmit}>
           {!hasSearchedStreet && (
               <div className="relative input--icon-right">
-              { isDisabled
-                ? searchInput
-                : (
-                  <StandaloneSearchBox ref={this.searchBox} onPlacesChanged={this.handlePlacesChanged}>
-                    {searchInput}
-                  </StandaloneSearchBox>
-                )
-              }
+                <Autocomplete
+                  isLoading={isDisabled}
+                  onPlaceSelected={this.setAddressProperties}
+                  types={['address']}
+                  componentRestrictions={{ country: countryCode }}
+                  value={formattedAddress}
+                  errorMessage={this.getErrorMessage(inputError)}
+                  onChange={this.handleAddressChanged}
+                  onSuffixPress={this.handleSetCurrentPosition}
+                />
             </div>)
           }
-          {this.renderStreetInput()}
+          {shouldDisplayStreetInput && hasSearchedStreet && this.renderExtraDataInput('street', 'text')}
           {shouldDisplayStreetInput && hasSearchedStreet && this.renderExtraDataInput('neighborhood', 'text')}
           {shouldDisplayStreetInput && hasSearchedStreet && this.renderExtraDataInput('postalCode', 'text')}
           {shouldDisplayNumberInput && this.renderExtraDataInput('number', 'number')}
