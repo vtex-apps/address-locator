@@ -65,7 +65,7 @@ class AddressSearch extends Component {
     hasSearchedStreet: false,
   }
 
-  requestGooleMapsApi = async (params) => {
+  requestGoogleMapsApi = async (params) => {
     const { lat, long, address } = params
     const { googleMapKey } = this.props
     const baseUrl = `https://maps.googleapis.com/maps/api/geocode/json?key=${googleMapKey}&`
@@ -90,7 +90,7 @@ class AddressSearch extends Component {
       try {
         const position = await getCurrentPosition()
         const { latitude, longitude } = position.coords
-        const parsedResponse = await this.requestGooleMapsApi({ lat: latitude, long: longitude })
+        const parsedResponse = await this.requestGoogleMapsApi({ lat: latitude, long: longitude })
 
         if (!parsedResponse.results.length) {
           return this.setState({
@@ -199,7 +199,7 @@ class AddressSearch extends Component {
   checkAddressWithGoogle = async () => {
     const { address } = this.state
     try {
-      const parsedResponse = await this.requestGooleMapsApi({ address: `${address.street} ${address.number}` })
+      const parsedResponse = await this.requestGoogleMapsApi({ address: `${address.street} ${address.number}` })
       if (!parsedResponse.results.length) {
         return
       }
