@@ -125,20 +125,23 @@ class AddressSearch extends Component {
   }
 
   setAddressProperties = place => {
+    const errorState = {
+      AlertMessage: <FormattedMessage id="address-locator.address-search-invalid-address" />,
+      address: null,
+      shouldDisplayNumberInput: false,
+      isLoading: false,
+      inputError: null,
+      inputAddressError: null,
+      shouldDisplayStreetInput: false,
+      hasSearchedStreet: false,
+    }
+    if (!place.address_components) {
+      return this.setState(errorState)
+    }
     const address = this.getParsedAddress(place)
 
     if (!address.city) {
-      return this.setState({
-        AlertMessage: <FormattedMessage id="address-locator.address-search-invalid-address" />,
-        address: null,
-        formattedAddress: '',
-        shouldDisplayNumberInput: false,
-        isLoading: false,
-        inputError: null,
-        inputAddressError: null,
-        shouldDisplayStreetInput: false,
-        hasSearchedStreet: false,
-      })
+      return this.setState(errorState)
     }
     const isComplete = address.postalCode && address.street
     this.setState({
@@ -194,6 +197,7 @@ class AddressSearch extends Component {
   }
 
   checkAddressWithGoogle = async () => {
+    console.log('teste checkAddressWithGoogle')
     const { address } = this.state
     try {
       const parsedResponse = await this.requestGooleMapsApi({ address: `${address.street} ${address.number}` })
@@ -220,6 +224,7 @@ class AddressSearch extends Component {
   }
 
   handleFormSubmit = async e => {
+    console.log('teste handleFormSubmit')
     e.preventDefault()
 
     this.setState({
