@@ -197,7 +197,6 @@ class AddressSearch extends Component {
   }
 
   checkAddressWithGoogle = async () => {
-    console.log('teste checkAddressWithGoogle')
     const { address } = this.state
     try {
       const parsedResponse = await this.requestGooleMapsApi({ address: `${address.street} ${address.number}` })
@@ -224,7 +223,6 @@ class AddressSearch extends Component {
   }
 
   handleFormSubmit = async e => {
-    console.log('teste handleFormSubmit')
     e.preventDefault()
 
     this.setState({
