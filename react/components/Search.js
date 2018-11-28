@@ -6,13 +6,13 @@ import { withScriptjs } from 'react-google-maps'
 import { Adopt } from 'react-adopt'
 import { graphql } from 'react-apollo'
 import { compose, branch, mapProps, renderComponent } from 'recompose'
+import { path } from 'ramda'
 
+import Autocomplete from './Autocomplete'
 import logisticsQuery from '../queries/logistics.gql'
-import { StandaloneSearchBox } from 'react-google-maps/lib/components/places/StandaloneSearchBox'
 import alpha2ToAlpha3 from 'country-iso-2-to-3'
 import { Alert, Button, Input, Spinner } from 'vtex.styleguide'
 import { contextPropTypes } from 'vtex.store/OrderFormContext'
-import LocationInputIcon from './LocationInputIcon'
 
 /**
  * Geolocation error codes. Can be found here:
@@ -23,8 +23,20 @@ const ERROR_POSITION_UNAVAILABLE = 2
 const ERROR_TIMEOUT = 3
 const ERROR_ADDRESS_NOT_FOUND = 9 // custom ad hoc error code
 
-const GEOLOCATION_TIMEOUT = 30*1000
+const GEOLOCATION_TIMEOUT = 30 * 1000
 
+const getCurrentPosition = () => {
+  const geolocationOptions = {
+    enableHighAccuracy: true,
+    timeout: GEOLOCATION_TIMEOUT,
+    maximumAge: 0,
+  }
+  return new Promise((resolve, reject) => {
+    navigator.geolocation.getCurrentPosition(position => {
+      resolve(position)
+    }, error => reject(error.code), geolocationOptions)
+  })
+}
 /**
  * Component responsible for searching the user address in Google Maps API, when
  * inserting it or using navigator geolocation to get current position
@@ -47,30 +59,38 @@ class AddressSearch extends Component {
     shouldDisplayNumberInput: false,
     isLoading: false,
     inputError: null,
+    inputAddressError: null,
     AlertMessage: false,
+    shouldDisplayStreetInput: false,
+    hasSearchedStreet: false,
   }
 
-  searchBox = React.createRef()
-
-  handlePlacesChanged = () => {
-    const place = this.searchBox.current.getPlaces()[0]
-    this.setAddressProperties(place)
+  requestGoogleMapsApi = async (params) => {
+    const { lat, long, address } = params
+    const { googleMapKey } = this.props
+    const baseUrl = `https://maps.googleapis.com/maps/api/geocode/json?key=${googleMapKey}&`
+    let suffix = ''
+    if (address) {
+      suffix = `address=${address}`
+    } else if (lat && long) {
+      suffix = `latlng=${lat},${long}`
+    }
+    try {
+      const response = await fetch(baseUrl + suffix)
+      return await response.json()
+    } catch (err) {
+      return { results: [] }
+    }
   }
 
   /* Use the navigator geolocation to get the user position and retrieve his address using Google Maps API */
-  handleSetCurrentPosition = () => {
+  handleSetCurrentPosition = async () => {
     if (navigator.geolocation) {
       this.setState({ isLoading: true })
-      const geolocationOptions = {
-        enableHighAccuracy: true,
-        timeout: GEOLOCATION_TIMEOUT,
-        maximumAge: 0,
-      }
-
-      navigator.geolocation.getCurrentPosition(async position => {
+      try {
+        const position = await getCurrentPosition()
         const { latitude, longitude } = position.coords
-        const rawResponse = await fetch(this.getApiUrlFromCoordinates(latitude, longitude))
-        const parsedResponse = await rawResponse.json()
+        const parsedResponse = await this.requestGoogleMapsApi({ lat: latitude, long: longitude })
 
         if (!parsedResponse.results.length) {
           return this.setState({
@@ -80,51 +100,60 @@ class AddressSearch extends Component {
         }
 
         const place = parsedResponse.results[0]
-        this.setAddressProperties(place)
-      }, error => {
+        const newAddress = this.getParsedAddress(place)
+        if (!newAddress.postalCode) {
+          return this.setState({
+            inputAddressError: ERROR_ADDRESS_NOT_FOUND,
+            isLoading: false,
+          })
+        }
         this.setState({
-          inputError: error.code,
+          address: newAddress,
+          shouldDisplayNumberInput: true,
           isLoading: false,
+          inputError: null,
+          inputAddressError: null,
+          AlertMessage: null,
+          shouldDisplayStreetInput: true,
+          hasSearchedStreet: true,
+          formattedAddress: place.formatted_address,
         })
-      }, geolocationOptions)
+      } catch (error) {
+        this.setState({ inputError: error, isLoading: false })
+      }
     }
   }
 
-  /**
-   * Returns Google Maps API geocode URL according to given latlng
-   */
-  getApiUrlFromCoordinates = (latitude, longitude) => {
-    const { googleMapKey } = this.props
-
-    return `https://maps.googleapis.com/maps/api/geocode/json?key=${googleMapKey}&latlng=${latitude},${longitude}`
-  }
-
-  setAddressProperties = place => {
+  handleOnPlaceSelected = place => {
+    const errorState = {
+      AlertMessage: <FormattedMessage id="address-locator.address-search-invalid-address" />,
+      address: null,
+      shouldDisplayNumberInput: false,
+      isLoading: false,
+      inputError: null,
+      inputAddressError: null,
+      shouldDisplayStreetInput: false,
+      hasSearchedStreet: false,
+    }
+    if (!place.address_components) {
+      return this.setState(errorState)
+    }
     const address = this.getParsedAddress(place)
 
-    /**
-     * If Google Maps API doesn't return a postal code, it means that the address provided is not fully valid
-     * eg.: only inputting the neighborhood or city name without a proper street name
-     * The UI shows an Alert message in this case
-     */
-    if (!address.postalCode) {
-      return this.setState({
-        AlertMessage: <FormattedMessage id="address-locator.address-search-invalid-address" />,
-        address: null,
-        formattedAddress: '',
-        shouldDisplayNumberInput: false,
-        isLoading: false,
-        inputError: null,
-      })
+    if (!address.city) {
+      return this.setState(errorState)
     }
-
+    const isComplete = address.postalCode && address.street
     this.setState({
       address,
       formattedAddress: place.formatted_address,
-      shouldDisplayNumberInput: !address.number,
+      shouldDisplayNumberInput: true,
       isLoading: false,
       inputError: null,
+      inputAddressError: null,
       AlertMessage: null,
+      shouldDisplayStreetInput: !isComplete,
+      hasSearchedStreet: false,
     })
   }
 
@@ -144,6 +173,11 @@ class AddressSearch extends Component {
       return { ...accumulator, ...parsedItem }
     }, {})
 
+    const { lat, lng } = path(['geometry', 'location'], place) || {}
+    // lat and lng may come as a function or a double
+    const latitude = typeof lat === 'function' ? lat() : lat
+    const longitude = typeof lng === 'function' ? lng() : lng
+
     const address = {
       addressType: 'residential',
       city: parsedAddressComponents.administrative_area_level_2,
@@ -156,9 +190,36 @@ class AddressSearch extends Component {
       receiverName: '',
       state: parsedAddressComponents.administrative_area_level_1,
       street: parsedAddressComponents.route,
+      geoCoordinates: latitude && longitude ? [latitude, longitude] : null,
     }
 
     return address
+  }
+
+  checkAddressWithGoogle = async () => {
+    const { address } = this.state
+    try {
+      const parsedResponse = await this.requestGoogleMapsApi({ address: `${address.street} ${address.number}` })
+      if (!parsedResponse.results.length) {
+        return
+      }
+
+      const place = parsedResponse.results[0]
+      const googleAddress = this.getParsedAddress(place)
+      if (!googleAddress.postalCode) {
+        return
+      }
+
+      if (googleAddress.postalCode !== address.postalCode) {
+        //  TODO use sentry to log
+      }
+      if (address.geoCoordinates[0] !== googleAddress.geoCoordinates[0] || address.geoCoordinates[1] !== googleAddress.geoCoordinates[1]) {
+        // TODO use sentry to log
+      }
+      return googleAddress.geoCoordinates
+    } catch (err) {
+      return null
+    }
   }
 
   handleFormSubmit = async e => {
@@ -173,15 +234,22 @@ class AddressSearch extends Component {
     const { address } = this.state
 
     try {
+      const googleCoords = await this.checkAddressWithGoogle()
+
       const response = await orderFormContext.updateOrderFormShipping({
         variables: {
           orderFormId: orderFormContext.orderForm.orderFormId,
-          address,
+          address: {
+            ...address,
+            geoCoordinates: googleCoords || address.geoCoordinates,
+          },
         },
       })
 
       const { shippingData } = response.data.updateOrderFormShipping
-      if (!this.getIsAddressValid(shippingData.address)) {
+      const [ selectedAddress ] = shippingData.selectedAddresses
+
+      if (!selectedAddress || !this.getIsAddressValid(selectedAddress)) {
         return this.setState({
           isLoading: false,
           inputError: ERROR_ADDRESS_NOT_FOUND,
@@ -203,6 +271,7 @@ class AddressSearch extends Component {
 
   handleAddressKeyChanged = (e, key) => {
     const { address } = this.state
+    if (!address) return
     address[key] = e.target.value
     this.setState({ address })
   }
@@ -232,40 +301,51 @@ class AddressSearch extends Component {
     }
   }
 
-  render() {
-    const {
-      address,
-      formattedAddress,
-      shouldDisplayNumberInput,
-      isLoading,
-      inputError,
-      AlertMessage,
-    } = this.state
+  renderExtraDataInput = (field, type) => {
+    const { address } = this.state
+    if (!address) return null
 
-    const isDisabled = this.props.loading
-
-    const searchInput = (
+    return (
       <Adopt
         mapper={{
-          placeholder: <FormattedMessage id="address-locator.address-search-placeholder" />,
-          label: <FormattedMessage id="address-locator.address-search-label" />,
+          placeholder: (
+            <FormattedMessage id={`address-locator.address-search-${field}-placeholder`} />
+          ),
+          label: <FormattedMessage id={`address-locator.address-search-${field}-label`} />,
         }}
       >
         {({ placeholder, label }) => (
           <Input
-            key="input"
-            type="text"
-            value={formattedAddress}
-            errorMessage={this.getErrorMessage(inputError)}
+            type={type}
+            value={address[field]}
             placeholder={placeholder}
             size="large"
             label={label}
-            onChange={this.handleAddressChanged}
-            suffix={<LocationInputIcon onClick={this.handleSetCurrentPosition} />}
+            onChange={e => this.handleAddressKeyChanged(e, field)}
           />
         )}
       </Adopt>
     )
+  }
+
+  canSubmit = () => {
+    const { address } = this.state
+    return address && address.number && address.street && address.postalCode
+  }
+
+  render() {
+    const {
+      formattedAddress,
+      isLoading,
+      inputError,
+      AlertMessage,
+      shouldDisplayStreetInput,
+      hasSearchedStreet,
+      shouldDisplayNumberInput,
+    } = this.state
+
+    const isDisabled = this.props.loading
+    const countryCode = path(['orderForm', 'storePreferencesData', 'countryCode'], this.props.orderFormContext) || 'BRA'
 
     return (
       <Fragment>
@@ -280,65 +360,30 @@ class AddressSearch extends Component {
             document.body
           )}
         <form className="address-search w-100 pv7 ph6" onSubmit={this.handleFormSubmit}>
-          <div className="relative input--icon-right">
-            { isDisabled 
-              ? searchInput
-              : (
-                <StandaloneSearchBox ref={this.searchBox} onPlacesChanged={this.handlePlacesChanged}>
-                  {searchInput}
-                </StandaloneSearchBox>
-              )
-            }
-          </div>
-          {address &&
-            shouldDisplayNumberInput && (
-              <Adopt
-                mapper={{
-                  placeholder: (
-                    <FormattedMessage id="address-locator.address-search-number-placeholder" />
-                  ),
-                  label: <FormattedMessage id="address-locator.address-search-number-label" />,
-                }}
-              >
-                {({ placeholder, label }) => (
-                  <Input
-                    type="number"
-                    value={address.number}
-                    placeholder={placeholder}
-                    size="large"
-                    label={label}
-                    onChange={e => this.handleAddressKeyChanged(e, 'number')}
-                  />
-                )}
-              </Adopt>
-            )}
-          {address && (
-            <Adopt
-              mapper={{
-                placeholder: (
-                  <FormattedMessage id="address-locator.address-search-complement-placeholder" />
-                ),
-                label: <FormattedMessage id="address-locator.address-search-complement-label" />,
-              }}
-            >
-              {({ placeholder, label }) => (
-                <Input
-                  type="text"
-                  value={address.complement}
-                  placeholder={placeholder}
-                  size="large"
-                  label={label}
-                  onChange={e => this.handleAddressKeyChanged(e, 'complement')}
-                />
-              )}
-            </Adopt>
-          )}
+          {!hasSearchedStreet && (
+            <div className="relative input--icon-right">
+              <Autocomplete
+                isLoading={isDisabled}
+                onPlaceSelected={this.handleOnPlaceSelected}
+                types={['address']}
+                componentRestrictions={{ country: countryCode }}
+                value={formattedAddress}
+                errorMessage={this.getErrorMessage(inputError)}
+                onChange={this.handleAddressChanged}
+                onSuffixPress={this.handleSetCurrentPosition}
+              />
+            </div>)
+          }
+          {shouldDisplayStreetInput && hasSearchedStreet && this.renderExtraDataInput('street', 'text')}
+          {shouldDisplayStreetInput && hasSearchedStreet && this.renderExtraDataInput('neighborhood', 'text')}
+          {shouldDisplayStreetInput && hasSearchedStreet && this.renderExtraDataInput('postalCode', 'text')}
+          {shouldDisplayNumberInput && this.renderExtraDataInput('number', 'number')}
+          {(!shouldDisplayStreetInput || hasSearchedStreet) && this.renderExtraDataInput('complement', 'text')}
           <Button
             className="w-100"
             type="submit"
-            disabled={!address || !address.number}
+            disabled={!this.canSubmit() || isDisabled}
             isLoading={isLoading}
-            disabled={isDisabled}
             block
           >
             <FormattedMessage id="address-locator.address-search-button" />

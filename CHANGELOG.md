@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.6.0] - 2018-11-28
+
+### Added
+- Add more input for when user tries to use current position
+- Always ask for number of address
+- Replace SearchBox component with Autocomplete, to limit search for address only and within country
+
 ## [0.5.3] - 2018-11-07
 
 ### Fixed
