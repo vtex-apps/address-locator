@@ -8,7 +8,7 @@ import { graphql } from 'react-apollo'
 import { compose, branch, mapProps, renderComponent } from 'recompose'
 import { path } from 'ramda'
 
-import Autocomplete from './Autocomplete';
+import Autocomplete from './Autocomplete'
 import logisticsQuery from '../queries/logistics.gql'
 import alpha2ToAlpha3 from 'country-iso-2-to-3'
 import { Alert, Button, Input, Spinner } from 'vtex.styleguide'
@@ -23,7 +23,7 @@ const ERROR_POSITION_UNAVAILABLE = 2
 const ERROR_TIMEOUT = 3
 const ERROR_ADDRESS_NOT_FOUND = 9 // custom ad hoc error code
 
-const GEOLOCATION_TIMEOUT = 30*1000
+const GEOLOCATION_TIMEOUT = 30 * 1000
 
 const getCurrentPosition = () => {
   const geolocationOptions = {
@@ -124,7 +124,7 @@ class AddressSearch extends Component {
     }
   }
 
-  setAddressProperties = place => {
+  handleOnPlaceSelected = place => {
     const errorState = {
       AlertMessage: <FormattedMessage id="address-locator.address-search-invalid-address" />,
       address: null,
@@ -173,7 +173,7 @@ class AddressSearch extends Component {
       return { ...accumulator, ...parsedItem }
     }, {})
 
-    const { lat, lng } = path(['geometry', 'location'], place) || {};
+    const { lat, lng } = path(['geometry', 'location'], place) || {}
     // lat and lng may come as a function or a double
     const latitude = typeof lat === 'function' ? lat() : lat
     const longitude = typeof lng === 'function' ? lng() : lng
@@ -217,7 +217,7 @@ class AddressSearch extends Component {
         // TODO use sentry to log
       }
       return googleAddress.geoCoordinates
-    } catch(err) {
+    } catch (err) {
       return null
     }
   }
@@ -361,17 +361,17 @@ class AddressSearch extends Component {
           )}
         <form className="address-search w-100 pv7 ph6" onSubmit={this.handleFormSubmit}>
           {!hasSearchedStreet && (
-              <div className="relative input--icon-right">
-                <Autocomplete
-                  isLoading={isDisabled}
-                  onPlaceSelected={this.setAddressProperties}
-                  types={['address']}
-                  componentRestrictions={{ country: countryCode }}
-                  value={formattedAddress}
-                  errorMessage={this.getErrorMessage(inputError)}
-                  onChange={this.handleAddressChanged}
-                  onSuffixPress={this.handleSetCurrentPosition}
-                />
+            <div className="relative input--icon-right">
+              <Autocomplete
+                isLoading={isDisabled}
+                onPlaceSelected={this.handleOnPlaceSelected}
+                types={['address']}
+                componentRestrictions={{ country: countryCode }}
+                value={formattedAddress}
+                errorMessage={this.getErrorMessage(inputError)}
+                onChange={this.handleAddressChanged}
+                onSuffixPress={this.handleSetCurrentPosition}
+              />
             </div>)
           }
           {shouldDisplayStreetInput && hasSearchedStreet && this.renderExtraDataInput('street', 'text')}
