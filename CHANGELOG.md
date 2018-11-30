@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+### Changed
+
+- Make page contents visible while loading
+
 ## [0.6.1] - 2018-11-29
 ### Updated
 - Add dependencies required to build properly
