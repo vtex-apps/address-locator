@@ -25,13 +25,6 @@ class AddressManager extends Component {
   handleOpenModal = () => this.setState({ isModalOpen: true })
   handleCloseModal = () => this.setState({ isModalOpen: false })
 
-  componentDidUpdate(prevProps) {
-    const prevShippingData = prevProps.orderFormContext.orderForm.shippingData
-    const curShippingData = prevProps.orderFormContext.orderForm.shippingData
-
-    const hasReceivedShippingData = prevShippingData === undefined && curShippingData !== undefined
-  }
-
   render() {
     const { orderFormContext, logoUrl } = this.props
     const { shippingData } = orderFormContext.orderForm
