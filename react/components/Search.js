@@ -190,7 +190,7 @@ class AddressSearch extends Component {
       receiverName: '',
       state: parsedAddressComponents.administrative_area_level_1,
       street: parsedAddressComponents.route,
-      geoCoordinates: latitude && longitude ? [latitude, longitude] : null,
+      geoCoordinates: latitude && longitude ? [longitude, latitude] : null,
     }
 
     return address
@@ -253,6 +253,15 @@ class AddressSearch extends Component {
         return this.setState({
           isLoading: false,
           inputError: ERROR_ADDRESS_NOT_FOUND,
+        })
+      }
+      
+      if (orderFormContext.orderForm.isCheckedIn) {
+        await orderFormContext.updateOrderFormCheckin({
+          variables: {
+            orderFormId: orderFormContext.orderForm.orderFormId,
+            checkin: { isCheckedIn: false },
+          },
         })
       }
 

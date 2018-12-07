@@ -13,9 +13,11 @@
   ],
   "settingsSchema": {},
   "dependencies": {
+    "vtex.address-form": "3.x",
     "vtex.styleguide": "7.x",
     "vtex.store": "1.x",
     "vtex.store-graphql": "2.x",
+    "vtex.pickup-points-modal": "2.x",
     "vtex.profile-form": "2.x"
   },
   "scripts": {
