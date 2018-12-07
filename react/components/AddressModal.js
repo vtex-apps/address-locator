@@ -6,8 +6,8 @@ import PropTypes from 'prop-types'
 import { orderFormConsumer, contextPropTypes } from 'vtex.store-resources/OrderFormContext'
 import { Modal } from 'vtex.styleguide'
 
-import AddressSearch from './Search'
 import AddressRedeem from './Redeem'
+import Tabs from './Tabs';
 
 import '../global.css'
 
@@ -75,9 +75,9 @@ class AddressModal extends Component {
           </div>
           <div className="vtex-address-modal__form">
             <div className="vtex-address-modal__new">
-              <AddressSearch
-                orderFormContext={this.props.orderFormContext}
+              <Tabs
                 onOrderFormUpdated={this.handleOrderFormUpdated}
+                orderFormContext={this.props.orderFormContext}
               />
             </div>
             <div className="vtex-address-modal__redeem">

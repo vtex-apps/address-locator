@@ -255,6 +255,15 @@ class AddressSearch extends Component {
           inputError: ERROR_ADDRESS_NOT_FOUND,
         })
       }
+      
+      if (orderFormContext.orderForm.isCheckedIn) {
+        await orderFormContext.updateOrderFormCheckin({
+          variables: {
+            orderFormId: orderFormContext.orderForm.orderFormId,
+            checkin: { isCheckedIn: false },
+          },
+        })
+      }
 
       if (onOrderFormUpdated) {
         onOrderFormUpdated()

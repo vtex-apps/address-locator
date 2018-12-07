@@ -1,0 +1,21 @@
+{
+  "pages": {
+    "address-locator": {
+      "path": "/_v/address-locator"
+    }
+  },
+  "extensions": {
+    "tabs": {
+      "component": "Tabs"
+    },
+    "search": {
+      "component": "Search"
+    },
+    "redeem": {
+      "component": "Redeem"
+    },
+    "manager": {
+      "component": "Manager"
+    }
+  }
+}

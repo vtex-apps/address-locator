@@ -5,6 +5,10 @@ import AddressBar from './components/AddressBar'
 import AddressModal from './components/AddressModal'
 import hoistNonReactStatics from 'hoist-non-react-statics'
 import { Spinner } from 'vtex.styleguide'
+import { compose } from 'recompose'
+import { graphql } from 'react-apollo'
+import { path } from 'ramda'
+import pickupPointQuery from './queries/pickupPoint.gql'
 import './global.css'
 
 /**
@@ -26,11 +30,12 @@ class AddressManager extends Component {
   handleCloseModal = () => this.setState({ isModalOpen: false })
 
   render() {
-    const { orderFormContext, logoUrl } = this.props
+    const { orderFormContext, logoUrl, pickupPointQuery } = this.props
     const { shippingData } = orderFormContext.orderForm
 
     // If we don't know if there is an address or not we shouldn't load anything
-    if (shippingData === undefined) {
+    const isLoading = pickupPointQuery && pickupPointQuery.loading
+    if (shippingData === undefined || isLoading) {
       return (
         <React.Fragment>
           <AddressBar />
@@ -62,10 +67,13 @@ class AddressManager extends Component {
       logoUrl,
     }
 
+    const pickupName = path(['pickupPoint', 'friendlyName'], pickupPointQuery)
+    const pickupNameString = pickupName ? pickupName + ' - ' : ''
+
     return (
       <React.Fragment>
         <AddressBar onClick={this.handleOpenModal}>
-          {`${street}, ${number}`}
+          {`${pickupNameString}${street}, ${number}`}
         </AddressBar>
         <ChangeAddressModal {...modalProps} />
       </React.Fragment>
@@ -88,4 +96,18 @@ AddressManager.schema = {
   }
 }
 
-export default hoistNonReactStatics(orderFormConsumer(AddressManager), AddressManager)
+const composed = compose(
+  orderFormConsumer,
+  graphql(pickupPointQuery, {
+    name: 'pickupPointQuery',
+    skip: ({ orderFormContext: { orderForm: { isCheckedIn, checkedInPickupPointId  } } }) => 
+      !isCheckedIn || !checkedInPickupPointId,
+    options: ({ orderFormContext: { orderForm: { checkedInPickupPointId  } } }) => ({
+      variables: {
+        id: checkedInPickupPointId,
+      }
+    })
+  })
+)
+
+export default hoistNonReactStatics(composed(AddressManager), AddressManager)

@@ -13,7 +13,9 @@
     "vtex.store-resources": "0.x",
     "vtex.store-graphql": "2.x",
     "vtex.store-components": "3.x",
-    "vtex.profile-form": "3.x"
+    "vtex.profile-form": "3.x",
+    "vtex.address-form": "4.x",
+    "vtex.pickup-points-modal": "2.x"
   },
   "scripts": {
     "postreleasy": "vtex publish --verbose"

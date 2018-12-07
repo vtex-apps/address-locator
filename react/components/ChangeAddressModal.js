@@ -2,14 +2,14 @@ import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { FormattedMessage } from 'react-intl'
 import _ from 'lodash' //TODO: Replace with ramda
-import { orderFormConsumer, contextPropTypes } from 'vtex.store-resources/OrderFormContext'
+import { contextPropTypes } from 'vtex.store/OrderFormContext'
 import Modal from 'vtex.styleguide/Modal'
 import Button from 'vtex.styleguide/Button'
 import Spinner from 'vtex.styleguide/Spinner'
 import NewAddressIcon from './NewAddressIcon'
 import AddressList from './AddressList'
-import AddressSearch from './Search'
 import '../global.css'
+import Tabs from './Tabs';
 
 /**
  * Component responsible for displaying and managing user's address using orderFormContext.
@@ -49,20 +49,28 @@ class ChangeAddressModal extends Component {
     return availableAddresses
   }
 
-  handleSelectAddress = address => {
+  handleSelectAddress = async (address) => {
     const { orderFormContext } = this.props
-    const { orderFormId } = orderFormContext.orderForm
+    const { orderFormId, isCheckedIn } = orderFormContext.orderForm
 
     this.setState({ isLoading: true })
 
-    orderFormContext
-      .updateOrderFormShipping({
+    await orderFormContext.updateOrderFormShipping({
+      variables: {
+        orderFormId,
+        address,
+      },
+    })
+    if (isCheckedIn) {
+      await orderFormContext.updateOrderFormCheckin({
         variables: {
-          orderFormId,
-          address,
+          orderFormId: orderFormContext.orderForm.orderFormId,
+          checkin: { isCheckedIn: false },
         },
       })
-      .then(async () => await this.handleOrderFormUpdated())
+    }
+    
+    await this.handleOrderFormUpdated()
   }
 
   handleCloseModal = () => {
@@ -119,7 +127,7 @@ class ChangeAddressModal extends Component {
               )}
           </Fragment>
         ) : (
-            <AddressSearch
+            <Tabs
               onOrderFormUpdated={this.handleOrderFormUpdated}
               orderFormContext={orderFormContext}
             />

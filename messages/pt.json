@@ -1,6 +1,6 @@
 {
     "address-locator.order-title": "Peça de qualquer lugar",
-    "address-locator.address-search-tab": "Primeiro pedido",
+    "address-locator.address-search-tab": "Entregar",
     "address-locator.address-search-label": "Digite o seu endereço abaixo",
     "address-locator.address-search-placeholder": "Rua, cidade, estado",
     "address-locator.address-search-number-label": "Número",
@@ -26,6 +26,7 @@
     "address-locator.address-manager-description": "Adicione e gerencie seus Endereços",
     "address-locator.address-manager-button": "Adicionar novo endereço",
     "address-locator.address-manager.logo-title": "Logo",
+    "address-locator.pickup-tab": "Receber",
     "address-manager.address-list": "Endereços anteriores",
     "address-locator.graphql-error": "Encontramos problemas. Por favor, tente novamente",
     "profile-form.field.homePhone": "Digite o seu telefone abaixo",
