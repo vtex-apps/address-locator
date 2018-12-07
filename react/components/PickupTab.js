@@ -1,5 +1,6 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
+import { FormattedMessage } from 'react-intl'
 import { Button, Spinner } from 'vtex.styleguide'
 import { contextPropTypes } from 'vtex.store/OrderFormContext'
 import { graphql } from 'react-apollo'
@@ -53,7 +54,7 @@ class PickupTab extends Component {
           <Button
             onClick={() => this.handleOpenModal(true)}
           >
-            USE MY CURRENT LOCATION
+            <FormattedMessage id="address-locator.pickup-tab-use-my-geolocation" />
           </Button>
         </div>
         <div className="pv2">
@@ -61,7 +62,7 @@ class PickupTab extends Component {
             variation="tertiary"
             onClick={() => this.handleOpenModal(false)}
           >
-            INPUT ADDRESS
+            <FormattedMessage id="address-locator.pickup-tab-input-address" />
           </Button>
         </div>
 
@@ -82,7 +83,7 @@ class PickupTab extends Component {
         <Button
           onClick={() => this.handleOpenModal(false)}
         >
-          Choose other
+          <FormattedMessage id="address-locator.pickup-tab-see-all" />
         </Button>
       </Fragment>
     )
