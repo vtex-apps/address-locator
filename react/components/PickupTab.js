@@ -1,15 +1,12 @@
-import React, { Component, Fragment } from 'react'
-import PropTypes from 'prop-types'
-import { FormattedMessage } from 'react-intl'
-import { Button, Spinner } from 'vtex.styleguide'
+import React, { Component } from 'react'
+import { Spinner } from 'vtex.styleguide'
 import { contextPropTypes } from 'vtex.store/OrderFormContext'
-import { graphql } from 'react-apollo'
 import { path } from 'ramda'
 
 import { AddressRules } from 'vtex.address-form'
-import pickupPointQuery from '../queries/pickupPoint.gql'
 import PickupModalContainer from './PickupModalContainer'
-import GeolocationPin from './GeolocationPin'
+import AskForModal from './AskForModal';
+import PickupPointChosen from './PickupPointChosen';
 
 class PickupTab extends Component {
   state = {
@@ -43,73 +40,43 @@ class PickupTab extends Component {
   }
 
   renderAskForModal = () => {
-    return (
-      <Fragment>
-        <p className="ask-for-geolocation-title">We will find the pickup point closer to you</p>
-        <p className="ask-for-geolocation-subtitle">For that, we need to know your location</p>
-        <div className="ask-for-geolocation-imageask">
-          <GeolocationPin />
-        </div>
-        <div className="pv2">
-          <Button
-            onClick={() => this.handleOpenModal(true)}
-          >
-            <FormattedMessage id="address-locator.pickup-tab-use-my-geolocation" />
-          </Button>
-        </div>
-        <div className="pv2">
-          <Button
-            variation="tertiary"
-            onClick={() => this.handleOpenModal(false)}
-          >
-            <FormattedMessage id="address-locator.pickup-tab-input-address" />
-          </Button>
-        </div>
-
-      </Fragment>
-    )
+    return <AskForModal handleOpenModal={this.handleOpenModal} />
   }
 
   renderDeliveryPicked = () => {
-    const { orderFormContext: { orderForm }, pickupPointQuery } = this.props
-    const { shippingData: { address } } = orderForm
-
-    const pickupName = path(['pickupPoint', 'friendlyName'], pickupPointQuery)
+    const { orderFormContext: { orderForm } } = this.props
+    const { shippingData: { address }, pickupPoint } = orderForm
 
     return (
-      <Fragment>
-        {pickupName && (<p className="b">{pickupName}</p>)}
-        <p>{`${address.street}, ${address.number}`}</p>
-        <Button
-          onClick={() => this.handleOpenModal(false)}
-        >
-          <FormattedMessage id="address-locator.pickup-tab-see-all" />
-        </Button>
-      </Fragment>
+      <PickupPointChosen 
+        handleOpenModal={this.handleOpenModal}
+        name={path(['friendlyName'], pickupPoint)}
+        street={address.street}
+        number={address.number}
+      />
     )
   }
 
   render() {
-    const { orderFormContext: { orderForm }, pickupPointQuery } = this.props
+    const { orderFormContext: { orderForm } } = this.props
     const { askForGeolocation, isFetching, isModalOpen } = this.state
-    const { isCheckedIn, storePreferencesData } = orderForm
+    const { isCheckedIn, storePreferencesData, pickupPoint } = orderForm
     const { countryCode } = storePreferencesData
-    const isLoading = isFetching || (pickupPointQuery && pickupPointQuery.loading)
-    const activePickupPoint = path(['pickupPoint'], pickupPointQuery)
+    const isLoading = isFetching
     return (
       <AddressRules
         country={countryCode}
         shouldUseIOFetching
       >
         <div className="w-100 center flex flex-column justify-center items-center pa6">
-          {isLoading ? <Spinner /> : isCheckedIn ? this.renderDeliveryPicked() : this.renderAskForModal()}
-          <PickupModalContainer
-            isModalOpen={isModalOpen}
-            closePickupModal={this.onHandleCloseModal}
-            storePreferencesData={storePreferencesData}
-            askForGeolocation={askForGeolocation}
-            handlePickedSLA={this.onHandlePickedSLA}
-            activePickupPoint={activePickupPoint}
+        {isLoading ? <Spinner /> : isCheckedIn ? this.renderDeliveryPicked() : <AskForModal handleOpenModal={this.handleOpenModal} />}
+        <PickupModalContainer
+          isModalOpen={isModalOpen}
+          closePickupModal={this.onHandleCloseModal}
+          storePreferencesData={storePreferencesData}
+          askForGeolocation={askForGeolocation}
+          handlePickedSLA={this.onHandlePickedSLA}
+          activePickupPoint={pickupPoint}
           />
         </div>
       </AddressRules>
@@ -119,16 +86,6 @@ class PickupTab extends Component {
 
 PickupTab.propTypes = {
   orderFormContext: contextPropTypes,
-  pickupPointQuery: PropTypes.object,
 }
 
-export default graphql(pickupPointQuery, {
-  name: 'pickupPointQuery',
-  skip: ({ orderFormContext: { orderForm: { isCheckedIn, checkedInPickupPointId } } }) =>
-    !isCheckedIn || !checkedInPickupPointId,
-  options: ({ orderFormContext: { orderForm: { checkedInPickupPointId } } }) => ({
-    variables: {
-      id: checkedInPickupPointId,
-    },
-  }),
-})(PickupTab)
+export default PickupTab
