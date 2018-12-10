@@ -5,10 +5,7 @@ import AddressBar from './components/AddressBar'
 import AddressModal from './components/AddressModal'
 import hoistNonReactStatics from 'hoist-non-react-statics'
 import { Spinner } from 'vtex.styleguide'
-import { compose } from 'recompose'
-import { graphql } from 'react-apollo'
 import { path } from 'ramda'
-import pickupPointQuery from './queries/pickupPoint.gql'
 import './global.css'
 
 /**
@@ -30,12 +27,11 @@ class AddressManager extends Component {
   handleCloseModal = () => this.setState({ isModalOpen: false })
 
   render() {
-    const { orderFormContext, logoUrl, pickupPointQuery } = this.props
-    const { shippingData } = orderFormContext.orderForm
+    const { orderFormContext, logoUrl } = this.props
+    const { shippingData, pickupPoint } = orderFormContext.orderForm
 
     // If we don't know if there is an address or not we shouldn't load anything
-    const isLoading = pickupPointQuery && pickupPointQuery.loading
-    if (shippingData === undefined || isLoading) {
+    if (shippingData === undefined) {
       return (
         <React.Fragment>
           <AddressBar />
@@ -67,8 +63,8 @@ class AddressManager extends Component {
       logoUrl,
     }
 
-    const pickupName = path(['pickupPoint', 'friendlyName'], pickupPointQuery)
-    const pickupNameString = pickupName ? pickupName + ' - ' : ''
+    const pickupName = path(['friendlyName'], pickupPoint)
+    const pickupNameString = pickupName ? `${pickupName} - ` : ''
 
     return (
       <React.Fragment>
@@ -96,18 +92,4 @@ AddressManager.schema = {
   }
 }
 
-const composed = compose(
-  orderFormConsumer,
-  graphql(pickupPointQuery, {
-    name: 'pickupPointQuery',
-    skip: ({ orderFormContext: { orderForm: { isCheckedIn, checkedInPickupPointId  } } }) => 
-      !isCheckedIn || !checkedInPickupPointId,
-    options: ({ orderFormContext: { orderForm: { checkedInPickupPointId  } } }) => ({
-      variables: {
-        id: checkedInPickupPointId,
-      }
-    })
-  })
-)
-
-export default hoistNonReactStatics(composed(AddressManager), AddressManager)
+export default hoistNonReactStatics(orderFormConsumer(AddressManager), AddressManager)
