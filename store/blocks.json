@@ -1,0 +1,14 @@
+{
+  "address-locator": {
+    "blocks": true,
+    "inheritComponent": true
+  },
+  "address-rendeem": {
+    "blocks": true,
+    "inheritComponent": true
+  },
+  "address-manager": {
+    "blocks": true,
+    "inheritComponent": true
+  }
+}
