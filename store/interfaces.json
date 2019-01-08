@@ -2,7 +2,7 @@
   "address-locator": {
     "component": "Search"
   },
-  "address-rendeem": {
+  "address-redeem": {
     "component": "Redeem"
   },
   "address-manager": {
