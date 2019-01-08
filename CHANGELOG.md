@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [0.6.4-beta] - 2019-01-08
+
 ## [0.6.3] - 2019-01-08
 ### Fixed
 - Get city name from "locality" field to fix search for MX
