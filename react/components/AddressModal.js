@@ -3,7 +3,7 @@ import { compose } from 'recompose'
 import { withRuntimeContext } from 'render'
 import { FormattedMessage } from 'react-intl'
 import PropTypes from 'prop-types'
-import { orderFormConsumer, contextPropTypes } from 'vtex.store/OrderFormContext'
+import { orderFormConsumer, contextPropTypes } from 'vtex.store-resources/OrderFormContext'
 import { Modal } from 'vtex.styleguide'
 
 import AddressSearch from './Search'
@@ -33,7 +33,7 @@ class AddressModal extends Component {
   componentDidMount() {
     const overlayElement = document && document.querySelector('.vtex-modal__overlay')
 
-    if(overlayElement){
+    if (overlayElement) {
       overlayElement.addEventListener('click', this.shakeModal)
     }
   }
@@ -41,7 +41,7 @@ class AddressModal extends Component {
   componentWillUnmount() {
     const overlayElement = document && document.querySelector('.vtex-modal__overlay')
 
-    if(overlayElement){
+    if (overlayElement) {
       overlayElement.removeEventListener('click', this.shakeModal)
     }
   }
@@ -67,7 +67,7 @@ class AddressModal extends Component {
 
   render() {
     return (
-      <Modal {...{ isOpen: this.needAddress(), closeOnEsc: false, closeOnOverlayClick: false, showCloseIcon: false, onClose: () => {} }} >
+      <Modal {...{ isOpen: this.needAddress(), closeOnEsc: false, closeOnOverlayClick: false, showCloseIcon: false, onClose: () => { } }} >
         <div className="vtex-address-modal">
           <div className="w-100 bg-base">
             <img className="vtex-address-modal__logo" src={this.props.logoUrl} />

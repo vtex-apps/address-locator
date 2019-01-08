@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import { orderFormConsumer, contextPropTypes } from 'vtex.store/OrderFormContext'
+import { orderFormConsumer, contextPropTypes } from 'vtex.store-resources/OrderFormContext'
 import ChangeAddressModal from './components/ChangeAddressModal'
 import AddressBar from './components/AddressBar'
 import AddressModal from './components/AddressModal'
@@ -49,7 +49,7 @@ class AddressManager extends Component {
       return (
         <React.Fragment>
           <AddressBar />
-          <AddressModal logoUrl={logoUrl}/>
+          <AddressModal logoUrl={logoUrl} />
         </React.Fragment>
       )
     }
@@ -67,7 +67,7 @@ class AddressManager extends Component {
         <AddressBar onClick={this.handleOpenModal}>
           {`${street}, ${number}`}
         </AddressBar>
-        <ChangeAddressModal {...modalProps}/>
+        <ChangeAddressModal {...modalProps} />
       </React.Fragment>
     )
   }

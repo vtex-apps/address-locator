@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { find, head, prop, propEq } from 'ramda'
 import { compose, withApollo } from 'react-apollo'
-import { contextPropTypes } from 'vtex.store/OrderFormContext'
+import { contextPropTypes } from 'vtex.store-resources/OrderFormContext'
 import addValidation from '@vtex/profile-form/lib/modules/addValidation'
 
 import ProfileRules from './ProfileRules'
