@@ -1,7 +1,7 @@
 {
   "vendor": "vtex",
   "name": "address-locator",
-  "version": "0.6.4",
+  "version": "0.6.4-beta",
   "builders": {
     "store": "0.x",
     "messages": "0.x",
