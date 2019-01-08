@@ -180,7 +180,7 @@ class AddressSearch extends Component {
 
     const address = {
       addressType: 'residential',
-      city: parsedAddressComponents.administrative_area_level_2,
+      city: parsedAddressComponents.administrative_area_level_2 || parsedAddressComponents.locality,
       complement: '',
       /* Google Maps API returns Alpha-2 ISO codes, but checkout API requires Alpha-3 */
       country: alpha2ToAlpha3(parsedAddressComponents.country),
