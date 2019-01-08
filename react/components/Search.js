@@ -190,7 +190,7 @@ class AddressSearch extends Component {
       receiverName: '',
       state: parsedAddressComponents.administrative_area_level_1,
       street: parsedAddressComponents.route,
-      geoCoordinates: latitude && longitude ? [latitude, longitude] : null,
+      geoCoordinates: latitude && longitude ? [longitude, latitude] : null,
     }
 
     return address
@@ -330,7 +330,7 @@ class AddressSearch extends Component {
 
   canSubmit = () => {
     const { address } = this.state
-    return address && address.number && address.street && address.postalCode
+    return address && address.number && address.street
   }
 
   render() {
