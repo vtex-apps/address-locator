@@ -1,0 +1,11 @@
+{
+  "address-locator": {
+    "component": "Search"
+  },
+  "address-redeem": {
+    "component": "Redeem"
+  },
+  "address-manager": {
+    "component": "Manager"
+  }
+}

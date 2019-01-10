@@ -12,7 +12,7 @@ import Autocomplete from './Autocomplete'
 import logisticsQuery from '../queries/logistics.gql'
 import alpha2ToAlpha3 from 'country-iso-2-to-3'
 import { Alert, Button, Input, Spinner } from 'vtex.styleguide'
-import { contextPropTypes } from 'vtex.store/OrderFormContext'
+import { contextPropTypes } from 'vtex.store-resources/OrderFormContext'
 
 /**
  * Geolocation error codes. Can be found here:
@@ -247,7 +247,7 @@ class AddressSearch extends Component {
       })
 
       const { shippingData } = response.data.updateOrderFormShipping
-      const [ selectedAddress ] = shippingData.selectedAddresses
+      const [selectedAddress] = shippingData.selectedAddresses
 
       if (!selectedAddress || !this.getIsAddressValid(selectedAddress)) {
         return this.setState({

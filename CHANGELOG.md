@@ -7,6 +7,11 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [1.0.0] - 2019-01-10
+
+### Changed
+- Add support to store and messages builders.
+
 ## [0.6.4] - 2019-01-08
 ### Fixed
 - Correct geocoordinates array and remove postal code from obligatory fields to submit
@@ -16,9 +21,7 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 - Get city name from "locality" field to fix search for MX
 
 ## [0.6.2] - 2018-11-30
-
 ### Changed
-
 - Make page contents visible while loading
 
 ## [0.6.1] - 2018-11-29
