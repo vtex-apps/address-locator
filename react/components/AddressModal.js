@@ -1,13 +1,14 @@
 import React, { Component } from 'react'
 import { compose } from 'recompose'
 import { withRuntimeContext } from 'render'
-import { FormattedMessage } from 'react-intl'
 import PropTypes from 'prop-types'
+
 import { orderFormConsumer, contextPropTypes } from 'vtex.store-resources/OrderFormContext'
 import { Modal } from 'vtex.styleguide'
 
 import AddressSearch from './Search'
 import AddressRedeem from './Redeem'
+
 import '../global.css'
 
 /**

@@ -16,6 +16,7 @@
     "vtex.styleguide": "7.x",
     "vtex.store-resources": "0.x",
     "vtex.store-graphql": "2.x",
+    "vtex.store-components": "3.x",
     "vtex.profile-form": "2.x"
   },
   "scripts": {
