@@ -1,14 +1,11 @@
 {
   "address-locator": {
-    "blocks": [],
     "inheritComponent": true
   },
   "address-redeem": {
-    "blocks": [],
     "inheritComponent": true
   },
   "address-manager": {
-    "blocks": [],
     "inheritComponent": true
   }
 }
