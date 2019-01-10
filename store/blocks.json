@@ -1,10 +1,4 @@
 {
-  "address-locator": {
-    "inheritComponent": true
-  },
-  "address-redeem": {
-    "inheritComponent": true
-  },
   "address-manager": {
     "inheritComponent": true
   }

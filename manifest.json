@@ -1,7 +1,7 @@
 {
   "vendor": "vtex",
   "name": "address-locator",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "builders": {
     "store": "0.x",
     "messages": "0.x",
@@ -16,6 +16,7 @@
     "vtex.styleguide": "7.x",
     "vtex.store-resources": "0.x",
     "vtex.store-graphql": "2.x",
+    "vtex.store-components": "3.x",
     "vtex.profile-form": "2.x"
   },
   "scripts": {
