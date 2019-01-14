@@ -3,7 +3,7 @@ import { FormattedMessage, intlShape } from 'react-intl'
 import { compose } from 'recompose'
 import { withRuntimeContext } from 'render'
 import PropTypes from 'prop-types'
-import { orderFormConsumer, contextPropTypes } from 'vtex.store/OrderFormContext'
+import { orderFormConsumer, contextPropTypes } from 'vtex.store-resources/OrderFormContext'
 import { Tab, Tabs } from 'vtex.styleguide'
 
 import AddressSearch from './Search'

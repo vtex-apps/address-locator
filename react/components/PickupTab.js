@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { Spinner } from 'vtex.styleguide'
-import { contextPropTypes } from 'vtex.store/OrderFormContext'
+import { contextPropTypes } from 'vtex.store-resources/OrderFormContext'
 import { path } from 'ramda'
 
 import { AddressRules } from 'vtex.address-form'
