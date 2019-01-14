@@ -8,7 +8,7 @@ import { path } from 'ramda'
 import nearPickupPointsQuery from '../queries/nearPickupPoints.gql'
 import logisticsQuery from '../queries/logistics.gql'
 import { newAddress } from '../utils/newAddress'
-import { PickupPointsModal } from 'vtex.pickup-points-modal'
+import { PickupPointsSelector } from 'vtex.pickup-points-selector'
 import { helpers } from 'vtex.address-form'
 const { injectRules, addValidation } = helpers
 
@@ -91,26 +91,28 @@ class PickupModalContainer extends Component {
     if (!isModalOpen || logisticsQuery.loading) return null
 
     return (
-      <PickupPointsModal
-        activePickupPoint={this.state.activePickupPoint}
-        askForGeolocation={askForGeolocation}
-        changeActivePickupDetails={this.changeActivePickupDetails}
-        changeActiveSLAOption={this.changeActiveSLAOption}
-        closePickupPointsModal={this.props.closePickupModal}
-        googleMapsKey={logisticsQuery.logistics.googleMapsKey}
-        intl={this.props.intl}
-        isPickupDetailsActive={false}
-        items={[]}
-        logisticsInfo={[]}
-        onAddressChange={this.handleSearchAddressChange}
-        pickupOptions={this.state.pickupOptions}
-        rules={this.props.rules}
-        searchAddress={this.state.searchAddress}
-        selectedPickupPoint={this.state.selectedPickupPoint}
-        storePreferencesData={storePreferencesData}
-        pickupPoints={this.state.pickupPoints}
-        isSearching={this.state.isSearching}
-      />
+      <div className="fixed top-0 bottom-0 left-0 right-0">
+        <PickupPointsSelector
+          activePickupPoint={this.state.activePickupPoint}
+          askForGeolocation={askForGeolocation}
+          changeActivePickupDetails={this.changeActivePickupDetails}
+          changeActiveSLAOption={this.changeActiveSLAOption}
+          closePickupPointsModal={this.props.closePickupModal}
+          googleMapsKey={logisticsQuery.logistics.googleMapsKey}
+          intl={this.props.intl}
+          isPickupDetailsActive={false}
+          items={[]}
+          logisticsInfo={[]}
+          onAddressChange={this.handleSearchAddressChange}
+          pickupOptions={this.state.pickupOptions}
+          rules={this.props.rules}
+          searchAddress={this.state.searchAddress}
+          selectedPickupPoint={this.state.selectedPickupPoint}
+          storePreferencesData={storePreferencesData}
+          pickupPoints={this.state.pickupPoints}
+          isSearching={this.state.isSearching}
+        />
+      </div>
     )
   }
 }
