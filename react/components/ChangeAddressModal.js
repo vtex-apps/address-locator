@@ -2,7 +2,7 @@ import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
 import { FormattedMessage } from 'react-intl'
 import _ from 'lodash' //TODO: Replace with ramda
-import { contextPropTypes } from 'vtex.store/OrderFormContext'
+import { contextPropTypes } from 'vtex.store-resources/OrderFormContext'
 import Modal from 'vtex.styleguide/Modal'
 import Button from 'vtex.styleguide/Button'
 import Spinner from 'vtex.styleguide/Spinner'
