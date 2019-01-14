@@ -65,6 +65,13 @@ class AddressSearch extends Component {
     hasSearchedStreet: false,
   }
 
+  constructor(props) {
+    super(props)
+
+    this.inputRefs = []
+    this.form = React.createRef()
+  }
+
   requestGoogleMapsApi = async (params) => {
     const { lat, long, address } = params
     const { googleMapKey } = this.props
@@ -225,6 +232,20 @@ class AddressSearch extends Component {
   handleFormSubmit = async e => {
     e.preventDefault()
 
+    const canSubmit = this.canSubmit()
+
+    if (!canSubmit) {
+      const formElement = this.form.current
+      const inputs = Array.from(formElement ? formElement.querySelectorAll('input') : [])
+      for (const input of inputs) {
+        if (input.value === '') {
+          input.focus()
+          break
+        }
+      }
+      return
+    }
+
     this.setState({
       isLoading: true,
       inputError: null,
@@ -368,7 +389,7 @@ class AddressSearch extends Component {
             </div>,
             document.body
           )}
-        <form className="address-search w-100 pv7 ph6" onSubmit={this.handleFormSubmit}>
+        <form className="address-search w-100" ref={this.form} onSubmit={this.handleFormSubmit}>
           {!hasSearchedStreet && (
             <div className="relative input--icon-right">
               <Autocomplete
@@ -383,15 +404,16 @@ class AddressSearch extends Component {
               />
             </div>)
           }
+
           {shouldDisplayStreetInput && hasSearchedStreet && this.renderExtraDataInput('street', 'text')}
           {shouldDisplayStreetInput && hasSearchedStreet && this.renderExtraDataInput('neighborhood', 'text')}
           {shouldDisplayStreetInput && hasSearchedStreet && this.renderExtraDataInput('postalCode', 'text')}
           {shouldDisplayNumberInput && this.renderExtraDataInput('number', 'number')}
           {(!shouldDisplayStreetInput || hasSearchedStreet) && this.renderExtraDataInput('complement', 'text')}
+
           <Button
             className="w-100"
             type="submit"
-            disabled={!this.canSubmit() || isDisabled}
             isLoading={isLoading}
             block
           >
