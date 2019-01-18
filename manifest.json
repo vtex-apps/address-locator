@@ -5,19 +5,15 @@
   "builders": {
     "store": "0.x",
     "messages": "0.x",
-    "react": "2.x"
+    "react": "3.x"
   },
   "mustUpdateAt": "2019-04-02",
-  "categories": [],
-  "registries": [
-    "smartcheckout"
-  ],
   "dependencies": {
-    "vtex.styleguide": "7.x",
+    "vtex.styleguide": "9.x",
     "vtex.store-resources": "0.x",
     "vtex.store-graphql": "2.x",
     "vtex.store-components": "3.x",
-    "vtex.profile-form": "2.x"
+    "vtex.profile-form": "3.x"
   },
   "scripts": {
     "postreleasy": "vtex publish --verbose"
