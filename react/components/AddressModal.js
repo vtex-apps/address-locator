@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import { compose } from 'recompose'
-import { withRuntimeContext } from 'render'
+import { withRuntimeContext } from 'vtex.render-runtime'
 import PropTypes from 'prop-types'
 
 import { orderFormConsumer, contextPropTypes } from 'vtex.store-resources/OrderFormContext'
