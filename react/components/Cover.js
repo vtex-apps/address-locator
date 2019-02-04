@@ -28,7 +28,7 @@ class Cover extends Component {
 
   render() {
     return (
-      <div className="fixed top-0 left-0 right-0 vh-100 z-999 bg-base overflow-auto">
+      <div className="fixed top-0 left-0 right-0 vh-100 z-999 bg-muted-5 overflow-auto">
         {this.props.children}
       </div>
     )
