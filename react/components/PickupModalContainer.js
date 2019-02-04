@@ -86,12 +86,16 @@ class PickupModalContainer extends Component {
     }
   }
 
+  handlePickupConfirm = (options) => {
+    this.props.onConfirm && this.props.onConfirm(options)
+  }
+
   render() {
     const { isModalOpen, storePreferencesData, logisticsQuery, askForGeolocation } = this.props
     if (!isModalOpen || logisticsQuery.loading) return null
 
     return (
-      <div className="fixed top-0 bottom-0 left-0 right-0">
+      <div className="absolute top-0 bottom-0 left-0 right-0">
         <PickupPointsSelector
           activePickupPoint={this.state.activePickupPoint}
           askForGeolocation={askForGeolocation}
@@ -111,6 +115,8 @@ class PickupModalContainer extends Component {
           storePreferencesData={storePreferencesData}
           pickupPoints={this.state.pickupPoints}
           isSearching={this.state.isSearching}
+          height='100%'
+          onConfirm={this.handlePickupConfirm}
         />
       </div>
     )
@@ -128,6 +134,7 @@ PickupModalContainer.propTypes = {
   logisticsQuery: PropTypes.object,
   rules: PropTypes.object,
   storePreferencesData: PropTypes.object,
+  onConfirm: PropTypes.func,
 }
 
 export default compose(
