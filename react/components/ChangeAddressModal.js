@@ -8,8 +8,8 @@ import Button from 'vtex.styleguide/Button'
 import Spinner from 'vtex.styleguide/Spinner'
 import NewAddressIcon from './NewAddressIcon'
 import AddressList from './AddressList'
-import '../global.css'
 import Tabs from './Tabs';
+import AddressContent from './AddressContent';
 
 /**
  * Component responsible for displaying and managing user's address using orderFormContext.
@@ -90,6 +90,10 @@ class ChangeAddressModal extends Component {
 
   handleAddressSearch = () => this.setState({ isSearchingAddress: true })
 
+  handlePickupClick = () => {
+
+  }
+
   render() {
     const { orderFormContext, isOpen } = this.props
     const { shippingData } = orderFormContext.orderForm
@@ -100,38 +104,19 @@ class ChangeAddressModal extends Component {
     const availableAddresses = this.getAvailableAddresses()
 
     return (
-      <Modal isOpen={isOpen} onClose={this.handleCloseModal}>
-        <p className="f4 pa5 ma0 bb b--light-gray bw1 b near-black">
-          <FormattedMessage id="address-locator.address-manager-title" />
-        </p>
-        <span className={`${isSearchingAddress ? 'mt10' : 'mt8'} db mb5 tc`}>
-          <NewAddressIcon />
-        </span>
-        {!isSearchingAddress ? (
-          <Fragment>
-            <div className="pa5 mb5">
-              <Button onClick={this.handleAddressSearch} block>
-                <FormattedMessage id="address-locator.address-manager-button" />
-              </Button>
-            </div>
-            {!isLoading ? (
-              <AddressList
-                availableAddresses={availableAddresses}
-                onOrderFormUpdated={this.handleCloseModal}
-                onSelectAddress={this.handleSelectAddress}
-              />
-            ) : (
-                <i className="tc">
-                  <Spinner />
-                </i>
-              )}
-          </Fragment>
+      <Modal isOpen={isOpen} onClose={this.handleCloseModal} centered>
+        <AddressContent onPickup={this.handlePickupClick} />
+        {!isLoading ? (
+          <AddressList
+            availableAddresses={availableAddresses}
+            onOrderFormUpdated={this.handleCloseModal}
+            onSelectAddress={this.handleSelectAddress}
+          />
         ) : (
-            <Tabs
-              onOrderFormUpdated={this.handleOrderFormUpdated}
-              orderFormContext={orderFormContext}
-            />
-          )}
+            <i className="tc">
+              <Spinner />
+            </i>
+        )}
       </Modal>
     )
   }
