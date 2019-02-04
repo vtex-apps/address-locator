@@ -20,6 +20,22 @@ class AddressManager extends Component {
     isModalOpen: false,
   }
 
+  componentDidMount() {
+    /** QUICK FIX - allows other components to open the modal
+     * TODO Find a better solution for inter-module communication
+     * @author lbebber */
+
+    if (!window) return
+    window.changeAddress = () => {
+      this.handleOpenModal()
+    }
+  }
+
+  componentWillUnmount() {
+    if (!window) return
+    window.changeAddress = null
+  }
+
   handleOpenModal = () => this.setState({ isModalOpen: true })
   handleCloseModal = () => this.setState({ isModalOpen: false })
 
