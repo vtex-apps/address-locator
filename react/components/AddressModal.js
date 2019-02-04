@@ -1,15 +1,20 @@
 import React, { Component } from 'react'
 import { compose } from 'recompose'
-import { withRuntimeContext } from 'render'
+import { withRuntimeContext, ExtensionPoint } from 'vtex.render-runtime'
 import PropTypes from 'prop-types'
 
+
 import { orderFormConsumer, contextPropTypes } from 'vtex.store-resources/OrderFormContext'
+import Cover from './Cover'
+import Card from './Card'
+import AddressContent from './AddressContent'
+
+import { Spinner } from 'vtex.styleguide'
 import { Modal } from 'vtex.styleguide'
 
-import AddressRedeem from './Redeem'
-import Tabs from './Tabs';
-
-import '../global.css'
+import styles from './AddressModal.css'
+import PickupTab from './PickupTab';
+import RedeemContent from './RedeemContent';
 
 /**
  * Component that allows the user to locate his address, by inserting, searching, retrieving and
@@ -20,8 +25,13 @@ class AddressModal extends Component {
   static propTypes = {
     /* Context used to call address mutation and retrieve the orderForm */
     orderFormContext: contextPropTypes,
-    /* URL for the store logo */
-    logoUrl: PropTypes.string,
+    loading: PropTypes.bool,
+  }
+
+  state = {
+    isOpen: true,
+    isPickupOpen: false,
+    isModalOpen: false,
   }
 
   needAddress() {
@@ -31,64 +41,82 @@ class AddressModal extends Component {
 
   handleClose = () => this.setState({ isOpen: false })
 
-  componentDidMount() {
-    const overlayElement = document && document.querySelector('.vtex-modal__overlay')
-
-    if (overlayElement) {
-      overlayElement.addEventListener('click', this.shakeModal)
-    }
+  handlePickupClick = () => {
+    this.setState({
+      isPickupOpen: true,
+    })
   }
 
-  componentWillUnmount() {
-    const overlayElement = document && document.querySelector('.vtex-modal__overlay')
-
-    if (overlayElement) {
-      overlayElement.removeEventListener('click', this.shakeModal)
-    }
-  }
-
-  shakeModal = e => {
-    const modalElement = document && document.querySelector('.vtex-modal__modal')
-
-    if (modalElement) {
-      if (e.target !== e.currentTarget) {
-        return
-      }
-
-      modalElement.classList.add('animated', 'shake')
-
-      setTimeout(() => {
-        modalElement.classList.remove('shake')
-      }, 1000)
-    }
+  handlePickupConfirm = () => {
+    this.setState({
+      isPickupOpen: false,
+    })
+    this.handleOrderFormUpdated()
   }
 
   /* Function that will be called when updating the orderform */
   handleOrderFormUpdated = async () => await this.props.orderFormContext.refetch()
 
   render() {
+    const { orderFormContext, loading } = this.props
+    const { isPickupOpen } = this.state
+
+    if (loading) {
+      return (
+        <Cover>
+          <div className="flex w-100 h-100 items-center justify-center">
+            <div className={styles.spinnerAppear}>
+              <Spinner />
+            </div>
+          </div>
+        </Cover>
+      )
+    }
+
+    /** TODO: use a better method of mobile detection
+     * @author lbebber */
+    const isMobile = window.innerWidth < 640
+
+    const pickupPage = isPickupOpen ? (
+      <PickupTab
+        orderFormContext={orderFormContext}
+        onConfirm={this.handlePickupConfirm}
+      />
+    ) : <div/>
+
     return (
-      <Modal {...{ isOpen: this.needAddress(), closeOnEsc: false, closeOnOverlayClick: false, showCloseIcon: false, onClose: () => { } }} >
-        <div className="vtex-address-modal">
-          <div className="w-100 bg-base">
-            <img className="vtex-address-modal__logo" src={this.props.logoUrl} />
-          </div>
-          <div className="vtex-address-modal__form">
-            <div className="vtex-address-modal__new">
-              <Tabs
-                onOrderFormUpdated={this.handleOrderFormUpdated}
-                orderFormContext={this.props.orderFormContext}
-              />
-            </div>
-            <div className="vtex-address-modal__redeem">
-              <AddressRedeem
-                orderFormContext={this.props.orderFormContext}
-                onOrderFormUpdated={this.handleOrderFormUpdated}
-              />
-            </div>
-          </div>
+      <Cover>
+        <div className="vtex-address-modal__address" style={{
+          transition: 'transform 300ms',
+          transform: `translate3d(${isPickupOpen && isMobile ? '-100%' : '0'}, 0, 0)`
+        }}>
+          <ExtensionPoint id="header" leanWhen=".*" />
+          <Card>
+            <AddressContent onPickup={this.handlePickupClick} />
+          </Card>
+          <Card>
+            <RedeemContent />
+          </Card>
         </div>
-      </Modal>
+        {isMobile ? (
+          <div className="absolute w-100 h-100 top-0" style={{
+            left: '100%',
+            transition: 'transform 300ms',
+            transform: `translate3d(${isPickupOpen && isMobile ? '-100%' : '0'}, 0, 0)`
+          }}>
+            {pickupPage}
+          </div>
+        ) : (
+          <Modal 
+            centered 
+            isOpen={isPickupOpen}
+            onClose={() => this.setState({ isPickupOpen: false })}>
+            <div className="vw-90 vh-80">
+              {pickupPage}
+            </div>
+          </Modal>
+        )}
+      </Cover>
     )
   }
 }
