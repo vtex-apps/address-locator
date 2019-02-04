@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import { compose } from 'recompose'
 import PropTypes from 'prop-types'
-import { withRuntimeContext } from 'render'
+import { withRuntimeContext } from 'vtex.render-runtime'
 import defaultRules from '@vtex/profile-form/lib/rules/default'
 
 const ProfileRules = WrappedComponent =>
