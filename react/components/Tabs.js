@@ -1,14 +1,13 @@
 import React, { Component } from 'react'
 import { FormattedMessage, intlShape } from 'react-intl'
 import { compose } from 'recompose'
-import { withRuntimeContext } from 'render'
+import { withRuntimeContext } from 'vtex.render-runtime'
 import PropTypes from 'prop-types'
 import { orderFormConsumer, contextPropTypes } from 'vtex.store-resources/OrderFormContext'
 import { Tab, Tabs } from 'vtex.styleguide'
 
 import AddressSearch from './Search'
 import PickupTab from './PickupTab'
-import '../global.css'
 
 /**
  * Component that allows the user to locate his address, by inserting, searching, retrieving and
