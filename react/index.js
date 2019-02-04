@@ -1,11 +1,8 @@
 import React, { Component } from 'react'
 import { orderFormConsumer, contextPropTypes } from 'vtex.store-resources/OrderFormContext'
 import ChangeAddressModal from './components/ChangeAddressModal'
-import AddressBar from './components/AddressBar'
 import AddressModal from './components/AddressModal'
 import hoistNonReactStatics from 'hoist-non-react-statics'
-import { Spinner } from 'vtex.styleguide'
-import { path } from 'ramda'
 import './global.css'
 
 /**
@@ -28,34 +25,14 @@ class AddressManager extends Component {
 
   render() {
     const { orderFormContext, logoUrl } = this.props
-    const { shippingData, pickupPoint } = orderFormContext.orderForm
+    const { shippingData } = orderFormContext.orderForm
 
-    // If we don't know if there is an address or not we shouldn't load anything
-    if (shippingData === undefined) {
-      return (
-        <React.Fragment>
-          <AddressBar />
-          <div className="flex items-center justify-center fixed absolute--fill z-999 c-action-primary">
-            <div className="absolute absolute--fill bg-black-30" />
-            <div className="relative bg-base br3 flex items-center justify-center w4 h4">
-              <Spinner />
-            </div>
-          </div>
-        </React.Fragment>
-      )
-    }
+    const isLoading = shippingData === undefined
 
-    // If there is no address, it means that the user isn't identified, and so the component won't render
     if (!shippingData || !shippingData.address) {
-      return (
-        <React.Fragment>
-          <AddressBar />
-          <AddressModal logoUrl={logoUrl} />
-        </React.Fragment>
-      )
+      return <AddressModal logoUrl={logoUrl} loading={isLoading} />
     }
 
-    const { street, number } = shippingData.address
     const modalProps = {
       isOpen: this.state.isModalOpen,
       onClose: this.handleCloseModal,
@@ -63,17 +40,7 @@ class AddressManager extends Component {
       logoUrl,
     }
 
-    const pickupName = path(['friendlyName'], pickupPoint)
-    const pickupNameString = pickupName ? `${pickupName} - ` : ''
-
-    return (
-      <React.Fragment>
-        <AddressBar onClick={this.handleOpenModal}>
-          {`${pickupNameString}${street}, ${number}`}
-        </AddressBar>
-        <ChangeAddressModal {...modalProps} />
-      </React.Fragment>
-    )
+    return <ChangeAddressModal {...modalProps} />
   }
 }
 
