@@ -12,7 +12,7 @@ const StyleguideInput = props => {
     <div
       className={`vtex-profile-form__${field.name} ${
         field.hidden ? 'dn' : ''
-      } pb7`}
+      }`}
     >
       <Input
         name={field.name}

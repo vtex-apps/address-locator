@@ -345,14 +345,16 @@ class AddressSearch extends Component {
         }}
       >
         {({ placeholder, label }) => (
-          <Input
-            type={type}
-            value={address[field]}
-            placeholder={placeholder}
-            size="large"
-            label={label}
-            onChange={e => this.handleAddressKeyChanged(e, field)}
-          />
+          <div className="mb4">
+            <Input
+              type={type}
+              value={address[field]}
+              placeholder={placeholder}
+              size="large"
+              label={label}
+              onChange={e => this.handleAddressKeyChanged(e, field)}
+            />
+          </div>
         )}
       </Adopt>
     )
@@ -390,27 +392,30 @@ class AddressSearch extends Component {
             document.body
           )}
         <form className="address-search w-100" ref={this.form} onSubmit={this.handleFormSubmit}>
-          {!hasSearchedStreet && (
-            <div className="relative input--icon-right">
-              <Autocomplete
-                isLoading={isDisabled}
-                onPlaceSelected={this.handleOnPlaceSelected}
-                types={['address']}
-                componentRestrictions={{ country: countryCode }}
-                value={formattedAddress}
-                errorMessage={this.getErrorMessage(inputError)}
-                onChange={this.handleAddressChanged}
-                onSuffixPress={this.handleSetCurrentPosition}
-              />
-            </div>)
-          }
+          <div className="mb4">
+            {!hasSearchedStreet && (
+              <div className="relative input--icon-right">
+                <Autocomplete
+                  isLoading={isDisabled}
+                  onPlaceSelected={this.handleOnPlaceSelected}
+                  types={['address']}
+                  componentRestrictions={{ country: countryCode }}
+                  value={formattedAddress}
+                  errorMessage={this.getErrorMessage(inputError)}
+                  onChange={this.handleAddressChanged}
+                  onSuffixPress={this.handleSetCurrentPosition}
+                  hideLabel
+                />
+              </div>)
+            }
 
-          {shouldDisplayStreetInput && hasSearchedStreet && this.renderExtraDataInput('street', 'text')}
-          {shouldDisplayStreetInput && hasSearchedStreet && this.renderExtraDataInput('neighborhood', 'text')}
-          {shouldDisplayStreetInput && hasSearchedStreet && this.renderExtraDataInput('postalCode', 'text')}
-          {shouldDisplayNumberInput && this.renderExtraDataInput('number', 'number')}
-          {(!shouldDisplayStreetInput || hasSearchedStreet) && this.renderExtraDataInput('complement', 'text')}
+            {shouldDisplayStreetInput && hasSearchedStreet && this.renderExtraDataInput('street', 'text')}
+            {shouldDisplayStreetInput && hasSearchedStreet && this.renderExtraDataInput('neighborhood', 'text')}
+            {shouldDisplayStreetInput && hasSearchedStreet && this.renderExtraDataInput('postalCode', 'text')}
+            {shouldDisplayNumberInput && this.renderExtraDataInput('number', 'number')}
+            {(!shouldDisplayStreetInput || hasSearchedStreet) && this.renderExtraDataInput('complement', 'text')}
 
+          </div>
           <Button
             className="w-100"
             type="submit"
