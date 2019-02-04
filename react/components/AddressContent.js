@@ -27,7 +27,7 @@ class AddressContent extends Component {
         />
         <hr className="mv5 mv6-ns bg-muted-3 bn" style={{ height: 1 }} />
         <div>
-          <Button variation="secondary" block onClick={onPickup}>
+          <Button variation="tertiary" block onClick={onPickup}>
             <FormattedMessage id="address-locator.pickup-button" />
           </Button>
         </div>
