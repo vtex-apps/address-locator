@@ -1,17 +1,17 @@
 import React, { Component } from 'react'
+import PropTypes from 'prop-types'
 import { Spinner } from 'vtex.styleguide'
-import { contextPropTypes } from 'vtex.store-resources/OrderFormContext'
+import { orderFormConsumer, contextPropTypes } from 'vtex.store-resources/OrderFormContext'
 import { path } from 'ramda'
 
 import { AddressRules } from 'vtex.address-form'
 import PickupModalContainer from './PickupModalContainer'
-import AskForModal from './AskForModal';
 import PickupPointChosen from './PickupPointChosen';
 
 class PickupTab extends Component {
   state = {
     isModalOpen: false,
-    askForGeolocation: true,
+    askForGeolocation: false,
     isFetching: false,
   }
 
@@ -20,7 +20,7 @@ class PickupTab extends Component {
   onHandleCloseModal = () => this.setState({ isModalOpen: false })
 
   onHandlePickedSLA = async (pickupPoint) => {
-    const { orderFormContext, onOrderFormUpdated } = this.props
+    const { orderFormContext, onOrderFormUpdated, onConfirm } = this.props
     this.setState({ isFetching: true })
     try {
       await orderFormContext.updateOrderFormCheckin({
@@ -37,10 +37,8 @@ class PickupTab extends Component {
     if (onOrderFormUpdated) {
       onOrderFormUpdated()
     }
-  }
 
-  renderAskForModal = () => {
-    return <AskForModal handleOpenModal={this.handleOpenModal} />
+    onConfirm && onConfirm()
   }
 
   renderDeliveryPicked = () => {
@@ -69,15 +67,18 @@ class PickupTab extends Component {
         shouldUseIOFetching
       >
         <div className="w-100 center flex flex-column justify-center items-center pa6">
-        {isLoading ? <Spinner /> : isCheckedIn ? this.renderDeliveryPicked() : <AskForModal handleOpenModal={this.handleOpenModal} />}
-        <PickupModalContainer
-          isModalOpen={isModalOpen}
-          closePickupModal={this.onHandleCloseModal}
-          storePreferencesData={storePreferencesData}
-          askForGeolocation={askForGeolocation}
-          handlePickedSLA={this.onHandlePickedSLA}
-          activePickupPoint={pickupPoint}
+        {isLoading ? (
+          <Spinner />
+        ) : (
+          <PickupModalContainer
+            isModalOpen
+            closePickupModal={this.onHandleCloseModal}
+            storePreferencesData={storePreferencesData}
+            askForGeolocation={askForGeolocation}
+            handlePickedSLA={this.onHandlePickedSLA}
+            activePickupPoint={pickupPoint}
           />
+        )}
         </div>
       </AddressRules>
     )
@@ -86,6 +87,7 @@ class PickupTab extends Component {
 
 PickupTab.propTypes = {
   orderFormContext: contextPropTypes,
+  onConfirm: PropTypes.func.isRequired,
 }
 
-export default PickupTab
+export default orderFormConsumer(PickupTab)
