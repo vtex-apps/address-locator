@@ -1,5 +1,8 @@
 {
   "address-manager": {
+    "allowed": [
+      "header"
+    ],
     "component": "index"
   }
 }

@@ -1,5 +1,14 @@
 {
   "address-manager": {
-    "inheritComponent": true
+    "blocks": [
+      "header"
+    ]
+  },
+  "header": {
+    "blocks": [
+      "telemarketing",
+      "logo",
+      "login"
+    ]
   }
 }
