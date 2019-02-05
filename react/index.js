@@ -3,6 +3,7 @@ import { orderFormConsumer, contextPropTypes } from 'vtex.store-resources/OrderF
 import ChangeAddressModal from './components/ChangeAddressModal'
 import AddressModal from './components/AddressModal'
 import hoistNonReactStatics from 'hoist-non-react-statics'
+import queryString from 'query-string'
 import './global.css'
 
 /**
@@ -20,24 +21,39 @@ class AddressManager extends Component {
     isModalOpen: false,
   }
 
-  componentDidMount() {
-    /** QUICK FIX - allows other components to open the modal
-     * TODO Find a better solution for inter-module communication
-     * @author lbebber */
+  handleOpenModal = () => this.setState({ isModalOpen: true })
+  handleCloseModal = () => this.setState({ isModalOpen: false })
 
-    if (!window) return
-    window.changeAddress = () => {
-      this.handleOpenModal()
+  handleSelectAddress = () => {
+    this.redirectToReturnURL()
+  }
+
+  componentDidMount() {
+    this.checkAddress()
+  }
+
+  componentDidUpdate() {
+    this.checkAddress()
+  }
+
+  checkAddress = () => {
+    const { orderFormContext } = this.props
+    const { shippingData } = orderFormContext.orderForm
+
+    if (shippingData && shippingData.address) {
+      this.redirectToReturnURL()
     }
   }
 
-  componentWillUnmount() {
-    if (!window) return
-    window.changeAddress = null
+  redirectToReturnURL = () => {
+    try {
+      const parsedQueryString = queryString.parse(window.location.search)
+      const returnURL = parsedQueryString && parsedQueryString.returnUrl
+      window.location.href = `/${returnURL || ''}`
+    } catch (e) {
+      // Unable to redirect
+    }
   }
-
-  handleOpenModal = () => this.setState({ isModalOpen: true })
-  handleCloseModal = () => this.setState({ isModalOpen: false })
 
   render() {
     const { orderFormContext, logoUrl } = this.props
@@ -46,17 +62,15 @@ class AddressManager extends Component {
     const isLoading = shippingData === undefined
 
     if (!shippingData || !shippingData.address) {
-      return <AddressModal logoUrl={logoUrl} loading={isLoading} />
+      return <AddressModal
+        logoUrl={logoUrl}
+        loading={isLoading}
+        onClose={this.handleSelectAddress} />
     }
 
-    const modalProps = {
-      isOpen: this.state.isModalOpen,
-      onClose: this.handleCloseModal,
-      orderFormContext: this.props.orderFormContext,
-      logoUrl,
-    }
-
-    return <ChangeAddressModal {...modalProps} />
+    /** TODO: Add a redirect placeholder (perhaps one of those "If you are not redirected, click here" things)
+     * @author lbebber */
+    return null
   }
 }
 
