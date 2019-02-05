@@ -1,15 +1,11 @@
 import React, { Component, Fragment } from 'react'
 import PropTypes from 'prop-types'
-import { FormattedMessage } from 'react-intl'
 import _ from 'lodash' //TODO: Replace with ramda
 import { contextPropTypes } from 'vtex.store-resources/OrderFormContext'
 import Modal from 'vtex.styleguide/Modal'
-import Button from 'vtex.styleguide/Button'
 import Spinner from 'vtex.styleguide/Spinner'
-import NewAddressIcon from './NewAddressIcon'
 import AddressList from './AddressList'
-import Tabs from './Tabs';
-import AddressContent from './AddressContent';
+import AddressContent from './AddressContent'
 
 /**
  * Component responsible for displaying and managing user's address using orderFormContext.
@@ -73,6 +69,10 @@ class ChangeAddressModal extends Component {
     await this.handleOrderFormUpdated()
   }
 
+  handleChangeAddress = () => {
+    this.handleOrderFormUpdated()
+  }
+
   handleCloseModal = () => {
     this.props.onClose()
     this.setState({
@@ -105,7 +105,9 @@ class ChangeAddressModal extends Component {
 
     return (
       <Modal isOpen={isOpen} onClose={this.handleCloseModal} centered>
-        <AddressContent onPickup={this.handlePickupClick} />
+        <AddressContent
+          onPickup={this.handlePickupClick}
+          onUpdateOrderForm={this.handleChangeAddress} />
         {!isLoading ? (
           <AddressList
             availableAddresses={availableAddresses}

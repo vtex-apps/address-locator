@@ -8,30 +8,29 @@ import { FormattedMessage } from 'react-intl'
 class AddressContent extends Component {
   static propTypes = {
     orderFormContext: contextPropTypes.isRequired,
-    onPickup: PropTypes.func.isRequired,
+    onUpdateOrderForm: PropTypes.func.isRequired,
+    onPickupClick: PropTypes.func.isRequired,
   }
 
-  handleOrderFormUpdated = async () => await this.props.orderFormContext.refetch()
-
   render() {
-    const { orderFormContext, onPickup } = this.props
+    const { orderFormContext, onPickupClick, onUpdateOrderForm } = this.props
 
     return (
-      <React.Fragment>
+      <div className="vtex-address-modal__address">
         <h1 className="t-heading-1 mt0 mb4 mb7-ns">
           <FormattedMessage id="address-locator.address-page-title" />
         </h1>
         <AddressSearch
           orderFormContext={orderFormContext}
-          onOrderFormUpdated={this.handleOrderFormUpdated}
+          onOrderFormUpdated={onUpdateOrderForm}
         />
         <hr className="mv5 mv6-ns bg-muted-3 bn" style={{ height: 1 }} />
         <div>
-          <Button variation="tertiary" block onClick={onPickup}>
+          <Button variation="tertiary" block onClick={onPickupClick}>
             <FormattedMessage id="address-locator.pickup-button" />
           </Button>
         </div>
-      </React.Fragment>
+      </div>
     )
   }
 }

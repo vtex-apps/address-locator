@@ -24,8 +24,13 @@ import RedeemContent from './RedeemContent';
 class AddressModal extends Component {
   static propTypes = {
     /* Context used to call address mutation and retrieve the orderForm */
-    orderFormContext: contextPropTypes,
+    orderFormContext: contextPropTypes.isRequired,
     loading: PropTypes.bool,
+    onClose: PropTypes.func,
+  }
+
+  static defaultProps = {
+    onClose: () => {},
   }
 
   state = {
@@ -39,7 +44,12 @@ class AddressModal extends Component {
     return shippingData == null || shippingData.address == null
   }
 
-  handleClose = () => this.setState({ isOpen: false })
+  handleClose = () => {
+    this.setState({
+      isOpen: false,
+    })
+    this.props.onClose()
+  } 
 
   handlePickupClick = () => {
     this.setState({
@@ -55,7 +65,10 @@ class AddressModal extends Component {
   }
 
   /* Function that will be called when updating the orderform */
-  handleOrderFormUpdated = async () => await this.props.orderFormContext.refetch()
+  handleOrderFormUpdated = async () => {
+    await this.props.orderFormContext.refetch()
+    this.props.onClose()
+  }
 
   render() {
     const { orderFormContext, loading } = this.props
@@ -81,21 +94,26 @@ class AddressModal extends Component {
       <PickupTab
         orderFormContext={orderFormContext}
         onConfirm={this.handlePickupConfirm}
+        onUpdateOrderForm={this.handleOrderFormUpdated}
       />
     ) : <div/>
 
     return (
-      <Cover>
-        <div className="vtex-address-modal__address" style={{
+      <React.Fragment>
+        <div className="vtex-address-modal__address-page" style={{
           transition: 'transform 300ms',
           transform: `translate3d(${isPickupOpen && isMobile ? '-100%' : '0'}, 0, 0)`
         }}>
-          <ExtensionPoint id="header" leanWhen=".*" />
           <Card>
-            <AddressContent onPickup={this.handlePickupClick} />
+            <AddressContent
+              onPickupClick={this.handlePickupClick}
+              onUpdateOrderForm={this.handleOrderFormUpdated}
+            />
           </Card>
           <Card>
-            <RedeemContent />
+            <RedeemContent
+              onUpdateOrderForm={this.handleOrderFormUpdated}
+            />
           </Card>
         </div>
         {isMobile ? (
@@ -116,7 +134,7 @@ class AddressModal extends Component {
             </div>
           </Modal>
         )}
-      </Cover>
+      </React.Fragment>
     )
   }
 }
