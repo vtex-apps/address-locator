@@ -10,8 +10,8 @@
   "mustUpdateAt": "2019-04-02",
   "dependencies": {
     "vtex.styleguide": "9.x",
-    "vtex.store-resources": "0.x",
-    "vtex.store-graphql": "2.x",
+    "vtex.store-resources": "0.3.2-beta",
+    "vtex.store-graphql": "2.46.2-beta.0",
     "vtex.store-components": "3.x",
     "vtex.profile-form": "3.x",
     "vtex.address-form": "4.x",
