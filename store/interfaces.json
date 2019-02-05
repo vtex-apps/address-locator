@@ -1,8 +1,6 @@
 {
   "address-manager": {
-    "allowed": [
-      "header"
-    ],
+    "allowed": [],
     "component": "index"
   },
   "user-address": {

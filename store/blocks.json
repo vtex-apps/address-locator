@@ -1,14 +1,2 @@
 {
-  "address-manager": {
-    "blocks": [
-      "header"
-    ]
-  },
-  "header": {
-    "blocks": [
-      "telemarketing",
-      "logo",
-      "login"
-    ]
-  }
 }
