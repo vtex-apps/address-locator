@@ -51,11 +51,11 @@ class UserAddress extends React.Component {
     return (
       <div className={`flex ${inline ? 'items-end' : 'items-center flex-auto' }`}>
         <div className="flex flex-auto">
-          <div className={`vtex-address-manager__icon mr3 flex items-center ${inverted ? 'c-on-base--inverted' : 'c-muted-1'}`}>
+          <div className={`vtex-address-manager__icon mr3 flex items-center ${inverted ? 'c-on-base--inverted' : 'c-muted-2'}`}>
             <ChangeAddressIcon />
           </div>
           <div className="vtex-address-manager__address flex flex-auto flex-column">
-            <div className={`t-small ${inverted ? 'c-muted-5' : 'c-muted-1'}`}>
+            <div className={`t-small ${inverted ? 'c-on-base--inverted' : 'c-muted-2'}`}>
               {isPickup
               ? <FormattedMessage id="user-address.pickup" />
               : <FormattedMessage id="user-address.order" />
