@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
 import { orderFormConsumer, contextPropTypes } from 'vtex.store-resources/OrderFormContext'
 import ChangeAddressModal from './components/ChangeAddressModal'
-import AddressModal from './components/AddressModal'
+import AddressPage from './components/AddressPage'
+import { Spinner } from 'vtex.styleguide'
 import hoistNonReactStatics from 'hoist-non-react-statics'
 import queryString from 'query-string'
 import './global.css'
@@ -16,13 +17,6 @@ class AddressManager extends Component {
     /* URL for the store logo */
     logoUrl: PropTypes.string,
   }
-
-  state = {
-    isModalOpen: false,
-  }
-
-  handleOpenModal = () => this.setState({ isModalOpen: true })
-  handleCloseModal = () => this.setState({ isModalOpen: false })
 
   handleSelectAddress = () => {
     this.redirectToReturnURL()
@@ -56,21 +50,33 @@ class AddressManager extends Component {
   }
 
   render() {
-    const { orderFormContext, logoUrl } = this.props
+    const { orderFormContext } = this.props
     const { shippingData } = orderFormContext.orderForm
 
     const isLoading = shippingData === undefined
 
     if (!shippingData || !shippingData.address) {
-      return <AddressModal
-        logoUrl={logoUrl}
-        loading={isLoading}
-        onClose={this.handleSelectAddress} />
+      return (
+        <AddressPage
+          loading={isLoading}
+          onSelectAddress={this.handleSelectAddress} />
+      )
     }
 
+    return (
+      <AddressPage loading />
+    )
     /** TODO: Add a redirect placeholder (perhaps one of those "If you are not redirected, click here" things)
      * @author lbebber */
-    return null
+    return (
+      <div
+        className="w-100 flex items-center justify-center"
+        style={{
+          height: 400
+        }}>
+        <Spinner />
+      </div>
+    )
   }
 }
 

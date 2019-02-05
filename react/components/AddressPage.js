@@ -12,44 +12,31 @@ import AddressContent from './AddressContent'
 import { Spinner } from 'vtex.styleguide'
 import { Modal } from 'vtex.styleguide'
 
-import styles from './AddressModal.css'
-import PickupTab from './PickupTab';
-import RedeemContent from './RedeemContent';
+import styles from './AddressPage.css'
+import PickupContent from './PickupContent'
+import RedeemContent from './RedeemContent'
 
 /**
  * Component that allows the user to locate his address, by inserting, searching, retrieving and
  * saving it into orderform.
  * Configure the key for Google Geolocation API, by inserting it on the admin logistics section.
  */
-class AddressModal extends Component {
+class AddressPage extends Component {
   static propTypes = {
     /* Context used to call address mutation and retrieve the orderForm */
     orderFormContext: contextPropTypes.isRequired,
     loading: PropTypes.bool,
-    onClose: PropTypes.func,
+    onSelectAddress: PropTypes.func,
   }
 
   static defaultProps = {
-    onClose: () => {},
+    onSelectAddress: () => {},
   }
 
   state = {
-    isOpen: true,
     isPickupOpen: false,
-    isModalOpen: false,
+    isPickupSelected: false,
   }
-
-  needAddress() {
-    const shippingData = this.props.orderFormContext.orderForm.shippingData
-    return shippingData == null || shippingData.address == null
-  }
-
-  handleClose = () => {
-    this.setState({
-      isOpen: false,
-    })
-    this.props.onClose()
-  } 
 
   handlePickupClick = () => {
     this.setState({
@@ -59,7 +46,7 @@ class AddressModal extends Component {
 
   handlePickupConfirm = () => {
     this.setState({
-      isPickupOpen: false,
+      isPickupSelected: true,
     })
     this.handleOrderFormUpdated()
   }
@@ -67,22 +54,29 @@ class AddressModal extends Component {
   /* Function that will be called when updating the orderform */
   handleOrderFormUpdated = async () => {
     await this.props.orderFormContext.refetch()
-    this.props.onClose()
+    this.props.onSelectAddress()
+  }
+
+  handlePickupModalClose = () => {
+    this.setState({
+      isPickupOpen: false,
+    })
   }
 
   render() {
     const { orderFormContext, loading } = this.props
-    const { isPickupOpen } = this.state
+    const { isPickupOpen, isPickupSelected } = this.state
 
     if (loading) {
       return (
-        <Cover>
-          <div className="flex w-100 h-100 items-center justify-center">
-            <div className={styles.spinnerAppear}>
-              <Spinner />
-            </div>
+        <div className="flex w-100 items-center justify-center"
+          style={{
+            height: 750,
+          }}>
+          <div className={styles.spinnerAppear}>
+            <Spinner />
           </div>
-        </Cover>
+        </div>
       )
     }
 
@@ -91,7 +85,8 @@ class AddressModal extends Component {
     const isMobile = window.innerWidth < 640
 
     const pickupPage = isPickupOpen ? (
-      <PickupTab
+      <PickupContent
+        loading={isPickupSelected}
         orderFormContext={orderFormContext}
         onConfirm={this.handlePickupConfirm}
         onUpdateOrderForm={this.handleOrderFormUpdated}
@@ -128,7 +123,7 @@ class AddressModal extends Component {
           <Modal 
             centered 
             isOpen={isPickupOpen}
-            onClose={() => this.setState({ isPickupOpen: false })}>
+            onClose={this.handlePickupModalClose}>
             <div className="vw-90 vh-80">
               {pickupPage}
             </div>
@@ -142,4 +137,4 @@ class AddressModal extends Component {
 export default compose(
   withRuntimeContext,
   orderFormConsumer
-)(AddressModal)
+)(AddressPage)

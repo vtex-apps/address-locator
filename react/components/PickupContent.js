@@ -8,7 +8,7 @@ import { AddressRules } from 'vtex.address-form'
 import PickupModalContainer from './PickupModalContainer'
 import PickupPointChosen from './PickupPointChosen';
 
-class PickupTab extends Component {
+class PickupContent extends Component {
   state = {
     isModalOpen: false,
     askForGeolocation: false,
@@ -56,11 +56,11 @@ class PickupTab extends Component {
   }
 
   render() {
-    const { orderFormContext: { orderForm } } = this.props
+    const { orderFormContext: { orderForm }, loading } = this.props
     const { askForGeolocation, isFetching, isModalOpen } = this.state
     const { isCheckedIn, storePreferencesData, pickupPoint } = orderForm
     const { countryCode } = storePreferencesData
-    const isLoading = isFetching
+    const isLoading = isFetching || loading
     return (
       <AddressRules
         country={countryCode}
@@ -68,7 +68,9 @@ class PickupTab extends Component {
       >
         <div className="w-100 center flex flex-column justify-center items-center pa6">
         {isLoading ? (
-          <Spinner />
+          <div className="w-100 h-100 flex items-center justify-center">
+            <Spinner />
+          </div>
         ) : (
           <PickupModalContainer
             isModalOpen
@@ -85,9 +87,10 @@ class PickupTab extends Component {
   }
 }
 
-PickupTab.propTypes = {
+PickupContent.propTypes = {
+  loading: PropTypes.bool,
   orderFormContext: contextPropTypes,
   onConfirm: PropTypes.func.isRequired,
 }
 
-export default orderFormConsumer(PickupTab)
+export default orderFormConsumer(PickupContent)
