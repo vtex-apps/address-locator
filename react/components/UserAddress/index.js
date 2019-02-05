@@ -29,7 +29,7 @@ class UserAddress extends React.Component {
     })
   }
 
-  renderAddressInfo = ({inverted, centered}) => {
+  renderAddressInfo = ({inverted, inline}) => {
     const { orderFormContext } = this.props
     const { shippingData } = orderFormContext.orderForm
 
@@ -49,7 +49,7 @@ class UserAddress extends React.Component {
     const isPickup = addressType === 'pickup'
 
     return (
-      <div className={`flex ${centered ? 'items-center' : 'items-end'}`}>
+      <div className={`flex ${inline ? 'items-end' : 'items-center flex-auto' }`}>
         <div className="flex flex-auto">
           <div className={`vtex-address-manager__icon mr3 flex items-center ${inverted ? 'c-on-base--inverted' : 'c-muted-1'}`}>
             <ChangeAddressIcon />
@@ -66,10 +66,10 @@ class UserAddress extends React.Component {
             </div>
           </div>
         </div>
-        <div className={`bl bw1 mh4 ${centered ? '' : 'nb2'} ${inverted ? 'b--on-base--inverted' : 'b--muted-5'}`} style={{
+        <div className={`bl bw1 mh4 ${inline ? 'nb2' : '' } ${inverted ? 'b--on-base--inverted' : 'b--muted-5'}`} style={{
           height: '1.5rem',
         }}/>
-        <div className="flex flex-auto items-center">
+        <div className="flex items-center">
           <div
             className={`t-action pointer pv3 nv3 ph4 nh4 ${inverted ? 'c-on-base--inverted' : 'c-action-primary'}`}
             role="button"
@@ -92,9 +92,8 @@ class UserAddress extends React.Component {
 
     const isInline = variation === 'inline'
     const isInverted = !isInline
-    const isCentered = !isInline
 
-    const content = this.renderAddressInfo({inverted: isInverted, centered: isCentered})
+    const content = this.renderAddressInfo({inverted: isInverted, inline: isInline})
 
     return (
       <React.Fragment>
