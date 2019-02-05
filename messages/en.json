@@ -19,6 +19,7 @@
     "address-locator.address-search-position-denied-error": "Geolocation permission denied",
     "address-locator.address-search-button": "Order on this address",
     "address-locator.address-search-invalid-address": "The address must contain street, neighborhood, city and state names",
+    "address-locator.address-page-title": "Where do you want your delivery?",
     "address-locator.address-redeem-recurring": "Ordering again?",
     "address-locator.address-redeem-tab": "Redeem address",
     "address-locator.address-redeem-label": "Insert your phone below",
@@ -28,6 +29,7 @@
     "address-locator.address-manager-button": "Add new address",
     "address-locator.address-manager.logo-title": "Logo",
     "address-locator.pickup-tab": "Pickup",
+    "address-locator.pickup-button": "Find a pickup point",
     "address-locator.pickup-tab-use-my-geolocation": "Use my current location",
     "address-locator.pickup-tab-input-address": "Input address",
     "address-locator.pickup-tab-see-all": "See all pickup points",
@@ -38,5 +40,8 @@
     "profile-form.field.homePhone": "Type your phone below",
     "profile-form.error.INVALID_FIELD": "Invalid phone number",
     "profile-form.error.EMPTY_FIELD": "Required field",
-    "profile-form.error.NOT_FOUND": "We couldn't find an account with this phone"
+    "profile-form.error.NOT_FOUND": "We couldn't find an account with this phone",
+    "user-address.pickup": "Pick up at",
+    "user-address.order": "Order to",
+    "user-address.change": "Change"
 }

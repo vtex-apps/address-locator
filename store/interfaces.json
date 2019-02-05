@@ -4,5 +4,8 @@
       "header"
     ],
     "component": "index"
+  },
+  "user-address": {
+    "component": "UserAddress"
   }
 }
