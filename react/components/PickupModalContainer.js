@@ -98,7 +98,7 @@ class PickupModalContainer extends Component {
       <div className="absolute top-0 bottom-0 left-0 right-0">
         <PickupPointsSelector
           activePickupPoint={this.state.activePickupPoint}
-          askForGeolocation={askForGeolocation}
+          askForGeolocation={true}
           changeActivePickupDetails={this.changeActivePickupDetails}
           changeActiveSLAOption={this.changeActiveSLAOption}
           closePickupPointsModal={this.props.closePickupModal}
