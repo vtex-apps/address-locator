@@ -394,18 +394,20 @@ class AddressSearch extends Component {
         <form className="address-search w-100" ref={this.form} onSubmit={this.handleFormSubmit}>
           <div className="mb4">
             {!hasSearchedStreet && (
-              <div className="relative input--icon-right">
-                <Autocomplete
-                  isLoading={isDisabled}
-                  onPlaceSelected={this.handleOnPlaceSelected}
-                  types={['address']}
-                  componentRestrictions={{ country: countryCode }}
-                  value={formattedAddress}
-                  errorMessage={this.getErrorMessage(inputError)}
-                  onChange={this.handleAddressChanged}
-                  onSuffixPress={this.handleSetCurrentPosition}
-                  hideLabel
-                />
+              <div className="mb4">
+                <div className="relative input--icon-right">
+                  <Autocomplete
+                    isLoading={isDisabled}
+                    onPlaceSelected={this.handleOnPlaceSelected}
+                    types={['address']}
+                    componentRestrictions={{ country: countryCode }}
+                    value={formattedAddress}
+                    errorMessage={this.getErrorMessage(inputError)}
+                    onChange={this.handleAddressChanged}
+                    onSuffixPress={this.handleSetCurrentPosition}
+                    hideLabel
+                  />
+                </div>
               </div>)
             }
 
