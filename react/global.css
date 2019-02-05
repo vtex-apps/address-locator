@@ -16,6 +16,10 @@
   height: 80vh;
 }
 
+.pac-container {
+  z-index: 10001;
+}
+
 
 /* 
 .input-icon--flag img {
@@ -101,10 +105,6 @@
   height: 100%;
   overflow: auto;
   border-radius: 0;
-}
-
-.pac-container {
-  z-index: 10001;
 }
 
 .input--icon-left .input-icon {
