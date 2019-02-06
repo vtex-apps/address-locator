@@ -1,18 +1,16 @@
 import React, { Component } from 'react'
 import { compose } from 'recompose'
-import { withRuntimeContext, ExtensionPoint } from 'vtex.render-runtime'
+import { withRuntimeContext } from 'vtex.render-runtime'
 import PropTypes from 'prop-types'
 
 
 import { orderFormConsumer, contextPropTypes } from 'vtex.store-resources/OrderFormContext'
-import Cover from './Cover'
 import Card from './Card'
 import AddressContent from './AddressContent'
 
 import { Spinner } from 'vtex.styleguide'
 import { Modal } from 'vtex.styleguide'
 
-import styles from './AddressPage.css'
 import PickupContent from './PickupContent'
 import RedeemContent from './RedeemContent'
 
@@ -73,9 +71,7 @@ class AddressPage extends Component {
           style={{
             height: 750,
           }}>
-          <div className={styles.spinnerAppear}>
-            <Spinner />
-          </div>
+          <Spinner />
         </div>
       )
     }
