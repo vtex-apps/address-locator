@@ -16,6 +16,7 @@
     "address-locator.address-search-error": "Dirección no encontrada. Por favor, pruebe otra dirección.",
     "address-locator.address-search-button": "Entregar en esta dirección",
     "address-locator.address-search-invalid-address": "La ubicación indicada debe contener el nombre de la calle, el barrio, la ciudad y el estado",
+    "address-locator.address-page-title": "Where do you want your delivery?",
     "address-locator.address-redeem-recurring": "¿Comprando de nuevo?",
     "address-locator.address-redeem-tab": "Recuperar dirección",
     "address-locator.address-redeem-button": "Buscar dirección",
@@ -24,6 +25,7 @@
     "address-locator.address-manager-button": "Añadir nueva dirección",
     "address-locator.address-manager.logo-title": "Logotipo",
     "address-locator.pickup-tab": "Retirar",
+    "address-locator.pickup-button": "Find a pickup point",
     "address-locator.graphql-error": "Encontramos problemas. Por favor, inténtelo de nuevo",
     "address-manager.address-list": "Direcciones anteriores",
     "address-locator.pickup-tab-use-my-geolocation": "Utilizar mi ubicación actual",
@@ -34,5 +36,8 @@
     "profile-form.field.homePhone": "Introduzca su teléfono a continuación",
     "profile-form.error.INVALID_FIELD": "Numero de telefono invalido",
     "profile-form.error.EMPTY_FIELD": "Required field",
-    "profile-form.error.NOT_FOUND": "No pudimos encontrar una cuenta con este teléfono"
+    "profile-form.error.NOT_FOUND": "No pudimos encontrar una cuenta con este teléfono",
+    "user-address.change": "Change",
+    "user-address.pickup": "Pick up at",
+    "user-address.order": "Order to"
 }
