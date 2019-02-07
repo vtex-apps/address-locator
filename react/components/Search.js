@@ -57,6 +57,7 @@ class AddressSearch extends Component {
     address: null,
     formattedAddress: '',
     shouldDisplayNumberInput: false,
+    shouldDisplayComplementInput: false,
     isLoading: false,
     inputError: null,
     inputAddressError: null,
@@ -117,6 +118,7 @@ class AddressSearch extends Component {
         this.setState({
           address: newAddress,
           shouldDisplayNumberInput: true,
+          shouldDisplayComplementInput: true,
           isLoading: false,
           inputError: null,
           inputAddressError: null,
@@ -136,6 +138,7 @@ class AddressSearch extends Component {
       AlertMessage: <FormattedMessage id="address-locator.address-search-invalid-address" />,
       address: null,
       shouldDisplayNumberInput: false,
+      shouldDisplayComplementInput: false,
       isLoading: false,
       inputError: null,
       inputAddressError: null,
@@ -155,6 +158,7 @@ class AddressSearch extends Component {
       address,
       formattedAddress: place.formatted_address,
       shouldDisplayNumberInput: true,
+      shouldDisplayComplementInput: true,
       isLoading: false,
       inputError: null,
       inputAddressError: null,
@@ -374,6 +378,7 @@ class AddressSearch extends Component {
       shouldDisplayStreetInput,
       hasSearchedStreet,
       shouldDisplayNumberInput,
+      shouldDisplayComplementInput,
     } = this.state
 
     const isDisabled = this.props.loading
@@ -415,7 +420,7 @@ class AddressSearch extends Component {
             {shouldDisplayStreetInput && hasSearchedStreet && this.renderExtraDataInput('neighborhood', 'text')}
             {shouldDisplayStreetInput && hasSearchedStreet && this.renderExtraDataInput('postalCode', 'text')}
             {shouldDisplayNumberInput && this.renderExtraDataInput('number', 'number')}
-            {(!shouldDisplayStreetInput || hasSearchedStreet) && this.renderExtraDataInput('complement', 'text')}
+            {shouldDisplayComplementInput && this.renderExtraDataInput('complement', 'text')}
 
           </div>
           <Button
