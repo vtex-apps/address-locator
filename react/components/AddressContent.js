@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { orderFormConsumer, contextPropTypes } from 'vtex.store-resources/OrderFormContext'
-import AddressSearch from './Search'
+import AddressSearch from './AddressSearch'
 import Button from 'vtex.styleguide/Button'
 import { FormattedMessage } from 'react-intl'
 
