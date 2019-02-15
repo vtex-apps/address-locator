@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
 import { orderFormConsumer, contextPropTypes } from 'vtex.store-resources/OrderFormContext'
-import ChangeAddressModal from './components/ChangeAddressModal'
 import AddressPage from './components/AddressPage'
-import { Spinner } from 'vtex.styleguide'
 import hoistNonReactStatics from 'hoist-non-react-statics'
 import queryString from 'query-string'
 import './global.css'
@@ -23,14 +21,14 @@ class AddressManager extends Component {
   }
 
   componentDidMount() {
-    this.checkAddress()
+    this.checkIfAddressIsSet()
   }
 
   componentDidUpdate() {
-    this.checkAddress()
+    this.checkIfAddressIsSet()
   }
 
-  checkAddress = () => {
+  checkIfAddressIsSet = () => {
     const { orderFormContext } = this.props
     const { shippingData } = orderFormContext.orderForm
 
@@ -46,6 +44,7 @@ class AddressManager extends Component {
       window.location.href = `/${returnURL || ''}`
     } catch (e) {
       // Unable to redirect
+      /** TODO: Handle this error better */
     }
   }
 
@@ -63,19 +62,10 @@ class AddressManager extends Component {
       )
     }
 
-    return (
-      <AddressPage loading />
-    )
     /** TODO: Add a redirect placeholder (perhaps one of those "If you are not redirected, click here" things)
      * @author lbebber */
     return (
-      <div
-        className="w-100 flex items-center justify-center"
-        style={{
-          height: 400
-        }}>
-        <Spinner />
-      </div>
+      <AddressPage loading />
     )
   }
 }
