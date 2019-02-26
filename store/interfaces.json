@@ -3,7 +3,8 @@
     "allowed": [],
     "component": "index"
   },
-  "user-address": {
+  "user-address.address-manager": {
+    "allowed": [],
     "component": "UserAddress"
   }
 }
