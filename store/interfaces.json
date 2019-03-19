@@ -6,5 +6,16 @@
   "user-address.address-manager": {
     "allowed": [],
     "component": "UserAddress"
+  },
+  "challenge.address": {
+    "component": "AddressChallenge"
+  },
+  "store.address": {
+    "before": [
+      "header"
+    ],
+    "required": [
+      "address-manager"
+    ]
   }
 }
