@@ -32,13 +32,10 @@ class AddressChallenge extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    /** TODO: remove this try and use && or ramda.path or suchlike */
-    try {
-      if (prevProps.data.loading !== this.props.data.loading) {
-        this.handleUpdate()
-      }
-    } catch (error) {
-      // Has no prop `data`. Skipping.
+    const oldData = prevProps.data || {}
+    const data = this.props.data || {}
+    if (oldData.loading !== data.loading) {
+      this.handleUpdate()
     }
   }
 

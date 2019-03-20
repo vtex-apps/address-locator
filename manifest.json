@@ -20,7 +20,8 @@
     "vtex.login": "2.x",
     "vtex.telemarketing": "2.x",
     "vtex.minicart": "2.x",
-    "vtex.store": "2.x"
+    "vtex.store": "2.x",
+    "vtex.store-header": "2.x"
   },
   "scripts": {
     "postreleasy": "vtex publish --verbose"
