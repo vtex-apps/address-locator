@@ -32,8 +32,8 @@ class AddressChallenge extends Component {
   }
 
   componentDidUpdate(prevProps) {
-    const oldData = prevProps.data || {}
-    const data = this.props.data || {}
+    const oldData = prevProps.data || { loading: false }
+    const data = this.props.data || { loading: false }
     if (oldData.loading !== data.loading) {
       this.handleUpdate()
     }
