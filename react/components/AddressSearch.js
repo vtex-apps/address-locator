@@ -437,6 +437,12 @@ class AddressSearch extends Component {
   }
 }
 
+const LoadingSpinner = () => (
+  <div className="flex flex-grow-1 justify-center items-center">
+    <Spinner />
+  </div>
+)
+
 export default compose(
   graphql(logisticsQuery, {
     name: 'logisticsQuery',
@@ -446,7 +452,7 @@ export default compose(
     compose(
       mapProps(ownerProps => {
         const { googleMapsKey } = ownerProps.logisticsQuery.logistics
-        const { onOrderFormUpdated, orderFormContext } = ownerProps
+        const { onOrderFormUpdated, orderFormContext, updateOrderFormMutation } = ownerProps
 
         return {
           googleMapKey: googleMapsKey,
@@ -454,10 +460,11 @@ export default compose(
           loadingElement: <AddressSearch loading />,
           onOrderFormUpdated: onOrderFormUpdated,
           orderFormContext: orderFormContext,
+          updateOrderFormMutation,
         }
       }),
       withScriptjs
     ),
-    renderComponent(Spinner)
+    renderComponent(LoadingSpinner)
   )
 )(AddressSearch)
