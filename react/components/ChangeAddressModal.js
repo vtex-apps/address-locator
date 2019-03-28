@@ -1,6 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { uniq } from 'ramda'
+import { path, uniq } from 'ramda'
 import { contextPropTypes } from 'vtex.store-resources/OrderFormContext'
 import { graphql } from 'react-apollo'
 import gql from 'graphql-tag'
@@ -10,6 +10,8 @@ import AddressList from './AddressList'
 import AddressContent from './AddressContent'
 import PickupContent from './PickupContent'
 import '../global.css'
+
+const MAX_ADDRESS_QUANTITY = 5
 
 /**
  * Component responsible for displaying and managing user's address using orderFormContext.
@@ -36,15 +38,12 @@ class ChangeAddressModal extends Component {
    * @returns {Array} The available addresses array prepared to list
    */
   getAvailableAddresses = () => {
-    /* It will set the max length of available addresses array */
-    const maxAddressesQuantity = 5
-
     let { availableAddresses } = this.props.orderFormContext.orderForm.shippingData
 
     /* Remove invalid addresses from array and then reverse it, to be sorted by the last selected */
     availableAddresses = this.getValidAvailableAddresses(availableAddresses).reverse()
     /* Remove duplicate objects from array and then slice by the setted max length */
-    availableAddresses = uniq(availableAddresses).slice(0, maxAddressesQuantity)
+    availableAddresses = uniq(availableAddresses).slice(0, MAX_ADDRESS_QUANTITY)
 
     return availableAddresses
   }
@@ -99,9 +98,7 @@ class ChangeAddressModal extends Component {
     const { orderFormContext, isOpen } = this.props
     const { isPickupOpen } = this.state
 
-    const { shippingData } = orderFormContext.orderForm
-
-    if (!shippingData || !shippingData.address) return null
+    if (!path(['orderForm', 'shippingData', 'address'], orderFormContext)) return null
 
     const { isLoading } = this.state
     const availableAddresses = this.getAvailableAddresses()

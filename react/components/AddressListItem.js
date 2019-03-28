@@ -41,7 +41,7 @@ export default class AddressListItem extends Component {
         onClick={this.handleClick}
       >
         <p className="ma0 t-body c-on-base">{`${street}, ${number}`}</p>
-        <span className="f7 t-small c-muted-2">{`${neighborhood}, ${city}`}</span>
+        <span className="f7 t-small c-muted-2">{!neighborhood ? city : `${neighborhood}, ${city}` }</span>
       </div>
     )
   }
