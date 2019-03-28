@@ -271,10 +271,9 @@ class AddressSearch extends Component {
         },
       })
 
-      const { shippingData } = response.data.updateOrderFormShipping
-      const [selectedAddress] = shippingData.selectedAddresses
+      const newAddress = path(['data', 'updateOrderFormShipping', 'shippingData', 'address'], response)
 
-      if (!selectedAddress || !this.getIsAddressValid(selectedAddress)) {
+      if (!newAddress || !this.getIsAddressValid(newAddress)) {
         return this.setState({
           isLoading: false,
           inputError: ERROR_ADDRESS_NOT_FOUND,
