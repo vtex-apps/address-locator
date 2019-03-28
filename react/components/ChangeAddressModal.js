@@ -30,7 +30,7 @@ class ChangeAddressModal extends Component {
 
   /* Filters available addresses and returns only valid ones */
   getValidAvailableAddresses = availableAddresses =>
-    availableAddresses.filter(address => address.city && address.street && address.number)
+    availableAddresses.filter(address => address.city && address.street && address.number && address.addressType !== 'pickup')
 
   /**
    * Prepare available addresses to list, by removing invalid and duplicate ones, as well reversing and slicing
