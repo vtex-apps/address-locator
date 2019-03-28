@@ -6,7 +6,7 @@ import AddressListItem from './AddressListItem'
 const AddressList = ({ availableAddresses, onSelectAddress }) => (
   <div className="vtex-address-locator__address-list pa5">
     <FormattedMessage id="address-manager.address-list">
-      {text => <span className="f6 dark-gray">{text}</span>}
+      {text => <span className="t-small f6 dark-gray">{text}</span>}
     </FormattedMessage>
     {availableAddresses.map((address, key) => (
       <AddressListItem

@@ -7,6 +7,14 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.1.0] - 2019-03-28
+### Changed
+- Minor style changes.
+- Bring challenge.address and store.address to address-locator.
+
+### Fixed
+- Fix address change on modal.
+
 ## [2.0.1] - 2019-02-26
 
 ## [2.0.0] - 2019-02-26

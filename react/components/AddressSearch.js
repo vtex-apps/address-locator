@@ -271,10 +271,9 @@ class AddressSearch extends Component {
         },
       })
 
-      const { shippingData } = response.data.updateOrderFormShipping
-      const [selectedAddress] = shippingData.selectedAddresses
+      const newAddress = path(['data', 'updateOrderFormShipping', 'shippingData', 'address'], response)
 
-      if (!selectedAddress || !this.getIsAddressValid(selectedAddress)) {
+      if (!newAddress || !this.getIsAddressValid(newAddress)) {
         return this.setState({
           isLoading: false,
           inputError: ERROR_ADDRESS_NOT_FOUND,
@@ -437,6 +436,12 @@ class AddressSearch extends Component {
   }
 }
 
+const LoadingSpinner = () => (
+  <div className="flex flex-grow-1 justify-center items-center">
+    <Spinner />
+  </div>
+)
+
 export default compose(
   graphql(logisticsQuery, {
     name: 'logisticsQuery',
@@ -446,7 +451,7 @@ export default compose(
     compose(
       mapProps(ownerProps => {
         const { googleMapsKey } = ownerProps.logisticsQuery.logistics
-        const { onOrderFormUpdated, orderFormContext } = ownerProps
+        const { onOrderFormUpdated, orderFormContext, updateOrderFormMutation } = ownerProps
 
         return {
           googleMapKey: googleMapsKey,
@@ -454,10 +459,11 @@ export default compose(
           loadingElement: <AddressSearch loading />,
           onOrderFormUpdated: onOrderFormUpdated,
           orderFormContext: orderFormContext,
+          updateOrderFormMutation,
         }
       }),
       withScriptjs
     ),
-    renderComponent(Spinner)
+    renderComponent(LoadingSpinner)
   )
 )(AddressSearch)
