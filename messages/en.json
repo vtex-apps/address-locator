@@ -40,8 +40,5 @@
     "profile-form.field.homePhone": "Type your phone below",
     "profile-form.error.INVALID_FIELD": "Invalid phone number",
     "profile-form.error.EMPTY_FIELD": "Required field",
-    "profile-form.error.NOT_FOUND": "We couldn't find an account with this phone",
-    "user-address.pickup": "Pick up at",
-    "user-address.order": "Order to",
-    "user-address.change": "Change"
+    "profile-form.error.NOT_FOUND": "We couldn't find an account with this phone"
 }

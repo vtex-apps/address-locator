@@ -36,8 +36,5 @@
     "profile-form.field.homePhone": "Introduzca su teléfono a continuación",
     "profile-form.error.INVALID_FIELD": "Numero de telefono invalido",
     "profile-form.error.EMPTY_FIELD": "Required field",
-    "profile-form.error.NOT_FOUND": "No pudimos encontrar una cuenta con este teléfono",
-    "user-address.change": "Cambiar",
-    "user-address.pickup": "Recoger en",
-    "user-address.order": "Orden a"
+    "profile-form.error.NOT_FOUND": "No pudimos encontrar una cuenta con este teléfono"
 }

@@ -33,9 +33,6 @@
   "profile-form.error.INVALID_FIELD": "profile-form.error.INVALID_FIELD",
   "profile-form.error.EMPTY_FIELD": "profile-form.error.EMPTY_FIELD",
   "profile-form.error.NOT_FOUND": "profile-form.error.NOT_FOUND",
-  "user-address.pickup": "user-address.pickup",
-  "user-address.order": "user-address.order",
-  "user-address.change": "user-address.change",
   "address-locator.pickup-button": "address-locator.pickup-button",
   "address-locator.address-page-title": "address-locator.address-page-title"
 }
