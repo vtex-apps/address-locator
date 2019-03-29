@@ -25,6 +25,7 @@ export default class ReactGoogleAutocomplete extends React.Component {
     errorMessage: PropTypes.string,
     onChange: PropTypes.func,
     onSuffixPress: PropTypes.func,
+    hideLabel: PropTypes.bool,
   }
 
   constructor(props) {
@@ -75,7 +76,7 @@ export default class ReactGoogleAutocomplete extends React.Component {
   }
 
   componentWillUnmount() {
-    this.event.remove()
+    this.event && this.event.remove()
   }
 
   onSelected() {
@@ -85,7 +86,7 @@ export default class ReactGoogleAutocomplete extends React.Component {
   }
 
   render() {
-    const { value, errorMessage, onChange, onSuffixPress } = this.props
+    const { value, errorMessage, onChange, onSuffixPress, hideLabel } = this.props
 
     return (
       <Adopt
@@ -103,7 +104,7 @@ export default class ReactGoogleAutocomplete extends React.Component {
             errorMessage={errorMessage}
             placeholder={placeholder}
             size="large"
-            label={label}
+            label={!hideLabel && label}
             onChange={onChange}
             suffix={<LocationInputIcon onClick={onSuffixPress} />}
           />

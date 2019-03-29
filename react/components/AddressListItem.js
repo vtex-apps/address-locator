@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
+import { pick } from 'ramda'
 
 export default class AddressListItem extends Component {
   static propTypes = {
@@ -11,20 +12,22 @@ export default class AddressListItem extends Component {
     onSelectAddress: PropTypes.func,
   }
 
-  /* Picks selected fields from a source object */
-  pick = (source, ...fields) =>
-    fields.reduce((prev, field) => ((prev[field] = source[field]), prev), {})
   handleClick = () => {
     const { onSelectAddress, address } = this.props
-    const addressFields = this.pick(
+    const addressFields = pick([
+        'addressType',
+        'city',
+        'complement',
+        'neighborhood',
+        'number',
+        'postalCode',
+        'street',
+        'state',
+        'receiverName',
+        'country',
+        'geoCoordinates'
+      ],
       address,
-      'addressType',
-      'city',
-      'complement',
-      'neighborhood',
-      'number',
-      'postalCode',
-      'street'
     )
 
     onSelectAddress && onSelectAddress(addressFields)
@@ -37,8 +40,8 @@ export default class AddressListItem extends Component {
         className={`${!isLastAddress && 'bb b--light-gray'} pv4 dim pointer`}
         onClick={this.handleClick}
       >
-        <p className="ma0">{`${street}, ${number}`}</p>
-        <span className="f7 mid-gray">{`${neighborhood}, ${city}`}</span>
+        <p className="ma0 t-body c-on-base">{`${street}, ${number}`}</p>
+        <span className="f7 t-small c-muted-2">{!neighborhood ? city : `${neighborhood}, ${city}` }</span>
       </div>
     )
   }

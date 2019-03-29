@@ -1,7 +1,7 @@
 {
   "vendor": "vtex",
   "name": "address-locator",
-  "version": "1.2.1",
+  "version": "2.1.2",
   "builders": {
     "store": "0.x",
     "messages": "1.x",
@@ -13,7 +13,15 @@
     "vtex.store-resources": "0.x",
     "vtex.store-graphql": "2.x",
     "vtex.store-components": "3.x",
-    "vtex.profile-form": "3.x"
+    "vtex.profile-form": "3.x",
+    "vtex.address-form": "4.x",
+    "vtex.pickup-points-modal": "2.x",
+    "vtex.pickup-points-selector": "0.x",
+    "vtex.login": "2.x",
+    "vtex.telemarketing": "2.x",
+    "vtex.minicart": "2.x",
+    "vtex.store": "2.x",
+    "vtex.store-header": "2.x"
   },
   "scripts": {
     "postreleasy": "vtex publish --verbose"

@@ -15,6 +15,10 @@ const countries = {
     icon: 'brazil.svg',
     code: 55,
   },
+  MEX: {
+    icon: 'mexico.svg',
+    code: 52,
+  },
 }
 
 /**
@@ -31,7 +35,7 @@ class AddressRedeem extends Component {
   }
 
   state = {
-    selectedCountry: countries.BRA,
+    selectedCountry: countries.MEX,
     profile: null,
     contextLoading: true,
     queryLoading: false,

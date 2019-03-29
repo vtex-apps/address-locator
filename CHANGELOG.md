@@ -7,6 +7,28 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.1.2] - 2019-03-28
+### Fixed
+- Do not display pickup points os previous addresses list.
+- Remove unused strings from messages.
+
+## [2.1.1] - 2019-03-28
+### Fixed
+- Fix order form undefined.
+- Prevent against neighborhood undefined.
+
+## [2.1.0] - 2019-03-28
+### Changed
+- Minor style changes.
+- Bring challenge.address and store.address to address-locator.
+
+### Fixed
+- Fix address change on modal.
+
+## [2.0.1] - 2019-02-26
+
+## [2.0.0] - 2019-02-26
+
 ## [1.2.1] - 2019-02-22
 
 ## [1.2.0] - 2019-02-05

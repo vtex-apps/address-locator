@@ -1,0 +1,32 @@
+query NearPickupPoints($lat: String!, $long: String!) {
+  nearPickupPoints(lat: $lat, long: $long) {
+    items {
+      friendlyName
+      id
+      seller
+      distance
+      businessHours {
+        openingTime
+        closingTime
+        dayOfWeek
+      }
+      address {
+        id
+        addressId
+        street
+        number
+        receiverName
+        complement
+        neighborhood
+        country
+        state
+        geoCoordinates
+        postalCode
+        city
+        reference
+        addressName
+        addressType
+      }
+    }  
+  }
+}

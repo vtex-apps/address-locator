@@ -69,13 +69,10 @@ class AddressRedeemForm extends Component {
 
     return (
       <form
-        className="vtex-address-locator__address-redeem w-100 pv7 ph6 br2 bg-white"
+        className="vtex-address-locator__address-redeem w-100"
         onSubmit={onSubmit}
       >
         <div className="mb5 relative input--icon-left">
-          <h2 className="vtex-address-modal__recurring-title f4 pb5 c-muted-2">
-            <FormattedMessage id="address-locator.address-redeem-recurring" />
-          </h2>
           <ProfileField
             key={homePhoneField.name}
             field={homePhoneField}
@@ -95,6 +92,7 @@ class AddressRedeemForm extends Component {
           type="submit"
           isLoading={loading}
           disabled={!profilePhone.touched || !!profilePhone.error}
+          block
         >
           <FormattedMessage id="address-locator.address-redeem-button" />
         </Button>

@@ -57,12 +57,20 @@ class AddressSearch extends Component {
     address: null,
     formattedAddress: '',
     shouldDisplayNumberInput: false,
+    shouldDisplayComplementInput: false,
     isLoading: false,
     inputError: null,
     inputAddressError: null,
     AlertMessage: false,
     shouldDisplayStreetInput: false,
     hasSearchedStreet: false,
+  }
+
+  constructor(props) {
+    super(props)
+
+    this.inputRefs = []
+    this.form = React.createRef()
   }
 
   requestGoogleMapsApi = async (params) => {
@@ -110,6 +118,7 @@ class AddressSearch extends Component {
         this.setState({
           address: newAddress,
           shouldDisplayNumberInput: true,
+          shouldDisplayComplementInput: true,
           isLoading: false,
           inputError: null,
           inputAddressError: null,
@@ -129,6 +138,7 @@ class AddressSearch extends Component {
       AlertMessage: <FormattedMessage id="address-locator.address-search-invalid-address" />,
       address: null,
       shouldDisplayNumberInput: false,
+      shouldDisplayComplementInput: false,
       isLoading: false,
       inputError: null,
       inputAddressError: null,
@@ -148,6 +158,7 @@ class AddressSearch extends Component {
       address,
       formattedAddress: place.formatted_address,
       shouldDisplayNumberInput: true,
+      shouldDisplayComplementInput: true,
       isLoading: false,
       inputError: null,
       inputAddressError: null,
@@ -225,6 +236,20 @@ class AddressSearch extends Component {
   handleFormSubmit = async e => {
     e.preventDefault()
 
+    const canSubmit = this.canSubmit()
+
+    if (!canSubmit) {
+      const formElement = this.form.current
+      const inputs = Array.from(formElement ? formElement.querySelectorAll('input') : [])
+      for (const input of inputs) {
+        if (input.value === '') {
+          input.focus()
+          break
+        }
+      }
+      return
+    }
+
     this.setState({
       isLoading: true,
       inputError: null,
@@ -246,13 +271,21 @@ class AddressSearch extends Component {
         },
       })
 
-      const { shippingData } = response.data.updateOrderFormShipping
-      const [selectedAddress] = shippingData.selectedAddresses
+      const newAddress = path(['data', 'updateOrderFormShipping', 'shippingData', 'address'], response)
 
-      if (!selectedAddress || !this.getIsAddressValid(selectedAddress)) {
+      if (!newAddress || !this.getIsAddressValid(newAddress)) {
         return this.setState({
           isLoading: false,
           inputError: ERROR_ADDRESS_NOT_FOUND,
+        })
+      }
+      
+      if (orderFormContext.orderForm.isCheckedIn) {
+        await orderFormContext.updateOrderFormCheckin({
+          variables: {
+            orderFormId: orderFormContext.orderForm.orderFormId,
+            checkin: { isCheckedIn: false },
+          },
         })
       }
 
@@ -315,14 +348,16 @@ class AddressSearch extends Component {
         }}
       >
         {({ placeholder, label }) => (
-          <Input
-            type={type}
-            value={address[field]}
-            placeholder={placeholder}
-            size="large"
-            label={label}
-            onChange={e => this.handleAddressKeyChanged(e, field)}
-          />
+          <div className="mb4">
+            <Input
+              type={type}
+              value={address[field]}
+              placeholder={placeholder}
+              size="large"
+              label={label}
+              onChange={e => this.handleAddressKeyChanged(e, field)}
+            />
+          </div>
         )}
       </Adopt>
     )
@@ -342,6 +377,7 @@ class AddressSearch extends Component {
       shouldDisplayStreetInput,
       hasSearchedStreet,
       shouldDisplayNumberInput,
+      shouldDisplayComplementInput,
     } = this.state
 
     const isDisabled = this.props.loading
@@ -359,30 +395,36 @@ class AddressSearch extends Component {
             </div>,
             document.body
           )}
-        <form className="address-search w-100 pv7 ph6" onSubmit={this.handleFormSubmit}>
-          {!hasSearchedStreet && (
-            <div className="relative input--icon-right">
-              <Autocomplete
-                isLoading={isDisabled}
-                onPlaceSelected={this.handleOnPlaceSelected}
-                types={['address']}
-                componentRestrictions={{ country: countryCode }}
-                value={formattedAddress}
-                errorMessage={this.getErrorMessage(inputError)}
-                onChange={this.handleAddressChanged}
-                onSuffixPress={this.handleSetCurrentPosition}
-              />
-            </div>)
-          }
-          {shouldDisplayStreetInput && hasSearchedStreet && this.renderExtraDataInput('street', 'text')}
-          {shouldDisplayStreetInput && hasSearchedStreet && this.renderExtraDataInput('neighborhood', 'text')}
-          {shouldDisplayStreetInput && hasSearchedStreet && this.renderExtraDataInput('postalCode', 'text')}
-          {shouldDisplayNumberInput && this.renderExtraDataInput('number', 'number')}
-          {(!shouldDisplayStreetInput || hasSearchedStreet) && this.renderExtraDataInput('complement', 'text')}
+        <form className="address-search w-100" ref={this.form} onSubmit={this.handleFormSubmit}>
+          <div className="mb4">
+            {!hasSearchedStreet && (
+              <div className="mb4">
+                <div className="relative input--icon-right">
+                  <Autocomplete
+                    isLoading={isDisabled}
+                    onPlaceSelected={this.handleOnPlaceSelected}
+                    types={['address']}
+                    componentRestrictions={{ country: countryCode }}
+                    value={formattedAddress}
+                    errorMessage={this.getErrorMessage(inputError)}
+                    onChange={this.handleAddressChanged}
+                    onSuffixPress={this.handleSetCurrentPosition}
+                    hideLabel
+                  />
+                </div>
+              </div>)
+            }
+
+            {shouldDisplayStreetInput && hasSearchedStreet && this.renderExtraDataInput('street', 'text')}
+            {shouldDisplayStreetInput && hasSearchedStreet && this.renderExtraDataInput('neighborhood', 'text')}
+            {shouldDisplayStreetInput && hasSearchedStreet && this.renderExtraDataInput('postalCode', 'text')}
+            {shouldDisplayNumberInput && this.renderExtraDataInput('number', 'number')}
+            {shouldDisplayComplementInput && this.renderExtraDataInput('complement', 'text')}
+
+          </div>
           <Button
             className="w-100"
             type="submit"
-            disabled={!this.canSubmit() || isDisabled}
             isLoading={isLoading}
             block
           >
@@ -394,6 +436,12 @@ class AddressSearch extends Component {
   }
 }
 
+const LoadingSpinner = () => (
+  <div className="flex flex-grow-1 justify-center items-center">
+    <Spinner />
+  </div>
+)
+
 export default compose(
   graphql(logisticsQuery, {
     name: 'logisticsQuery',
@@ -403,7 +451,7 @@ export default compose(
     compose(
       mapProps(ownerProps => {
         const { googleMapsKey } = ownerProps.logisticsQuery.logistics
-        const { onOrderFormUpdated, orderFormContext } = ownerProps
+        const { onOrderFormUpdated, orderFormContext, updateOrderFormMutation } = ownerProps
 
         return {
           googleMapKey: googleMapsKey,
@@ -411,10 +459,11 @@ export default compose(
           loadingElement: <AddressSearch loading />,
           onOrderFormUpdated: onOrderFormUpdated,
           orderFormContext: orderFormContext,
+          updateOrderFormMutation,
         }
       }),
       withScriptjs
     ),
-    renderComponent(Spinner)
+    renderComponent(LoadingSpinner)
   )
 )(AddressSearch)

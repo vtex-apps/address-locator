@@ -1,3 +1,40 @@
+.vtex-address-locator__address-redeem input[name="homePhone"] {
+  padding-left: 4.5rem;
+}
+
+/* TODO: make modal accept configuring its size in order to
+ * render the styling below obsolete */
+.vtex-modal__modal {
+  max-width: 96rem !important;
+  max-height: 64rem !important;
+}
+.vtex-modal__close-icon {
+  z-index: 9;
+}
+
+.vh-80 {
+  height: 80vh;
+}
+
+.pac-container {
+  z-index: 10001;
+}
+
+
+/* 
+.input-icon--flag img {
+  width: 19px;
+}
+
+.address-search .vtex-input-prefix__group, .vtex-address-locator__address-redeem .vtex-input-prefix__group {
+  margin-bottom: 1rem;
+}
+
+.address-search .vtex-input-prefix__group input, .vtex-address-locator__address-redeem .vtex-input-prefix__group input {
+  font-size: .85rem;
+  text-overflow: ellipsis;
+}
+
 .vtex-address-locator .vtex-tab__button {
   border: none;
   font-size: 12px;
@@ -19,15 +56,6 @@
 .vtex-address-locator .vtex-tabs__content {
   border-bottom-left-radius: .25rem;
   border-bottom-right-radius: .25rem;
-}
-
-.address-search .vtex-input-prefix__group, .vtex-address-locator__address-redeem .vtex-input-prefix__group {
-  margin-bottom: 1rem;
-}
-
-.address-search .vtex-input-prefix__group input, .vtex-address-locator__address-redeem .vtex-input-prefix__group input {
-  font-size: .85rem;
-  text-overflow: ellipsis;
 }
 
 .address-search .vtex-input__label, .vtex-address-locator__address-redeem .vtex-input__label {
@@ -55,16 +83,6 @@
   border-left: 1px solid #f1f1f2;
 }
 
-.input-icon--flag img {
-  width: 19px;
-}
-
-.vtex-address-locator__address-redeem input[name="homePhone"] {
-  padding-left: 4rem;
-}
-
-
-/* AddressManager component */
 .vtex-address-manager__bar {
   background: #25354d;
 }
@@ -89,10 +107,6 @@
   border-radius: 0;
 }
 
-.pac-container {
-  z-index: 10001;
-}
-
 .input--icon-left .input-icon {
   top: 1.4rem;
 }
@@ -105,7 +119,6 @@
   width: 100%;
 }
 
-/* AddressList component */
 .vtex-address-locator__address-list {
   background: #f2f4f5;
 }
@@ -116,4 +129,4 @@
     top: 6rem;
   }
 }
-
+*/

@@ -1,15 +1,17 @@
-import React, { Component, Fragment } from 'react'
+import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { FormattedMessage } from 'react-intl'
-import _ from 'lodash' //TODO: Replace with ramda
-import { orderFormConsumer, contextPropTypes } from 'vtex.store-resources/OrderFormContext'
+import { path, uniq } from 'ramda'
+import { contextPropTypes } from 'vtex.store-resources/OrderFormContext'
+import { graphql } from 'react-apollo'
+import gql from 'graphql-tag'
 import Modal from 'vtex.styleguide/Modal'
-import Button from 'vtex.styleguide/Button'
 import Spinner from 'vtex.styleguide/Spinner'
-import NewAddressIcon from './NewAddressIcon'
 import AddressList from './AddressList'
-import AddressSearch from './Search'
+import AddressContent from './AddressContent'
+import PickupContent from './PickupContent'
 import '../global.css'
+
+const MAX_ADDRESS_QUANTITY = 5
 
 /**
  * Component responsible for displaying and managing user's address using orderFormContext.
@@ -22,13 +24,13 @@ class ChangeAddressModal extends Component {
   }
 
   state = {
-    isSearchingAddress: false,
     isLoading: false,
+    isPickupOpen: false,
   }
 
   /* Filters available addresses and returns only valid ones */
   getValidAvailableAddresses = availableAddresses =>
-    availableAddresses.filter(address => address.city && address.street && address.number)
+    availableAddresses.filter(address => address.city && address.street && address.number && address.addressType !== 'pickup')
 
   /**
    * Prepare available addresses to list, by removing invalid and duplicate ones, as well reversing and slicing
@@ -36,97 +38,145 @@ class ChangeAddressModal extends Component {
    * @returns {Array} The available addresses array prepared to list
    */
   getAvailableAddresses = () => {
-    /* It will set the max length of available addresses array */
-    const maxAddressesQuantity = 5
-
     let { availableAddresses } = this.props.orderFormContext.orderForm.shippingData
 
     /* Remove invalid addresses from array and then reverse it, to be sorted by the last selected */
     availableAddresses = this.getValidAvailableAddresses(availableAddresses).reverse()
     /* Remove duplicate objects from array and then slice by the setted max length */
-    availableAddresses = _.uniqWith(availableAddresses, _.isEqual).slice(0, maxAddressesQuantity)
+    availableAddresses = uniq(availableAddresses).slice(0, MAX_ADDRESS_QUANTITY)
 
     return availableAddresses
   }
 
-  handleSelectAddress = address => {
+  handleSelectAddress = async (address) => {
+    const { updateOrderFormShipping } = this.props
     const { orderFormContext } = this.props
     const { orderFormId } = orderFormContext.orderForm
 
     this.setState({ isLoading: true })
 
-    orderFormContext
-      .updateOrderFormShipping({
-        variables: {
-          orderFormId,
-          address,
-        },
-      })
-      .then(async () => await this.handleOrderFormUpdated())
+    const orderForm = await updateOrderFormShipping(orderFormId, address).catch(() => null)
+    if (!orderForm) {
+      // TODO: Display error
+    }
+    this.handleCloseModal()
+  }
+
+  handleChangeAddress = () => {
+    this.handleOrderFormUpdated()
   }
 
   handleCloseModal = () => {
     this.props.onClose()
     this.setState({
-      isSearchingAddress: false,
       isLoading: false,
+      isPickupOpen: false,
     })
   }
 
   handleOrderFormUpdated = async () => {
-    const { orderFormContext } = this.props
-
-    await orderFormContext.refetch()
+    const { orderFormContext, updateOrderForm } = this.props
+    const orderFormResp = await orderFormContext.refetch().catch(() => null)
+    orderFormResp && updateOrderForm(orderFormResp.data.orderForm)
     this.handleCloseModal()
   }
 
-  handleAddressSearch = () => this.setState({ isSearchingAddress: true })
+  handlePickupConfirm = () => {
+    this.setState({
+      isPickupOpen: false,
+    })
+    this.handleOrderFormUpdated()
+  }
+
+  handlePickupClick = () => {
+    this.setState({
+      isPickupOpen: true,
+    })
+  }
 
   render() {
     const { orderFormContext, isOpen } = this.props
-    const { shippingData } = orderFormContext.orderForm
+    const { isPickupOpen } = this.state
 
-    if (!shippingData || !shippingData.address) return null
+    if (!path(['orderForm', 'shippingData', 'address'], orderFormContext)) return null
 
-    const { isSearchingAddress, isLoading } = this.state
+    const { isLoading } = this.state
     const availableAddresses = this.getAvailableAddresses()
 
+    const pickupPage = isPickupOpen ? (
+      <PickupContent
+        orderFormContext={orderFormContext}
+        onConfirm={this.handlePickupConfirm}
+        onUpdateOrderForm={this.handleOrderFormUpdated}
+      />
+    ) : <div/>
+
     return (
-      <Modal isOpen={isOpen} onClose={this.handleCloseModal}>
-        <p className="f4 pa5 ma0 bb b--light-gray bw1 b near-black">
-          <FormattedMessage id="address-locator.address-manager-title" />
-        </p>
-        <span className={`${isSearchingAddress ? 'mt10' : 'mt8'} db mb5 tc`}>
-          <NewAddressIcon />
-        </span>
-        {!isSearchingAddress ? (
-          <Fragment>
-            <div className="pa5 mb5">
-              <Button onClick={this.handleAddressSearch} block>
-                <FormattedMessage id="address-locator.address-manager-button" />
-              </Button>
-            </div>
+      <Modal isOpen={isOpen} onClose={this.handleCloseModal} centered>
+        <div className="overflow-hidden relative br2"
+          style={{
+            margin: '-3rem',
+            padding: '3rem',
+          }}>
+          <div
+            style={{
+              transition: 'transform 300ms',
+              transform: `translate3d(${isPickupOpen ? '-100%' : '0'}, 0, 0)`
+            }}>
+            <AddressContent
+              onPickupClick={this.handlePickupClick}
+              onUpdateOrderForm={this.handleChangeAddress} />
             {!isLoading ? (
               <AddressList
                 availableAddresses={availableAddresses}
-                onOrderFormUpdated={this.handleCloseModal}
+                onOrderFormUpdated={this.handleOrderFormUpdated}
                 onSelectAddress={this.handleSelectAddress}
               />
             ) : (
-                <i className="tc">
-                  <Spinner />
-                </i>
-              )}
-          </Fragment>
-        ) : (
-            <AddressSearch
-              onOrderFormUpdated={this.handleOrderFormUpdated}
-              orderFormContext={orderFormContext}
-            />
-          )}
+              <div className="flex flex-grow-1 justify-center items-center">
+                <Spinner />
+              </div>
+            )}
+          </div>
+          <div className="absolute w-100 h-100 top-0" style={{
+            left: '100%',
+            transition: 'transform 300ms',
+            transform: `translate3d(${isPickupOpen ? '-100%' : '0'}, 0, 0)`
+          }}>
+            {pickupPage}
+          </div>
+        </div>
       </Modal>
     )
   }
 }
 
-export default ChangeAddressModal
+
+const withMutationShipping = graphql(
+  gql`
+    mutation updateOrderFormShipping($orderFormId: String, $address: Address) {
+      updateOrderFormShipping(orderFormId: $orderFormId, address: $address) @client
+    }
+  `,
+  {
+    props: ({ mutate }) => ({
+      updateOrderFormShipping: (orderFormId, address) => mutate({ variables: {orderFormId, address} }),
+    }),
+  }
+)
+
+const withMutationOrderFormUpdate = graphql(
+  gql`
+    mutation updateOrderForm($orderForm: [OrderForm]) {
+      updateOrderForm(orderForm: $orderForm) @client
+    }
+  `,
+  {
+    name: 'updateOrderForm',
+    props: ({ updateOrderForm }) => ({
+      updateOrderForm: (orderForm) => updateOrderForm({ variables: {orderForm} }),
+    }),
+  }
+)
+
+export default withMutationOrderFormUpdate(withMutationShipping(ChangeAddressModal))

@@ -1,10 +1,8 @@
 import React, { Component } from 'react'
 import { orderFormConsumer, contextPropTypes } from 'vtex.store-resources/OrderFormContext'
-import ChangeAddressModal from './components/ChangeAddressModal'
-import AddressBar from './components/AddressBar'
-import AddressModal from './components/AddressModal'
+import AddressPage from './components/AddressPage'
 import hoistNonReactStatics from 'hoist-non-react-statics'
-import { Spinner } from 'vtex.styleguide'
+import queryString from 'query-string'
 import './global.css'
 
 /**
@@ -18,57 +16,56 @@ class AddressManager extends Component {
     logoUrl: PropTypes.string,
   }
 
-  state = {
-    isModalOpen: false,
+  handleSelectAddress = () => {
+    this.redirectToReturnURL()
   }
 
-  handleOpenModal = () => this.setState({ isModalOpen: true })
-  handleCloseModal = () => this.setState({ isModalOpen: false })
+  componentDidMount() {
+    this.checkIfAddressIsSet()
+  }
 
-  render() {
-    const { orderFormContext, logoUrl } = this.props
+  componentDidUpdate() {
+    this.checkIfAddressIsSet()
+  }
+
+  checkIfAddressIsSet = () => {
+    const { orderFormContext } = this.props
     const { shippingData } = orderFormContext.orderForm
 
-    // If we don't know if there is an address or not we shouldn't load anything
-    if (shippingData === undefined) {
-      return (
-        <React.Fragment>
-          <AddressBar />
-          <div className="flex items-center justify-center fixed absolute--fill z-999 c-action-primary">
-            <div className="absolute absolute--fill bg-black-30" />
-            <div className="relative bg-base br3 flex items-center justify-center w4 h4">
-              <Spinner />
-            </div>
-          </div>
-        </React.Fragment>
-      )
+    if (shippingData && shippingData.address) {
+      this.redirectToReturnURL()
     }
+  }
 
-    // If there is no address, it means that the user isn't identified, and so the component won't render
+  redirectToReturnURL = () => {
+    try {
+      const parsedQueryString = queryString.parse(window.location.search)
+      const returnURL = parsedQueryString && parsedQueryString.returnUrl
+      window.location.href = `/${returnURL || ''}`
+    } catch (e) {
+      // Unable to redirect
+      /** TODO: Handle this error better */
+    }
+  }
+
+  render() {
+    const { orderFormContext } = this.props
+    const { shippingData } = orderFormContext.orderForm
+
+    const isLoading = shippingData === undefined
+
     if (!shippingData || !shippingData.address) {
       return (
-        <React.Fragment>
-          <AddressBar />
-          <AddressModal logoUrl={logoUrl} />
-        </React.Fragment>
+        <AddressPage
+          loading={isLoading}
+          onSelectAddress={this.handleSelectAddress} />
       )
     }
 
-    const { street, number } = shippingData.address
-    const modalProps = {
-      isOpen: this.state.isModalOpen,
-      onClose: this.handleCloseModal,
-      orderFormContext: this.props.orderFormContext,
-      logoUrl,
-    }
-
+    /** TODO: Add a redirect placeholder (perhaps one of those "If you are not redirected, click here" things)
+     * @author lbebber */
     return (
-      <React.Fragment>
-        <AddressBar onClick={this.handleOpenModal}>
-          {`${street}, ${number}`}
-        </AddressBar>
-        <ChangeAddressModal {...modalProps} />
-      </React.Fragment>
+      <AddressPage loading />
     )
   }
 }

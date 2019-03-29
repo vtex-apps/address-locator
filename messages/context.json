@@ -32,5 +32,7 @@
   "profile-form.field.homePhone": "profile-form.field.homePhone",
   "profile-form.error.INVALID_FIELD": "profile-form.error.INVALID_FIELD",
   "profile-form.error.EMPTY_FIELD": "profile-form.error.EMPTY_FIELD",
-  "profile-form.error.NOT_FOUND": "profile-form.error.NOT_FOUND"
+  "profile-form.error.NOT_FOUND": "profile-form.error.NOT_FOUND",
+  "address-locator.pickup-button": "address-locator.pickup-button",
+  "address-locator.address-page-title": "address-locator.address-page-title"
 }
