@@ -6,8 +6,8 @@ const CountryIcon = ({ size, country }) => {
 
   if (flagSource === undefined) {
     import(`svg-country-flags/png100px/${country.toLowerCase()}.png`)
-    .then(src => setFlagSource(src.default))
-    .catch(() => null)
+      .then(src => setFlagSource(src.default))
+      .catch(() => setFlagSource(null))
     return null
   }
   
