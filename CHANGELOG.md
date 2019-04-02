@@ -7,6 +7,15 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.1.3] - 2019-04-02
+### Removed
+- Remove unused files.
+
+### Fixed
+- Display country flag according to store preferences data.
+- Dinamically get phone example and country dial code from store preferences data.
+- Get correct profile rules.
+
 ## [2.1.2] - 2019-03-28
 ### Fixed
 - Do not display pickup points os previous addresses list.

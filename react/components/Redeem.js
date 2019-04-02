@@ -1,25 +1,18 @@
 import React, { Component } from 'react'
 import PropTypes from 'prop-types'
-import { find, head, prop, propEq } from 'ramda'
+import { find, head, path, prop, propEq } from 'ramda'
 import { compose, withApollo } from 'react-apollo'
 import { contextPropTypes } from 'vtex.store-resources/OrderFormContext'
-import addValidation from '@vtex/profile-form/lib/modules/addValidation'
+import { modules } from 'vtex.profile-form'
 
 import ProfileRules from './ProfileRules'
 import Loader from './Loader'
 import AddressRedeemForm from './RedeemForm'
 import documentsQuery from '../queries/documents.gql'
+import getCountryDialCode from '../utils/getCountryDialCode'
 
-const countries = {
-  BRA: {
-    icon: 'brazil.svg',
-    code: 55,
-  },
-  MEX: {
-    icon: 'mexico.svg',
-    code: 52,
-  },
-}
+const { addValidation } = modules
+const getCountryCode = path(['orderForm', 'storePreferencesData', 'countryCode'])
 
 /**
  * Component responsible for retrieving the user's address by his phone number
@@ -35,7 +28,6 @@ class AddressRedeem extends Component {
   }
 
   state = {
-    selectedCountry: countries.MEX,
     profile: null,
     contextLoading: true,
     queryLoading: false,
@@ -58,23 +50,24 @@ class AddressRedeem extends Component {
     e.preventDefault()
 
     const {
-      state: { profile, selectedCountry },
-      props: { client },
+      state: { profile },
+      props: { client, orderFormContext, },
     } = this
     if (profile.homePhone.error) return
 
     this.setState({ queryLoading: true })
 
-    const { data = { documents: [] } } = await client.query({
-      query: documentsQuery,
-      variables: {
-        acronym: 'CL',
-        fields: ['email'],
-        where: `homePhone=+${selectedCountry.code}${profile.homePhone.value.replace(/\D/g, '')}`,
-      },
-    })
+    const countryCode = getCountryCode(orderFormContext)
 
     try {
+      const { data = { documents: [] } } = await client.query({
+        query: documentsQuery,
+        variables: {
+          acronym: 'CL',
+          fields: ['email'],
+          where: `homePhone=+${getCountryDialCode(countryCode)}${profile.homePhone.value.replace(/\D/g, '')}`,
+        },
+      })
       const fields = prop('fields', head(data.documents))
       if (!fields) throw new Error('Profile not found')
 
@@ -94,23 +87,19 @@ class AddressRedeem extends Component {
 
   handleFieldUpdate = field => this.setState(state => ({ profile: { ...state.profile, ...field } }))
 
-  getContextLoadingStatus = () => {
-    const { orderFormContext, ruleContext } = this.props
-    return orderFormContext.loading || ruleContext.loading
-  }
-
-  componentDidUpdate({ ruleContext }, { contextLoading }) {
-    if (contextLoading && !this.getContextLoadingStatus())
+  componentDidUpdate({ rules, orderFormContext }, { contextLoading }) {
+    if (contextLoading && !orderFormContext.loading) {
       this.setState({
-        profile: addValidation({ homePhone: '' }, ruleContext.rules),
+        profile: addValidation({ homePhone: '' }, rules),
         contextLoading: false,
       })
+    }
   }
 
   render() {
-    const { selectedCountry, profile, contextLoading, queryLoading } = this.state
-    const { ruleContext: { rules } } = this.props
-
+    const { profile, contextLoading, queryLoading } = this.state
+    const { rules, orderFormContext } = this.props
+    const countryCode = getCountryCode(orderFormContext)
     if (contextLoading)
       return (
         <div className="pv7 ph6 br2 bg-white">
@@ -119,23 +108,21 @@ class AddressRedeem extends Component {
       )
 
     return (
-      <div>
-        <AddressRedeemForm
-          {...{
-            rules,
-            profile,
-            loading: queryLoading,
-            country: selectedCountry,
-            onSubmit: this.handleSubmit,
-            onFieldUpdate: this.handleFieldUpdate,
-          }}
-        />
-      </div>
+      <AddressRedeemForm
+        {...{
+          rules,
+          profile,
+          loading: queryLoading,
+          country: countryCode,
+          onSubmit: this.handleSubmit,
+          onFieldUpdate: this.handleFieldUpdate,
+        }}
+      />
     )
   }
 }
 
 export default compose(
   ProfileRules,
-  withApollo
+  withApollo,
 )(AddressRedeem)

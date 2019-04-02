@@ -1,19 +1,20 @@
 {
   "dependencies": {
-    "@vtex/profile-form": "^2.0.3",
     "apollo-client": "^2.4.7",
     "classnames": "^2.2.6",
     "country-iso-2-to-3": "^1.0.1",
+    "country-iso-3-to-2": "1.0.0",
     "graphql": "^14.0.2",
     "graphql-tag": "^2.10.1",
     "hoist-non-react-statics": "^3.1.0",
+    "libphonenumber-js": "^1.7.14",
     "query-string": "^6.2.0",
     "ramda": "^0.26.1",
-    "react": "^16.5.2",
     "react-adopt": "^0.6.0",
     "react-apollo": "^2.3.2",
     "react-content-loader": "^3.2.0",
     "react-google-maps": "^9.4.5",
-    "recompose": "^0.30.0"
+    "recompose": "^0.30.0",
+    "svg-country-flags": "^1.2.6"
   }
 }
