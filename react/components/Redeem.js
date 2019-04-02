@@ -53,7 +53,7 @@ class AddressRedeem extends Component {
       state: { profile },
       props: { client, orderFormContext, },
     } = this
-    if (profile.homePhone.error) return    
+    if (profile.homePhone.error) return
 
     this.setState({ queryLoading: true })
 
