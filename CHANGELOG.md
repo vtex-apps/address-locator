@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.1.4] - 2019-04-02
+### Fixed
+- Correctly set flag source to null if there is an error on import.
+
 ## [2.1.3] - 2019-04-02
 ### Removed
 - Remove unused files.
