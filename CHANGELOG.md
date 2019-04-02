@@ -6,6 +6,13 @@ The format is based on [Keep a Changelog](http://keepachangelog.com/en/1.0.0/)
 and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
+### Removed
+- Remove unused files.
+
+### Fixed
+- Display country flag according to store preferences data.
+- Dinamically get phone example and country dial code from store preferences data.
+- Get correct profile rules.
 
 ## [2.1.2] - 2019-03-28
 ### Fixed
