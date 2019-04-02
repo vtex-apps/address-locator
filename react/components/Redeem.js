@@ -9,7 +9,6 @@ import ProfileRules from './ProfileRules'
 import Loader from './Loader'
 import AddressRedeemForm from './RedeemForm'
 import documentsQuery from '../queries/documents.gql'
-
 import getCountryDialCode from '../utils/getCountryDialCode'
 
 const { addValidation } = modules

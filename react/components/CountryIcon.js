@@ -7,7 +7,7 @@ const CountryIcon = ({ size, country }) => {
   return (
     <div className="flex items-center">
       <img className="pr2" src={source} width={size} height={size} />
-      <p className>{`+${dialCode}`}</p>
+      <p>{`+${dialCode}`}</p>
     </div>
   )
 }
