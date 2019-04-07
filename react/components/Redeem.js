@@ -28,8 +28,7 @@ class AddressRedeem extends Component {
   }
 
   state = {
-    profile: null,
-    contextLoading: true,
+    profile: addValidation({ homePhone: '' }, this.props.rules),
     queryLoading: false,
   }
 
@@ -87,20 +86,11 @@ class AddressRedeem extends Component {
 
   handleFieldUpdate = field => this.setState(state => ({ profile: { ...state.profile, ...field } }))
 
-  componentDidUpdate({ rules, orderFormContext }, { contextLoading }) {
-    if (contextLoading && !orderFormContext.loading) {
-      this.setState({
-        profile: addValidation({ homePhone: '' }, rules),
-        contextLoading: false,
-      })
-    }
-  }
-
   render() {
-    const { profile, contextLoading, queryLoading } = this.state
+    const { profile, queryLoading } = this.state
     const { rules, orderFormContext } = this.props
     const countryCode = getCountryCode(orderFormContext)
-    if (contextLoading)
+    if (orderFormContext.loading)
       return (
         <div className="pv7 ph6 br2 bg-white">
           <Loader style={{ width: '100%', height: '100%' }} />
