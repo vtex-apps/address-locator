@@ -41,8 +41,8 @@ class AddressManager extends Component {
   redirectToReturnURL = () => {
     try {
       const parsedQueryString = queryString.parse(window.location.search)
-      const returnURL = parsedQueryString && parsedQueryString.returnUrl  
-      const cleanUrl = head(returnURL) === '/' ? returnURL : `/${returnURL || ''}`
+      const returnURL = parsedQueryString && parsedQueryString.returnUrl  || ''
+      const cleanUrl = head(returnURL) === '/' ? returnURL : `/${returnURL}`
       window.location.href = cleanUrl
     } catch (e) {
       // Unable to redirect
