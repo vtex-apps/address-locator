@@ -38,16 +38,14 @@ class AddressManager extends Component {
     }
   }
 
-  cleanRedirectUrl = (returnURL) => head(returnURL) === '/' ? returnURL : `/${returnURL || ''}`
-
   redirectToReturnURL = () => {
     try {
       const parsedQueryString = queryString.parse(window.location.search)
       const returnURL = parsedQueryString && parsedQueryString.returnUrl  
-      window.location.href = this.cleanRedirectUrl(returnURL)
+      const cleanUrl = head(returnURL) === '/' ? returnURL : `/${returnURL || ''}`
+      window.location.href = cleanUrl
     } catch (e) {
       // Unable to redirect
-      /** TODO: Handle this error better */
     }
   }
 
