@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import { orderFormConsumer, contextPropTypes } from 'vtex.store-resources/OrderFormContext'
 import AddressPage from './components/AddressPage'
 import hoistNonReactStatics from 'hoist-non-react-statics'
+import { head } from 'ramda'
 import queryString from 'query-string'
 import './global.css'
 
@@ -40,11 +41,11 @@ class AddressManager extends Component {
   redirectToReturnURL = () => {
     try {
       const parsedQueryString = queryString.parse(window.location.search)
-      const returnURL = parsedQueryString && parsedQueryString.returnUrl
-      window.location.href = `/${returnURL || ''}`
+      const returnURL = parsedQueryString && parsedQueryString.returnUrl  || ''
+      const cleanUrl = head(returnURL) === '/' ? returnURL : `/${returnURL}`
+      window.location.href = cleanUrl
     } catch (e) {
       // Unable to redirect
-      /** TODO: Handle this error better */
     }
   }
 
