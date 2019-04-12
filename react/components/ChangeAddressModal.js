@@ -109,7 +109,7 @@ class ChangeAddressModal extends Component {
         onConfirm={this.handlePickupConfirm}
         onUpdateOrderForm={this.handleOrderFormUpdated}
       />
-    ) : <div/>
+    ) : null
 
     return (
       <Modal isOpen={isOpen} onClose={this.handleCloseModal} centered>

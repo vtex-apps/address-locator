@@ -1,6 +1,4 @@
 {
-  "address-locator.order-title": "address-locator.order-title",
-  "address-locator.address-search-tab": "address-locator.address-search-tab",
   "address-locator.address-search-label": "address-locator.address-search-label",
   "address-locator.address-search-placeholder": "address-locator.address-search-placeholder",
   "address-locator.address-search-number-label": "address-locator.address-search-number-label",
@@ -19,20 +17,17 @@
   "address-locator.address-search-position-denied-error": "address-locator.address-search-position-denied-error",
   "address-locator.address-search-button": "address-locator.address-search-button",
   "address-locator.address-search-invalid-address": "address-locator.address-search-invalid-address",
+  "address-locator.address-page-title": "address-locator.address-page-title",
   "address-locator.address-redeem-recurring": "address-locator.address-redeem-recurring",
-  "address-locator.address-redeem-tab": "address-locator.address-redeem-tab",
-  "address-locator.address-redeem-label": "address-locator.address-redeem-label",
   "address-locator.address-redeem-button": "address-locator.address-redeem-button",
   "address-locator.address-manager-title": "address-locator.address-manager-title",
   "address-locator.address-manager-description": "address-locator.address-manager-description",
-  "address-locator.address-manager-button": "address-locator.address-manager-button",
   "address-locator.address-manager.logo-title": "address-locator.address-manager.logo-title",
+  "address-locator.pickup-button": "address-locator.pickup-button",
   "address-locator.graphql-error": "address-locator.graphql-error",
   "address-manager.address-list": "address-manager.address-list",
   "profile-form.field.homePhone": "profile-form.field.homePhone",
   "profile-form.error.INVALID_FIELD": "profile-form.error.INVALID_FIELD",
   "profile-form.error.EMPTY_FIELD": "profile-form.error.EMPTY_FIELD",
-  "profile-form.error.NOT_FOUND": "profile-form.error.NOT_FOUND",
-  "address-locator.pickup-button": "address-locator.pickup-button",
-  "address-locator.address-page-title": "address-locator.address-page-title"
+  "profile-form.error.NOT_FOUND": "profile-form.error.NOT_FOUND"
 }

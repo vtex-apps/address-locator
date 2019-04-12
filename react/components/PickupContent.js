@@ -2,11 +2,9 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { Spinner } from 'vtex.styleguide'
 import { orderFormConsumer, contextPropTypes } from 'vtex.store-resources/OrderFormContext'
-import { path } from 'ramda'
 
 import { AddressRules } from 'vtex.address-form'
 import PickupModalContainer from './PickupModalContainer'
-import PickupPointChosen from './PickupPointChosen';
 
 class PickupContent extends Component {
   state = {
@@ -41,24 +39,10 @@ class PickupContent extends Component {
     onConfirm && onConfirm()
   }
 
-  renderDeliveryPicked = () => {
-    const { orderFormContext: { orderForm } } = this.props
-    const { shippingData: { address }, pickupPoint } = orderForm
-
-    return (
-      <PickupPointChosen 
-        handleOpenModal={this.handleOpenModal}
-        name={path(['friendlyName'], pickupPoint)}
-        street={address.street}
-        number={address.number}
-      />
-    )
-  }
-
   render() {
     const { orderFormContext: { orderForm }, loading } = this.props
-    const { askForGeolocation, isFetching, isModalOpen } = this.state
-    const { isCheckedIn, storePreferencesData, pickupPoint } = orderForm
+    const { askForGeolocation, isFetching } = this.state
+    const { storePreferencesData } = orderForm
     const { countryCode } = storePreferencesData
     const isLoading = isFetching || loading
     return (
@@ -78,7 +62,6 @@ class PickupContent extends Component {
             storePreferencesData={storePreferencesData}
             askForGeolocation={askForGeolocation}
             handlePickedSLA={this.onHandlePickedSLA}
-            activePickupPoint={pickupPoint}
           />
         )}
         </div>

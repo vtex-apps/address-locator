@@ -13,16 +13,13 @@ import { helpers } from 'vtex.address-form'
 const { injectRules, addValidation } = helpers
 
 class PickupModalContainer extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      selectedPickupPoint: null,
-      pickupPoints: [],
-      pickupOptions: [],
-      activePickupPoint: this.convertPickupPointToOption(props.activePickupPoint),
-      searchAddress: addValidation(newAddress({ addressType: 'search' })),
-      isSearching: !!props.activePickupPoint,
-    }
+  state = {
+    selectedPickupPoint: null,
+    pickupPoints: [],
+    pickupOptions: [],
+    activePickupPoint: null,
+    searchAddress: addValidation(newAddress({ addressType: 'search' })),
+    isSearching: true,
   }
 
   componentDidMount() {
@@ -91,7 +88,7 @@ class PickupModalContainer extends Component {
   }
 
   render() {
-    const { isModalOpen, storePreferencesData, logisticsQuery, askForGeolocation } = this.props
+    const { isModalOpen, storePreferencesData, logisticsQuery } = this.props
     if (!isModalOpen || logisticsQuery.loading) return null
 
     return (
