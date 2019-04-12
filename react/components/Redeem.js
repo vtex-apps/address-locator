@@ -5,8 +5,6 @@ import { compose, withApollo } from 'react-apollo'
 import { contextPropTypes } from 'vtex.store-resources/OrderFormContext'
 import { modules } from 'vtex.profile-form'
 
-import ProfileRules from './ProfileRules'
-import Loader from './Loader'
 import AddressRedeemForm from './RedeemForm'
 import documentsQuery from '../queries/documents.gql'
 import getCountryDialCode from '../utils/getCountryDialCode'
@@ -89,21 +87,13 @@ class AddressRedeem extends Component {
   render() {
     const { profile, queryLoading } = this.state
     const { rules, orderFormContext } = this.props
-    const countryCode = getCountryCode(orderFormContext)
-    if (orderFormContext.loading)
-      return (
-        <div className="pv7 ph6 br2 bg-white">
-          <Loader style={{ width: '100%', height: '100%' }} />
-        </div>
-      )
-
     return (
       <AddressRedeemForm
         {...{
           rules,
           profile,
           loading: queryLoading,
-          country: countryCode,
+          country: getCountryCode(orderFormContext),
           onSubmit: this.handleSubmit,
           onFieldUpdate: this.handleFieldUpdate,
         }}
@@ -113,6 +103,5 @@ class AddressRedeem extends Component {
 }
 
 export default compose(
-  ProfileRules,
   withApollo,
 )(AddressRedeem)

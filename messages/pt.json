@@ -37,5 +37,7 @@
     "profile-form.field.homePhone": "Digite o seu telefone abaixo",
     "profile-form.error.INVALID_FIELD": "Número de telefone inválido",
     "profile-form.error.EMPTY_FIELD": "Campo obrigatório",
-    "profile-form.error.NOT_FOUND": "Não encontramos uma conta com este telefone"
+    "profile-form.error.NOT_FOUND": "Não encontramos uma conta com este telefone",
+    "address-locator.address-page-title": "Onde quer sua entrega?",
+    "address-locator.pickup-button": "Encontre um ponto de retirada"
 }
