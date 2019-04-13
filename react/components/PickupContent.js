@@ -9,13 +9,8 @@ import PickupModalContainer from './PickupModalContainer'
 class PickupContent extends Component {
   state = {
     isModalOpen: false,
-    askForGeolocation: false,
     isFetching: false,
   }
-
-  handleOpenModal = (askForGeolocation) => this.setState({ isModalOpen: true, askForGeolocation })
-
-  onHandleCloseModal = () => this.setState({ isModalOpen: false })
 
   onHandlePickedSLA = async (pickupPoint) => {
     const { orderFormContext, onOrderFormUpdated, onConfirm } = this.props
@@ -40,8 +35,9 @@ class PickupContent extends Component {
   }
 
   render() {
+    console.log('teste PickupContent:!!!')
     const { orderFormContext: { orderForm }, loading } = this.props
-    const { askForGeolocation, isFetching } = this.state
+    const { isFetching } = this.state
     const { storePreferencesData } = orderForm
     const { countryCode } = storePreferencesData
     const isLoading = isFetching || loading
@@ -57,10 +53,7 @@ class PickupContent extends Component {
           </div>
         ) : (
           <PickupModalContainer
-            isModalOpen
-            closePickupModal={this.onHandleCloseModal}
             storePreferencesData={storePreferencesData}
-            askForGeolocation={askForGeolocation}
             handlePickedSLA={this.onHandlePickedSLA}
           />
         )}

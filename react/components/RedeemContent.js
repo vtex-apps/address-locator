@@ -43,7 +43,7 @@ const RedeemContent = ({ orderFormContext }) => {
 }
 
 RedeemContent.propTypes = {
-  orderFormContext: contextPropTypes.isRequired,
+  orderFormContext: contextPropTypes,
 }
 
 export default orderFormConsumer(RedeemContent)
