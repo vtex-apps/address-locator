@@ -4,12 +4,14 @@ import { intlShape, injectIntl } from 'react-intl'
 import Input from 'vtex.styleguide/Input'
 import { ProfileFieldShape, RuleFieldShape } from 'vtex.profile-form'
 
+import styles from '../styles.css'
+
 const StyleguideInput = props => {
   const { field, data, options, inputRef, onChange, onBlur, intl } = props
-
+  const cssClass = styles[`input-${field.name}`] || ''
   return (
     <div
-      className={`vtex-profile-form__${field.name} ${
+      className={`${cssClass} ${
         field.hidden ? 'dn' : ''
       }`}
     >

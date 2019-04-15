@@ -2,6 +2,8 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { pick } from 'ramda'
 
+import styles from '../styles.css'
+
 export default class AddressListItem extends Component {
   static propTypes = {
     /* Address object from available addresses */
@@ -37,7 +39,7 @@ export default class AddressListItem extends Component {
     const { street, number, neighborhood, city } = address
     return (
       <div
-        className={`${!isLastAddress && 'bb b--light-gray'} pv4 dim pointer`}
+        className={`${styles.addressListItem} ${!isLastAddress && 'bb b--light-gray'} pv4 dim pointer`}
         onClick={this.handleClick}
       >
         <p className="ma0 t-body c-on-base">{`${street}, ${number}`}</p>

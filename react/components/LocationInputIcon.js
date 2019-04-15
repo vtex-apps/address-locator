@@ -3,15 +3,17 @@ import PropTypes from 'prop-types'
 
 import withImage from './withImage'
 
+import styles from '../styles.css'
+
 const LocationInputIcon = ({ onClick, imageSrc }) => {
   if (!imageSrc) {
     return null
   }
 
   return (
-    <span onClick={onClick} className="pointer vtex-input-icon vtex-input-icon--location">
+    <div onClick={onClick} className={`${styles.locationIcon} pointer`}>
       <img className="v-mid pl3" src={imageSrc} />
-    </span>
+    </div>
   )
 }
 

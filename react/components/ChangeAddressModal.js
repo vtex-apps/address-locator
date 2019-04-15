@@ -9,7 +9,6 @@ import Spinner from 'vtex.styleguide/Spinner'
 import AddressList from './AddressList'
 import AddressContent from './AddressContent'
 import PickupContent from './PickupContent'
-import '../global.css'
 
 const MAX_ADDRESS_QUANTITY = 5
 
@@ -138,12 +137,14 @@ class ChangeAddressModal extends Component {
               </div>
             )}
           </div>
-          <div className="absolute w-100 h-100 top-0" style={{
-            left: '100%',
-            transition: 'transform 300ms',
-            transform: `translate3d(${isPickupOpen ? '-100%' : '0'}, 0, 0)`
-          }}>
-            {pickupPage}
+          <div 
+            className="absolute w-100 h-100 top-0"
+            style={{
+              left: '100%',
+              transition: 'transform 300ms',
+              transform: `translate3d(${isPickupOpen ? '-100%' : '0'}, 0, 0)`
+            }}>
+              {pickupPage}
           </div>
         </div>
       </Modal>
