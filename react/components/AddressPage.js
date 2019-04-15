@@ -102,9 +102,7 @@ class AddressPage extends Component {
             />
           </Card>
           <Card>
-            <RedeemContent
-              onUpdateOrderForm={this.handleOrderFormUpdated}
-            />
+            <RedeemContent />
           </Card>
         </div>
         {isMobile ? (

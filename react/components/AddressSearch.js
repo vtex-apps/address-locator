@@ -7,12 +7,14 @@ import { Adopt } from 'react-adopt'
 import { graphql } from 'react-apollo'
 import { compose, branch, mapProps, renderComponent } from 'recompose'
 import { path } from 'ramda'
-
-import Autocomplete from './Autocomplete'
-import logisticsQuery from '../queries/logistics.gql'
 import alpha2ToAlpha3 from 'country-iso-2-to-3'
 import { Alert, Button, Input, Spinner } from 'vtex.styleguide'
 import { contextPropTypes } from 'vtex.store-resources/OrderFormContext'
+
+import Autocomplete from './Autocomplete'
+
+import logisticsQuery from '../queries/logistics.gql'
+import getCurrentPositionPromise from '../utils/getCurrentPositionPromise'
 
 /**
  * Geolocation error codes. Can be found here:
@@ -23,20 +25,6 @@ const ERROR_POSITION_UNAVAILABLE = 2
 const ERROR_TIMEOUT = 3
 const ERROR_ADDRESS_NOT_FOUND = 9 // custom ad hoc error code
 
-const GEOLOCATION_TIMEOUT = 30 * 1000
-
-const getCurrentPosition = () => {
-  const geolocationOptions = {
-    enableHighAccuracy: true,
-    timeout: GEOLOCATION_TIMEOUT,
-    maximumAge: 0,
-  }
-  return new Promise((resolve, reject) => {
-    navigator.geolocation.getCurrentPosition(position => {
-      resolve(position)
-    }, error => reject(error.code), geolocationOptions)
-  })
-}
 /**
  * Component responsible for searching the user address in Google Maps API, when
  * inserting it or using navigator geolocation to get current position
@@ -96,7 +84,7 @@ class AddressSearch extends Component {
     if (navigator.geolocation) {
       this.setState({ isLoading: true })
       try {
-        const position = await getCurrentPosition()
+        const position = await getCurrentPositionPromise()
         const { latitude, longitude } = position.coords
         const parsedResponse = await this.requestGoogleMapsApi({ lat: latitude, long: longitude })
 

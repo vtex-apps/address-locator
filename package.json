@@ -1,0 +1,9 @@
+{
+  "version": "2.1.7",
+  "scripts": {
+    "lint:locales": "intl-equalizer"
+  },
+  "devDependencies": {
+    "@vtex/intl-equalizer": "^2.2.1"
+  }
+}

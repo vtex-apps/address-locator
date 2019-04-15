@@ -4,25 +4,25 @@ import { injectIntl } from 'react-intl'
 import { graphql, withApollo } from 'react-apollo'
 import { compose } from 'recompose'
 import { path } from 'ramda'
+import { PickupPointsSelector } from 'vtex.pickup-points-selector'
+import { helpers } from 'vtex.address-form'
 
 import nearPickupPointsQuery from '../queries/nearPickupPoints.gql'
 import logisticsQuery from '../queries/logistics.gql'
 import { newAddress } from '../utils/newAddress'
-import { PickupPointsSelector } from 'vtex.pickup-points-selector'
-import { helpers } from 'vtex.address-form'
+import getCurrentPositionPromise from '../utils/getCurrentPositionPromise'
+
 const { injectRules, addValidation } = helpers
 
 class PickupModalContainer extends Component {
-  constructor(props) {
-    super(props)
-    this.state = {
-      selectedPickupPoint: null,
-      pickupPoints: [],
-      pickupOptions: [],
-      activePickupPoint: this.convertPickupPointToOption(props.activePickupPoint),
-      searchAddress: addValidation(newAddress({ addressType: 'search' })),
-      isSearching: !!props.activePickupPoint,
-    }
+  state = {
+    selectedPickupPoint: null,
+    pickupPoints: [],
+    pickupOptions: [],
+    activePickupPoint: null,
+    searchAddress: addValidation(newAddress({ addressType: 'search' })),
+    isSearching: true,
+    hasGeolocationPermission: undefined,
   }
 
   componentDidMount() {
@@ -30,6 +30,9 @@ class PickupModalContainer extends Component {
     if (activePickupPoint && activePickupPoint.pickupStoreInfo.address) {
       this.handleSearchAddressChange(activePickupPoint.pickupStoreInfo.address)
     }
+    getCurrentPositionPromise()
+      .then(() => this.setState({ hasGeolocationPermission: true }))
+      .catch(() => this.setState({ hasGeolocationPermission: false }))
   }
 
   convertPickupPointToOption = (pickupPoint) => {
@@ -42,7 +45,7 @@ class PickupModalContainer extends Component {
       lockTTL: null,
       availableDeliveryWindows: [],
       deliveryWindow: null,
-      listPrice: 359,
+      listPrice: 0,
       tax: 0,
       price: 0,
       pickupStoreInfo: {
@@ -91,17 +94,17 @@ class PickupModalContainer extends Component {
   }
 
   render() {
-    const { isModalOpen, storePreferencesData, logisticsQuery, askForGeolocation } = this.props
-    if (!isModalOpen || logisticsQuery.loading) return null
+    const { hasGeolocationPermission } = this.state
+    const { storePreferencesData, logisticsQuery } = this.props
+    if (logisticsQuery.loading || hasGeolocationPermission === undefined) return null
 
     return (
       <div className="absolute top-0 bottom-0 left-0 right-0">
         <PickupPointsSelector
           activePickupPoint={this.state.activePickupPoint}
-          askForGeolocation={true}
+          askForGeolocation={hasGeolocationPermission}
           changeActivePickupDetails={this.changeActivePickupDetails}
           changeActiveSLAOption={this.changeActiveSLAOption}
-          closePickupPointsModal={this.props.closePickupModal}
           googleMapsKey={logisticsQuery.logistics.googleMapsKey}
           intl={this.props.intl}
           isPickupDetailsActive={false}
@@ -125,12 +128,9 @@ class PickupModalContainer extends Component {
 
 PickupModalContainer.propTypes = {
   activePickupPoint: PropTypes.object,
-  askForGeolocation: PropTypes.bool,
   client: PropTypes.object,
-  closePickupModal: PropTypes.func,
   handlePickedSLA: PropTypes.func,
   intl: PropTypes.object,
-  isModalOpen: PropTypes.bool,
   logisticsQuery: PropTypes.object,
   rules: PropTypes.object,
   storePreferencesData: PropTypes.object,

@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.1.7] - 2019-04-15
+### Fixed
+- Get correct country for profile rules.
+- Erase useless code and dependencies.
+- Fix pickup point not working without geolocation permission by properly using askForGeolocation.
+
 ## [2.1.6] - 2019-04-09
 ### Fixed
 - Fix redirect when coming from routes other than home.
