@@ -35,7 +35,6 @@ class PickupContent extends Component {
   }
 
   render() {
-    console.log('teste PickupContent:!!!')
     const { orderFormContext: { orderForm }, loading } = this.props
     const { isFetching } = this.state
     const { storePreferencesData } = orderForm
