@@ -1,9 +1,8 @@
 import React, { Component, Fragment } from 'react'
 import { createPortal } from 'react-dom'
-import { FormattedMessage } from 'react-intl'
+import { injectIntl, FormattedMessage } from 'react-intl'
 import PropTypes from 'prop-types'
 import { withScriptjs } from 'react-google-maps'
-import { Adopt } from 'react-adopt'
 import { graphql } from 'react-apollo'
 import { compose, branch, mapProps, renderComponent } from 'recompose'
 import { path } from 'ramda'
@@ -15,6 +14,8 @@ import Autocomplete from './Autocomplete'
 
 import logisticsQuery from '../queries/logistics.gql'
 import getCurrentPositionPromise from '../utils/getCurrentPositionPromise'
+
+import styles from '../styles.css'
 
 /**
  * Geolocation error codes. Can be found here:
@@ -323,31 +324,21 @@ class AddressSearch extends Component {
   }
 
   renderExtraDataInput = (field, type) => {
+    const { intl: { formatMessage } } = this.props
     const { address } = this.state
     if (!address) return null
 
     return (
-      <Adopt
-        mapper={{
-          placeholder: (
-            <FormattedMessage id={`address-locator.address-search-${field}-placeholder`} />
-          ),
-          label: <FormattedMessage id={`address-locator.address-search-${field}-label`} />,
-        }}
-      >
-        {({ placeholder, label }) => (
-          <div className="mb4">
+      <div className="mb4">
             <Input
               type={type}
               value={address[field]}
-              placeholder={placeholder}
+              placeholder={formatMessage({ id: `address-locator.address-search-${field}-placeholder`})}
               size="large"
-              label={label}
+              label={formatMessage({ id: `address-locator.address-search-${field}-label`})}
               onChange={e => this.handleAddressKeyChanged(e, field)}
             />
           </div>
-        )}
-      </Adopt>
     )
   }
 
@@ -383,23 +374,21 @@ class AddressSearch extends Component {
             </div>,
             document.body
           )}
-        <form className="address-search w-100" ref={this.form} onSubmit={this.handleFormSubmit}>
+        <form className={`${styles.addressSearchForm} w-100`} ref={this.form} onSubmit={this.handleFormSubmit}>
           <div className="mb4">
             {!hasSearchedStreet && (
-              <div className="mb4">
-                <div className="relative input--icon-right">
-                  <Autocomplete
-                    isLoading={isDisabled}
-                    onPlaceSelected={this.handleOnPlaceSelected}
-                    types={['address']}
-                    componentRestrictions={{ country: countryCode }}
-                    value={formattedAddress}
-                    errorMessage={this.getErrorMessage(inputError)}
-                    onChange={this.handleAddressChanged}
-                    onSuffixPress={this.handleSetCurrentPosition}
-                    hideLabel
-                  />
-                </div>
+              <div className="mb4 relative">
+                <Autocomplete
+                  isLoading={isDisabled}
+                  onPlaceSelected={this.handleOnPlaceSelected}
+                  types={['address']}
+                  componentRestrictions={{ country: countryCode }}
+                  value={formattedAddress}
+                  errorMessage={this.getErrorMessage(inputError)}
+                  onChange={this.handleAddressChanged}
+                  onSuffixPress={this.handleSetCurrentPosition}
+                  hideLabel
+                />
               </div>)
             }
 
@@ -431,6 +420,7 @@ const LoadingSpinner = () => (
 )
 
 export default compose(
+  injectIntl,
   graphql(logisticsQuery, {
     name: 'logisticsQuery',
   }),
@@ -439,9 +429,10 @@ export default compose(
     compose(
       mapProps(ownerProps => {
         const { googleMapsKey } = ownerProps.logisticsQuery.logistics
-        const { onOrderFormUpdated, orderFormContext, updateOrderFormMutation } = ownerProps
+        const { onOrderFormUpdated, orderFormContext, updateOrderFormMutation, intl } = ownerProps
 
         return {
+          intl,
           googleMapKey: googleMapsKey,
           googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${googleMapsKey}&v=3.exp&libraries=places`,
           loadingElement: <AddressSearch loading />,

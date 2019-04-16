@@ -3,8 +3,10 @@ import PropTypes from 'prop-types'
 import { FormattedMessage } from 'react-intl'
 import AddressListItem from './AddressListItem'
 
+import styles from '../styles.css'
+
 const AddressList = ({ availableAddresses, onSelectAddress }) => (
-  <div className="vtex-address-locator__address-list pa5">
+  <div className={`${styles.addressList} pa5`}>
     <FormattedMessage id="address-manager.address-list">
       {text => <span className="t-small f6 dark-gray">{text}</span>}
     </FormattedMessage>

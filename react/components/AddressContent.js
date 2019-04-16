@@ -5,9 +5,11 @@ import AddressSearch from './AddressSearch'
 import Button from 'vtex.styleguide/Button'
 import { FormattedMessage } from 'react-intl'
 
+import styles from '../styles.css'
+
 class AddressContent extends Component {
   static propTypes = {
-    orderFormContext: contextPropTypes.isRequired,
+    orderFormContext: contextPropTypes,
     onUpdateOrderForm: PropTypes.func.isRequired,
     onPickupClick: PropTypes.func.isRequired,
   }
@@ -16,7 +18,7 @@ class AddressContent extends Component {
     const { orderFormContext, onPickupClick, onUpdateOrderForm } = this.props
 
     return (
-      <div className="vtex-address-modal__address">
+      <div className={styles.addressContent}>
         <h1 className="t-heading-1 mt0 mb4 mb7-ns">
           <FormattedMessage id="address-locator.address-page-title" />
         </h1>

@@ -11,6 +11,8 @@ import { getExampleNumber } from 'libphonenumber-js'
 import StyleguideInput from './StyleguideInput'
 import CountryIcon from './CountryIcon'
 
+import styles from '../styles.css'
+
 const isDisabled = (profilePhone) => {
   if (!!profilePhone.error) return true
   if (!profilePhone.value || !profilePhone.value.length) return true
@@ -35,10 +37,10 @@ const AddressRedeemForm = ({
   const profilePhone = profile[homePhoneField.name]
   return (
     <form
-      className="vtex-address-locator__address-redeem w-100"
+      className={`${styles.redeemForm} w-100`}
       onSubmit={onSubmit}
     >
-      <div className="mb5 relative input--icon-left">
+      <div className="mb5 relative">
         <ProfileField
           field={homePhoneField}
           data={profilePhone}

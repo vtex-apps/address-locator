@@ -10,9 +10,9 @@
     "libphonenumber-js": "^1.7.14",
     "query-string": "^6.2.0",
     "ramda": "^0.26.1",
-    "react-adopt": "^0.6.0",
     "react-apollo": "^2.3.2",
     "react-content-loader": "^3.2.0",
+    "react-device-detect": "^1.6.2",
     "react-google-maps": "^9.4.5",
     "recompose": "^0.30.0",
     "svg-country-flags": "^1.2.6"

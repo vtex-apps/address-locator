@@ -1,18 +1,17 @@
-import React, { Component } from 'react'
+import React, { Component, Fragment } from 'react'
 import { compose } from 'recompose'
 import { withRuntimeContext } from 'vtex.render-runtime'
 import PropTypes from 'prop-types'
-
-
 import { orderFormConsumer, contextPropTypes } from 'vtex.store-resources/OrderFormContext'
+import { Modal, Spinner } from 'vtex.styleguide'
+import { isMobileOnly } from 'react-device-detect'
+
 import Card from './Card'
 import AddressContent from './AddressContent'
-
-import { Spinner } from 'vtex.styleguide'
-import { Modal } from 'vtex.styleguide'
-
 import PickupContent from './PickupContent'
 import RedeemContent from './RedeemContent'
+
+import styles from '../styles.css'
 
 /**
  * Component that allows the user to locate his address, by inserting, searching, retrieving and
@@ -22,7 +21,7 @@ import RedeemContent from './RedeemContent'
 class AddressPage extends Component {
   static propTypes = {
     /* Context used to call address mutation and retrieve the orderForm */
-    orderFormContext: contextPropTypes.isRequired,
+    orderFormContext: contextPropTypes,
     loading: PropTypes.bool,
     onSelectAddress: PropTypes.func,
   }
@@ -76,10 +75,6 @@ class AddressPage extends Component {
       )
     }
 
-    /** TODO: use a better method of mobile detection
-     * @author lbebber */
-    const isMobile = window.innerWidth < 640
-
     const pickupPage = isPickupOpen ? (
       <PickupContent
         loading={isPickupSelected}
@@ -87,29 +82,29 @@ class AddressPage extends Component {
         onConfirm={this.handlePickupConfirm}
         onUpdateOrderForm={this.handleOrderFormUpdated}
       />
-    ) : <div/>
+    ) : null
 
     return (
-      <React.Fragment>
-        <div className="vtex-address-modal__address-page" style={{
+      <Fragment>
+        <div className={styles.addressPage} style={{
           transition: 'transform 300ms',
-          transform: `translate3d(${isPickupOpen && isMobile ? '-100%' : '0'}, 0, 0)`
+          transform: `translate3d(${isPickupOpen && isMobileOnly ? '-100%' : '0'}, 0, 0)`
         }}>
-          <Card>
+          <Card cardClass={styles.addressContainer}>
             <AddressContent
               onPickupClick={this.handlePickupClick}
               onUpdateOrderForm={this.handleOrderFormUpdated}
             />
           </Card>
-          <Card>
+          <Card cardClass={styles.redeemContainer}>
             <RedeemContent />
           </Card>
         </div>
-        {isMobile ? (
+        {isMobileOnly ? (
           <div className="absolute w-100 h-100 top-0" style={{
             left: '100%',
             transition: 'transform 300ms',
-            transform: `translate3d(${isPickupOpen && isMobile ? '-100%' : '0'}, 0, 0)`
+            transform: `translate3d(${isPickupOpen && isMobileOnly ? '-100%' : '0'}, 0, 0)`
           }}>
             {pickupPage}
           </div>
@@ -117,13 +112,14 @@ class AddressPage extends Component {
           <Modal 
             centered 
             isOpen={isPickupOpen}
-            onClose={this.handlePickupModalClose}>
-            <div className="vw-90 vh-80">
+            onClose={this.handlePickupModalClose}
+          >
+            <div className="vw-90" style={{ height: '80vh'}}>
               {pickupPage}
             </div>
           </Modal>
         )}
-      </React.Fragment>
+      </Fragment>
     )
   }
 }

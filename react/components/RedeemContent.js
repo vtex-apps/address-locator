@@ -7,6 +7,8 @@ import { path } from 'ramda'
 import Loader from './Loader'
 import Redeem from './Redeem'
 
+import styles from '../styles.css'
+
 const getCountryCode = path(['orderForm', 'storePreferencesData', 'countryCode'])
 
 const LoaderView = () => (
@@ -23,22 +25,22 @@ const RedeemContent = ({ orderFormContext }) => {
   const country = getCountryCode(orderFormContext)
 
   return (
-    <Fragment>
+    <div className={styles.redeemContent}>
       <h2 className="t-heading-2 mt0 mb4">
         <FormattedMessage id="address-locator.address-redeem-recurring" />
       </h2>
-      <div className="vtex-address-modal__redeem">
-      {isLoading ? 
-        <LoaderView /> : (
-        <ProfileRules country={country} shouldUseIOFetching>
-          <Redeem
-            orderFormContext={orderFormContext}
-            onOrderFormUpdated={handleOrderFormUpdated}
-          />
-        </ProfileRules>
-      )}
-      </div>
-    </Fragment>
+      <Fragment>
+        {isLoading ? 
+          <LoaderView /> : (
+          <ProfileRules country={country} shouldUseIOFetching>
+            <Redeem
+              orderFormContext={orderFormContext}
+              onOrderFormUpdated={handleOrderFormUpdated}
+            />
+          </ProfileRules>
+        )}
+      </Fragment>
+    </div>
   )
 }
 

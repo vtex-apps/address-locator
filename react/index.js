@@ -4,7 +4,6 @@ import AddressPage from './components/AddressPage'
 import hoistNonReactStatics from 'hoist-non-react-statics'
 import { head } from 'ramda'
 import queryString from 'query-string'
-import './global.css'
 
 /**
  * Component responsible for displaying and managing user's address using orderFormContext.
