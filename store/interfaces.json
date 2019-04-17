@@ -3,10 +3,6 @@
     "allowed": [],
     "component": "index"
   },
-  "user-address.address-manager": {
-    "allowed": [],
-    "component": "UserAddress"
-  },
   "challenge.address": {
     "component": "AddressChallenge"
   },
@@ -17,5 +13,8 @@
     "required": [
       "address-manager"
     ]
+  },
+  "change-address-modal": {
+    "component": "ChangeAddressModal"
   }
 }
