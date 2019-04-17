@@ -16,7 +16,7 @@ const MAX_ADDRESS_QUANTITY = 5
 /**
  * Component responsible for displaying and managing user's address using orderFormContext.
  */
-class ChangeAddressModal extends Component {
+class ChangeAddress extends Component {
   static propTypes = {
     orderFormContext: contextPropTypes,
     isOpen: PropTypes.bool,
@@ -215,4 +215,4 @@ const withMutationOrderFormUpdate = graphql(
   }
 )
 
-export default orderFormConsumer(withMutationOrderFormUpdate(withMutationShipping(ChangeAddressModal)))
+export default orderFormConsumer(withMutationOrderFormUpdate(withMutationShipping(ChangeAddress)))

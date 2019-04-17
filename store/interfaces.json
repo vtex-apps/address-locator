@@ -14,7 +14,7 @@
       "address-manager"
     ]
   },
-  "change-address-modal": {
-    "component": "ChangeAddressModal"
+  "change-address": {
+    "component": "ChangeAddress"
   }
 }
