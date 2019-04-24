@@ -7,6 +7,13 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.2.0] - 2019-04-24
+### Removed
+- `user-addres.address-manager` block, became useless.
+
+## Added
+- Create `change-address` block to be used on modal.
+
 ## [2.1.7] - 2019-04-15
 ### Fixed
 - Get correct country for profile rules.
