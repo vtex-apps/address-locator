@@ -3,8 +3,10 @@ import PropTypes from 'prop-types'
 import { path, uniq } from 'ramda'
 import { orderFormConsumer, contextPropTypes } from 'vtex.store-resources/OrderFormContext'
 import { graphql } from 'react-apollo'
+import { compose } from 'ramda'
 import gql from 'graphql-tag'
 import Spinner from 'vtex.styleguide/Spinner'
+import { withModal } from 'vtex.modal/ModalContext'
 
 import AddressList from '../AddressList'
 import AddressContent from '../AddressContent'
@@ -67,7 +69,8 @@ class ChangeAddress extends Component {
   }
 
   handleCloseModal = () => {
-    this.props.onClose()
+    const { closeModal } = this.props
+    closeModal && closeModal()
     this.setState({
       isLoading: false,
       isPickupOpen: false,
@@ -177,4 +180,11 @@ const withMutationOrderFormUpdate = graphql(
   }
 )
 
-export default orderFormConsumer(withMutationOrderFormUpdate(withMutationShipping(ChangeAddress)))
+const enhanced = compose(
+  withModal,
+  orderFormConsumer,
+  withMutationOrderFormUpdate,
+  withMutationShipping,
+)
+
+export default enhanced(ChangeAddress)

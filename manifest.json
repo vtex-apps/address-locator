@@ -17,7 +17,8 @@
     "vtex.address-form": "4.x",
     "vtex.pickup-points-selector": "0.x",
     "vtex.store": "2.x",
-    "vtex.store-header": "2.x"
+    "vtex.store-header": "2.x",
+    "vtex.modal": "0.x"
   },
   "scripts": {
     "postreleasy": "vtex publish --verbose"
