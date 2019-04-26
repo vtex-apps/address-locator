@@ -1,5 +1,4 @@
 import React, { Component } from 'react'
-import PropTypes from 'prop-types'
 import { path, uniq } from 'ramda'
 import { orderFormConsumer, contextPropTypes } from 'vtex.store-resources/OrderFormContext'
 import { graphql } from 'react-apollo'
@@ -21,8 +20,6 @@ const MAX_ADDRESS_QUANTITY = 5
 class ChangeAddress extends Component {
   static propTypes = {
     orderFormContext: contextPropTypes,
-    isOpen: PropTypes.bool,
-    onClose: PropTypes.func,
   }
 
   state = {
