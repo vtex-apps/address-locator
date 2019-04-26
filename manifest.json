@@ -1,7 +1,7 @@
 {
   "vendor": "vtex",
   "name": "address-locator",
-  "version": "2.2.0",
+  "version": "2.2.1",
   "builders": {
     "store": "0.x",
     "messages": "1.x",
@@ -17,7 +17,8 @@
     "vtex.address-form": "4.x",
     "vtex.pickup-points-selector": "0.x",
     "vtex.store": "2.x",
-    "vtex.store-header": "2.x"
+    "vtex.store-header": "2.x",
+    "vtex.modal": "0.x"
   },
   "scripts": {
     "postreleasy": "vtex publish --verbose"

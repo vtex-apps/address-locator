@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.2.1] - 2019-04-26
+### Fixed
+- use `withModal` and call it after changing address.
+
 ## [2.2.0] - 2019-04-24
 ### Removed
 - `user-addres.address-manager` block, became useless.
