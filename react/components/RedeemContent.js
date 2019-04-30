@@ -19,7 +19,7 @@ const LoaderView = () => (
 
 const RedeemContent = () => {
   const { address } = useAddress()
-  const handleOrderFormUpdated = useCallback(() => address.refetch(), [])
+  const handleOrderFormUpdated = useCallback(() => address.refetch(), [address])
   const isLoading = address.loading
   const country = getCountryCode(address)
 
