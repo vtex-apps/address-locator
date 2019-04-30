@@ -1,154 +1,92 @@
-import React, { Component } from 'react'
-import { path, uniq } from 'ramda'
-import { orderFormConsumer, contextPropTypes } from 'vtex.store-resources/OrderFormContext'
+import React, { useCallback, useState } from 'react'
 import { graphql } from 'react-apollo'
 import { compose } from 'ramda'
 import gql from 'graphql-tag'
 import Spinner from 'vtex.styleguide/Spinner'
-import { withModal } from 'vtex.modal/ModalContext'
+import { useModal } from 'vtex.modal/ModalContext'
+
+import { useAddress, withAddressProvider } from '../AddressContext'
 
 import AddressList from '../AddressList'
 import AddressContent from '../AddressContent'
 import PickupContent from '../PickupContent'
 import '../../global.css'
 
-const MAX_ADDRESS_QUANTITY = 5
-
 /**
- * Component responsible for displaying and managing user's address using orderFormContext.
+ * Component responsible for displaying and managing user's address using address.
  */
-class ChangeAddress extends Component {
-  static propTypes = {
-    orderFormContext: contextPropTypes,
-  }
 
-  state = {
-    isLoading: false,
-    isPickupOpen: false,
-  }
+const ChangeAddress = ({ updateOrderFormShipping, updateOrderForm }) => {
+  const { address } = useAddress()
+  const { closeModal } = useModal()
+  const [isPickupOpen, setPickupOpen] = useState(false)
+  const [isLoading, setLoading] = useState(false)
 
-  /* Filters available addresses and returns only valid ones */
-  getValidAvailableAddresses = availableAddresses =>
-    availableAddresses.filter(address => address.city && address.street && address.number && address.addressType !== 'pickup')
+  const handleSelectAddress = useCallback(async (setAddress) => {
+    const { orderFormId } = address.orderForm
 
-  /**
-   * Prepare available addresses to list, by removing invalid and duplicate ones, as well reversing and slicing
-   *
-   * @returns {Array} The available addresses array prepared to list
-   */
-  getAvailableAddresses = () => {
-    let { availableAddresses } = this.props.orderFormContext.orderForm.shippingData
-
-    /* Remove invalid addresses from array and then reverse it, to be sorted by the last selected */
-    availableAddresses = this.getValidAvailableAddresses(availableAddresses).reverse()
-    /* Remove duplicate objects from array and then slice by the setted max length */
-    availableAddresses = uniq(availableAddresses).slice(0, MAX_ADDRESS_QUANTITY)
-
-    return availableAddresses
-  }
-
-  handleSelectAddress = async (address) => {
-    const { updateOrderFormShipping } = this.props
-    const { orderFormContext } = this.props
-    const { orderFormId } = orderFormContext.orderForm
-
-    this.setState({ isLoading: true })
-
-    const orderForm = await updateOrderFormShipping(orderFormId, address).catch(() => null)
+    setLoading(true)
+    const orderForm = await updateOrderFormShipping(orderFormId, setAddress).catch(() => null)
+    setLoading(false)
     if (!orderForm) {
       // TODO: Display error
     }
-    this.handleCloseModal()
-  }
-
-  handleChangeAddress = () => {
-    this.handleOrderFormUpdated()
-  }
-
-  handleCloseModal = () => {
-    const { closeModal } = this.props
     closeModal && closeModal()
-    this.setState({
-      isLoading: false,
-      isPickupOpen: false,
-    })
-  }
+  }, [address])
 
-  handleOrderFormUpdated = async () => {
-    const { orderFormContext, updateOrderForm } = this.props
-    const orderFormResp = await orderFormContext.refetch().catch(() => null)
+  const handleOrderFormUpdated = useCallback(async () => {
+    const orderFormResp = await address.refetch().catch(() => null)
     orderFormResp && updateOrderForm(orderFormResp.data.orderForm)
-    this.handleCloseModal()
-  }
+    closeModal && closeModal()
+  }, [address])
 
-  handlePickupConfirm = () => {
-    this.setState({
-      isPickupOpen: false,
-    })
-    this.handleOrderFormUpdated()
-  }
+  const handlePickupConfirm = useCallback(() => {
+    setPickupOpen(false)
+    handleOrderFormUpdated()
+  }, [address])
 
-  handlePickupClick = () => {
-    this.setState({
-      isPickupOpen: true,
-    })
-  }
+  const handlePickupClick = useCallback(() => { setPickupOpen(true) }, [])
 
-  render() {
-    const { orderFormContext } = this.props
-    const { isPickupOpen } = this.state
+  const pickupPage = isPickupOpen ? (
+    <PickupContent
+      onConfirm={handlePickupConfirm}
+      onUpdateOrderForm={handleOrderFormUpdated}
+    />
+  ) : null
 
-    if (!path(['orderForm', 'shippingData', 'address'], orderFormContext)) return null
-
-    const { isLoading } = this.state
-    const availableAddresses = this.getAvailableAddresses()
-
-    const pickupPage = isPickupOpen ? (
-      <PickupContent
-        orderFormContext={orderFormContext}
-        onConfirm={this.handlePickupConfirm}
-        onUpdateOrderForm={this.handleOrderFormUpdated}
-      />
-    ) : null
-
-    return (
-      <div className="overflow-hidden relative br2"
+  return (
+    <div className="overflow-hidden relative br2"
+      style={{
+        margin: '-3rem',
+        padding: '3rem',
+      }}>
+      <div
         style={{
-          margin: '-3rem',
-          padding: '3rem',
-        }}>
-        <div
-          style={{
-            transition: 'transform 300ms',
-            transform: `translate3d(${isPickupOpen ? '-100%' : '0'}, 0, 0)`
-          }}>
-          <AddressContent
-            onPickupClick={this.handlePickupClick}
-            onUpdateOrderForm={this.handleChangeAddress} />
-          {!isLoading ? (
-            <AddressList
-              availableAddresses={availableAddresses}
-              onOrderFormUpdated={this.handleOrderFormUpdated}
-              onSelectAddress={this.handleSelectAddress}
-            />
-          ) : (
-            <div className="flex flex-grow-1 justify-center items-center">
-              <Spinner />
-            </div>
-          )}
-        </div>
-        <div className="absolute w-100 h-100 top-0" style={{
-          left: '100%',
           transition: 'transform 300ms',
           transform: `translate3d(${isPickupOpen ? '-100%' : '0'}, 0, 0)`
         }}>
-          {pickupPage}
-        </div>
+        <AddressContent
+          onPickupClick={handlePickupClick}
+          onUpdateOrderForm={handleOrderFormUpdated} />
+        {!isLoading ? (
+          <AddressList onSelectAddress={handleSelectAddress} />
+        ) : (
+          <div className="flex flex-grow-1 justify-center items-center">
+            <Spinner />
+          </div>
+        )}
       </div>
-    )
-  }
-}
+      <div className="absolute w-100 h-100 top-0" style={{
+        left: '100%',
+        transition: 'transform 300ms',
+        transform: `translate3d(${isPickupOpen ? '-100%' : '0'}, 0, 0)`
+      }}>
+        {pickupPage}
+      </div>
+    </div>
+  )
 
+}
 
 const withMutationShipping = graphql(
   gql`
@@ -178,8 +116,7 @@ const withMutationOrderFormUpdate = graphql(
 )
 
 const enhanced = compose(
-  withModal,
-  orderFormConsumer,
+  withAddressProvider,
   withMutationOrderFormUpdate,
   withMutationShipping,
 )

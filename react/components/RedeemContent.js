@@ -1,9 +1,9 @@
-import React, { Fragment, useCallback } from 'react'
-import { orderFormConsumer, contextPropTypes } from 'vtex.store-resources/OrderFormContext'
+import React, { Fragment, memo, useCallback } from 'react'
 import { FormattedMessage } from 'react-intl'
 import { ProfileRules } from 'vtex.profile-form'
 import { path } from 'ramda'
 
+import { useAddress } from './AddressContext'
 import Loader from './Loader'
 import Redeem from './Redeem'
 
@@ -17,10 +17,11 @@ const LoaderView = () => (
   )
 )
 
-const RedeemContent = ({ orderFormContext }) => {
-  const handleOrderFormUpdated = useCallback(() => orderFormContext.refetch(), [])
-  const isLoading = orderFormContext.loading
-  const country = getCountryCode(orderFormContext)
+const RedeemContent = () => {
+  const { address } = useAddress()
+  const handleOrderFormUpdated = useCallback(() => address.refetch(), [])
+  const isLoading = address.loading
+  const country = getCountryCode(address)
 
   return (
     <Fragment>
@@ -32,7 +33,7 @@ const RedeemContent = ({ orderFormContext }) => {
         <LoaderView /> : (
         <ProfileRules country={country} shouldUseIOFetching>
           <Redeem
-            orderFormContext={orderFormContext}
+            address={address}
             onOrderFormUpdated={handleOrderFormUpdated}
           />
         </ProfileRules>
@@ -42,8 +43,4 @@ const RedeemContent = ({ orderFormContext }) => {
   )
 }
 
-RedeemContent.propTypes = {
-  orderFormContext: contextPropTypes,
-}
-
-export default orderFormConsumer(RedeemContent)
+export default memo(RedeemContent)

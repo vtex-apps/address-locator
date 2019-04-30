@@ -1,29 +1,47 @@
-import React from 'react'
+import React, { memo, useMemo } from 'react'
 import PropTypes from 'prop-types'
 import { FormattedMessage } from 'react-intl'
+import { pathOr, uniq } from 'ramda'
+
+import { useAddress } from './AddressContext'
 import AddressListItem from './AddressListItem'
 
-const AddressList = ({ availableAddresses, onSelectAddress }) => (
-  <div className="vtex-address-locator__address-list pa5">
-    <FormattedMessage id="address-manager.address-list">
-      {text => <span className="t-small f6 dark-gray">{text}</span>}
-    </FormattedMessage>
-    {availableAddresses.map((address, key) => (
-      <AddressListItem
-        key={key}
-        address={address}
-        isLastAddress={key === availableAddresses.length - 1}
-        onSelectAddress={onSelectAddress}
-      />
-    ))}
-  </div>
-)
+const MAX_ADDRESS_QUANTITY = 5
+
+const AddressList = ({ onSelectAddress }) => {
+  const { address } = useAddress()
+  const availableAddresses = useMemo(() => {
+    const filtered = 
+      pathOr([], ['orderForm', 'shippingData', 'availableAddresses'], address)
+      .filter(address => address.city && address.street && address.number && address.addressType !== 'pickup')
+      .reverse()
+      return uniq(filtered).slice(0, MAX_ADDRESS_QUANTITY)
+  }, [address])
+
+  if (availableAddresses.length === 0) {
+    return null
+  }
+
+  return (
+    <div className="vtex-address-locator__address-list pa5">
+      <FormattedMessage id="address-manager.address-list">
+        {text => <span className="t-small f6 dark-gray">{text}</span>}
+      </FormattedMessage>
+      {availableAddresses.map((address, key) => (
+        <AddressListItem
+          key={key}
+          address={address}
+          isLastAddress={key === availableAddresses.length - 1}
+          onSelectAddress={onSelectAddress}
+        />
+      ))}
+    </div>
+  )
+} 
 
 AddressList.propTypes = {
-  /* Array of user's available addresses */
-  availableAddresses: PropTypes.arrayOf(PropTypes.object),
   /* Function that will be called when selecting an address */
   onSelectAddress: PropTypes.func,
 }
 
-export default AddressList
+export default memo(AddressList)

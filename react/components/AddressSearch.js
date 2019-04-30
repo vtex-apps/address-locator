@@ -9,10 +9,10 @@ import { compose, branch, mapProps, renderComponent } from 'recompose'
 import { path } from 'ramda'
 import alpha2ToAlpha3 from 'country-iso-2-to-3'
 import { Alert, Button, Input, Spinner } from 'vtex.styleguide'
-import { contextPropTypes } from 'vtex.store-resources/OrderFormContext'
 
 import Autocomplete from './Autocomplete'
 
+import { withAddress } from './AddressContext'
 import logisticsQuery from '../queries/logistics.gql'
 import getCurrentPositionPromise from '../utils/getCurrentPositionPromise'
 
@@ -35,8 +35,6 @@ class AddressSearch extends Component {
     googleMapKey: PropTypes.string,
     /* Function that will be called after updating the orderform */
     onOrderFormUpdated: PropTypes.func,
-    /* Context used to call address mutation and retrieve the orderForm */
-    orderFormContext: contextPropTypes,
     /* Set to loading mode */
     loading: PropTypes.bool,
   }
@@ -243,15 +241,15 @@ class AddressSearch extends Component {
       inputError: null,
       AlertMessage: null,
     })
-    const { orderFormContext, onOrderFormUpdated } = this.props
+    const { address: addressContext, onOrderFormUpdated } = this.props
     const { address } = this.state
 
     try {
       const googleCoords = await this.checkAddressWithGoogle()
 
-      const response = await orderFormContext.updateOrderFormShipping({
+      const response = await addressContext.updateOrderFormShipping({
         variables: {
-          orderFormId: orderFormContext.orderForm.orderFormId,
+          orderFormId: addressContext.orderForm.orderFormId,
           address: {
             ...address,
             geoCoordinates: googleCoords || address.geoCoordinates,
@@ -268,10 +266,10 @@ class AddressSearch extends Component {
         })
       }
       
-      if (orderFormContext.orderForm.isCheckedIn) {
-        await orderFormContext.updateOrderFormCheckin({
+      if (addressContext.orderForm.isCheckedIn) {
+        await addressContext.updateOrderFormCheckin({
           variables: {
-            orderFormId: orderFormContext.orderForm.orderFormId,
+            orderFormId: addressContext.orderForm.orderFormId,
             checkin: { isCheckedIn: false },
           },
         })
@@ -369,7 +367,7 @@ class AddressSearch extends Component {
     } = this.state
 
     const isDisabled = this.props.loading
-    const countryCode = path(['orderForm', 'storePreferencesData', 'countryCode'], this.props.orderFormContext) || 'BRA'
+    const countryCode = path(['orderForm', 'storePreferencesData', 'countryCode'], this.props.address) || 'BRA'
 
     return (
       <Fragment>
@@ -431,6 +429,7 @@ const LoadingSpinner = () => (
 )
 
 export default compose(
+  withAddress,
   graphql(logisticsQuery, {
     name: 'logisticsQuery',
   }),
@@ -439,14 +438,14 @@ export default compose(
     compose(
       mapProps(ownerProps => {
         const { googleMapsKey } = ownerProps.logisticsQuery.logistics
-        const { onOrderFormUpdated, orderFormContext, updateOrderFormMutation } = ownerProps
+        const { onOrderFormUpdated, address, updateOrderFormMutation } = ownerProps
 
         return {
           googleMapKey: googleMapsKey,
           googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${googleMapsKey}&v=3.exp&libraries=places`,
           loadingElement: <AddressSearch loading />,
           onOrderFormUpdated: onOrderFormUpdated,
-          orderFormContext: orderFormContext,
+          address: address,
           updateOrderFormMutation,
         }
       }),

@@ -2,7 +2,6 @@ import React, { Component } from 'react'
 import PropTypes from 'prop-types'
 import { find, head, path, prop, propEq } from 'ramda'
 import { compose, withApollo } from 'react-apollo'
-import { contextPropTypes } from 'vtex.store-resources/OrderFormContext'
 import { modules } from 'vtex.profile-form'
 
 import AddressRedeemForm from './RedeemForm'
@@ -17,12 +16,8 @@ const getCountryCode = path(['orderForm', 'storePreferencesData', 'countryCode']
  */
 class AddressRedeem extends Component {
   static propTypes = {
-    /* Context used to call address mutation and retrieve the orderForm */
-    orderFormContext: contextPropTypes,
     /* Event handler for when the user is identified */
     onOrderFormUpdated: PropTypes.func,
-    /* Context used to call address mutation and retrieve the orderForm */
-    orderFormContext: contextPropTypes,
   }
 
   state = {
@@ -31,11 +26,11 @@ class AddressRedeem extends Component {
   }
 
   updateProfile = async ({ email }) => {
-    const { orderFormContext, onOrderFormUpdated } = this.props
+    const { address, onOrderFormUpdated } = this.props
 
-    const data = await orderFormContext.updateOrderFormProfile({
+    const data = await address.updateOrderFormProfile({
       variables: {
-        orderFormId: orderFormContext.orderForm.orderFormId,
+        orderFormId: address.orderForm.orderFormId,
         fields: { email },
       },
     })
@@ -48,13 +43,13 @@ class AddressRedeem extends Component {
 
     const {
       state: { profile },
-      props: { client, orderFormContext, },
+      props: { client, address, },
     } = this
     if (profile.homePhone.error) return
 
     this.setState({ queryLoading: true })
 
-    const countryCode = getCountryCode(orderFormContext)
+    const countryCode = getCountryCode(address)
 
     try {
       const { data = { documents: [] } } = await client.query({
@@ -86,14 +81,14 @@ class AddressRedeem extends Component {
 
   render() {
     const { profile, queryLoading } = this.state
-    const { rules, orderFormContext } = this.props
+    const { rules, address } = this.props
     return (
       <AddressRedeemForm
         {...{
           rules,
           profile,
           loading: queryLoading,
-          country: getCountryCode(orderFormContext),
+          country: getCountryCode(address),
           onSubmit: this.handleSubmit,
           onFieldUpdate: this.handleFieldUpdate,
         }}
