@@ -25,7 +25,7 @@ const AddressListItem = ({ address, onSelectAddress, isLastAddress }) => {
   const { street, number, neighborhood, city } = address
   return (
     <div
-      className={`${!isLastAddress && 'bb b--light-gray'} pv4 dim pointer`}
+      className={`${!isLastAddress && 'bb b--muted-4'} pv4 dim pointer`}
       onClick={handleClick}
     >
       <p className="ma0 t-body c-on-base">{`${street}, ${number}`}</p>

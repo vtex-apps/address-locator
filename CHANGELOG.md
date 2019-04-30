@@ -8,9 +8,10 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 ## [Unreleased]
 ### Changed
 - Use a lot more hooks.
-- Get rid of OrderForm context.
 - Create Address context, use address hook.
 
+### Removed
+- Get rid of OrderForm context.
 
 ## [2.2.1] - 2019-04-26
 ### Fixed

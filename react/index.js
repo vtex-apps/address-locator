@@ -29,7 +29,7 @@ const AddressManager = props => {
 
   useEffect(() => {
     checkIfAddressIsSet()
-  })
+  }, [address])
   return (
     <AddressPage {...props} onSelectAddress={redirectToReturnURL} />
   )
