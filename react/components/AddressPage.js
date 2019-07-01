@@ -1,15 +1,14 @@
 import React, { Component } from 'react'
-import { compose } from 'recompose'
-import { withRuntimeContext } from 'vtex.render-runtime'
 import PropTypes from 'prop-types'
 
-
-import { orderFormConsumer, contextPropTypes } from 'vtex.store-resources/OrderFormContext'
+import {
+  orderFormConsumer,
+  contextPropTypes,
+} from 'vtex.store-resources/OrderFormContext'
 import Card from './Card'
 import AddressContent from './AddressContent'
 
-import { Spinner } from 'vtex.styleguide'
-import { Modal } from 'vtex.styleguide'
+import { Spinner, Modal } from 'vtex.styleguide'
 
 import PickupContent from './PickupContent'
 import RedeemContent from './RedeemContent'
@@ -51,7 +50,9 @@ class AddressPage extends Component {
 
   /* Function that will be called when updating the orderform */
   handleOrderFormUpdated = async () => {
+    console.log('teste updating orderForm!')
     await this.props.orderFormContext.refetch()
+    console.log('teste orderform: ', this.props.orderFormContext)
     this.props.onSelectAddress()
   }
 
@@ -67,10 +68,12 @@ class AddressPage extends Component {
 
     if (loading) {
       return (
-        <div className="flex w-100 items-center justify-center"
+        <div
+          className="flex w-100 items-center justify-center"
           style={{
             height: 750,
-          }}>
+          }}
+        >
           <Spinner />
         </div>
       )
@@ -87,14 +90,21 @@ class AddressPage extends Component {
         onConfirm={this.handlePickupConfirm}
         onUpdateOrderForm={this.handleOrderFormUpdated}
       />
-    ) : <div/>
+    ) : (
+      <div />
+    )
 
     return (
       <React.Fragment>
-        <div className="vtex-address-modal__address-page" style={{
-          transition: 'transform 300ms',
-          transform: `translate3d(${isPickupOpen && isMobile ? '-100%' : '0'}, 0, 0)`
-        }}>
+        <div
+          className="vtex-address-modal__address-page"
+          style={{
+            transition: 'transform 300ms',
+            transform: `translate3d(${
+              isPickupOpen && isMobile ? '-100%' : '0'
+            }, 0, 0)`,
+          }}
+        >
           <Card>
             <AddressContent
               onPickupClick={this.handlePickupClick}
@@ -106,21 +116,25 @@ class AddressPage extends Component {
           </Card>
         </div>
         {isMobile ? (
-          <div className="absolute w-100 h-100 top-0" style={{
-            left: '100%',
-            transition: 'transform 300ms',
-            transform: `translate3d(${isPickupOpen && isMobile ? '-100%' : '0'}, 0, 0)`
-          }}>
+          <div
+            className="absolute w-100 h-100 top-0"
+            style={{
+              left: '100%',
+              transition: 'transform 300ms',
+              transform: `translate3d(${
+                isPickupOpen && isMobile ? '-100%' : '0'
+              }, 0, 0)`,
+            }}
+          >
             {pickupPage}
           </div>
         ) : (
-          <Modal 
-            centered 
+          <Modal
+            centered
             isOpen={isPickupOpen}
-            onClose={this.handlePickupModalClose}>
-            <div className="vw-90 vh-80">
-              {pickupPage}
-            </div>
+            onClose={this.handlePickupModalClose}
+          >
+            <div className="vw-90 vh-80">{pickupPage}</div>
           </Modal>
         )}
       </React.Fragment>
@@ -128,7 +142,4 @@ class AddressPage extends Component {
   }
 }
 
-export default compose(
-  withRuntimeContext,
-  orderFormConsumer
-)(AddressPage)
+export default orderFormConsumer(AddressPage)

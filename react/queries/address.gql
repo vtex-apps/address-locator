@@ -1,0 +1,45 @@
+query address {
+  orderForm {
+    cacheId
+    orderFormId
+    shippingData {
+      address {
+        id
+        neighborhood
+        complement
+        number
+        street
+        postalCode
+        city
+        reference
+        addressName
+        addressType
+        geoCoordinates
+        state
+        receiverName
+        country
+      }
+      availableAddresses {
+        id
+        neighborhood
+        complement
+        number
+        street
+        postalCode
+        city
+        reference
+        addressName
+        addressType
+        geoCoordinates
+        state
+        receiverName
+        country
+      }
+    }
+    storePreferencesData {
+      countryCode
+    }
+    checkedInPickupPointId
+    isCheckedIn
+  }
+}

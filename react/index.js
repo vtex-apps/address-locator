@@ -1,74 +1,51 @@
-import React, { Component } from 'react'
-import { orderFormConsumer, contextPropTypes } from 'vtex.store-resources/OrderFormContext'
+import React, { useEffect, useCallback } from 'react'
+import { orderFormConsumer } from 'vtex.store-resources/OrderFormContext'
 import AddressPage from './components/AddressPage'
 import hoistNonReactStatics from 'hoist-non-react-statics'
-import { head } from 'ramda'
+import { head, path } from 'ramda'
 import queryString from 'query-string'
+import { useRuntime } from 'vtex.render-runtime'
+
 import './global.css'
 
-/**
- * Component responsible for displaying and managing user's address using orderFormContext.
- */
-class AddressManager extends Component {
-  static propTypes = {
-    /* Context used to call address mutation and retrieve the orderForm */
-    orderFormContext: contextPropTypes,
-    /* URL for the store logo */
-    logoUrl: PropTypes.string,
+const redirectToReturnURL = navigate => {
+  try {
+    const parsedQueryString = queryString.parse(window.location.search)
+    const returnURL = (parsedQueryString && parsedQueryString.returnUrl) || ''
+    const cleanUrl = head(returnURL) === '/' ? returnURL : `/${returnURL}`
+    navigate({
+      to: cleanUrl,
+    })
+  } catch (e) {
+    // Unable to redirect
   }
+}
 
-  handleSelectAddress = () => {
-    this.redirectToReturnURL()
-  }
+const AddressManager = ({ orderFormContext }) => {
+  const { navigate } = useRuntime()
 
-  componentDidMount() {
-    this.checkIfAddressIsSet()
-  }
+  const orderFormLoading = path(['orderForm', 'loading'], orderFormContext)
+  const shippingData = path(['orderForm', 'shippingData'], orderFormContext)
 
-  componentDidUpdate() {
-    this.checkIfAddressIsSet()
-  }
+  const handleSelectAddress = useCallback(() => {
+    redirectToReturnURL(navigate)
+  }, [navigate])
 
-  checkIfAddressIsSet = () => {
-    const { orderFormContext } = this.props
-    const { shippingData } = orderFormContext.orderForm
-
+  useEffect(() => {
     if (shippingData && shippingData.address) {
-      this.redirectToReturnURL()
+      redirectToReturnURL(navigate)
     }
+  }, [shippingData, navigate])
+
+  if (orderFormLoading) {
+    return <AddressPage loading />
   }
 
-  redirectToReturnURL = () => {
-    try {
-      const parsedQueryString = queryString.parse(window.location.search)
-      const returnURL = parsedQueryString && parsedQueryString.returnUrl  || ''
-      const cleanUrl = head(returnURL) === '/' ? returnURL : `/${returnURL}`
-      window.location.href = cleanUrl
-    } catch (e) {
-      // Unable to redirect
-    }
+  if (!shippingData || !shippingData.address) {
+    return <AddressPage onSelectAddress={handleSelectAddress} />
   }
 
-  render() {
-    const { orderFormContext } = this.props
-    const { shippingData } = orderFormContext.orderForm
-
-    const isLoading = shippingData === undefined
-
-    if (!shippingData || !shippingData.address) {
-      return (
-        <AddressPage
-          loading={isLoading}
-          onSelectAddress={this.handleSelectAddress} />
-      )
-    }
-
-    /** TODO: Add a redirect placeholder (perhaps one of those "If you are not redirected, click here" things)
-     * @author lbebber */
-    return (
-      <AddressPage loading />
-    )
-  }
+  return null
 }
 
 AddressManager.schema = {
@@ -80,10 +57,13 @@ AddressManager.schema = {
       type: 'string',
       title: 'address-locator.address-manager.logo-title',
       widget: {
-        'ui:widget': 'image-uploader'
-      }
+        'ui:widget': 'image-uploader',
+      },
     },
-  }
+  },
 }
 
-export default hoistNonReactStatics(orderFormConsumer(AddressManager), AddressManager)
+export default hoistNonReactStatics(
+  orderFormConsumer(AddressManager),
+  AddressManager
+)
