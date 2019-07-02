@@ -59,7 +59,7 @@ class AddressSearch extends Component {
     this.form = React.createRef()
   }
 
-  requestGoogleMapsApi = async (params) => {
+  requestGoogleMapsApi = async params => {
     const { lat, long, address } = params
     const { googleMapKey } = this.props
     const baseUrl = `https://maps.googleapis.com/maps/api/geocode/json?key=${googleMapKey}&`
@@ -84,7 +84,10 @@ class AddressSearch extends Component {
       try {
         const position = await getCurrentPositionPromise()
         const { latitude, longitude } = position.coords
-        const parsedResponse = await this.requestGoogleMapsApi({ lat: latitude, long: longitude })
+        const parsedResponse = await this.requestGoogleMapsApi({
+          lat: latitude,
+          long: longitude,
+        })
 
         if (!parsedResponse.results.length) {
           return this.setState({
@@ -121,7 +124,9 @@ class AddressSearch extends Component {
 
   handleOnPlaceSelected = place => {
     const errorState = {
-      AlertMessage: <FormattedMessage id="address-locator.address-search-invalid-address" />,
+      AlertMessage: (
+        <FormattedMessage id="address-locator.address-search-invalid-address" />
+      ),
       address: null,
       shouldDisplayNumberInput: false,
       shouldDisplayComplementInput: false,
@@ -162,13 +167,19 @@ class AddressSearch extends Component {
    * @returns {Object} The reduced address data with only necessary fields/information
    */
   getParsedAddress = place => {
-    const parsedAddressComponents = place.address_components.reduce((accumulator, address) => {
-      const parsedItem = address.types.reduce(
-        (accumulator, type) => ({ ...accumulator, [type]: address.short_name }),
-        {}
-      )
-      return { ...accumulator, ...parsedItem }
-    }, {})
+    const parsedAddressComponents = place.address_components.reduce(
+      (accumulator, address) => {
+        const parsedItem = address.types.reduce(
+          (accumulator, type) => ({
+            ...accumulator,
+            [type]: address.short_name,
+          }),
+          {}
+        )
+        return { ...accumulator, ...parsedItem }
+      },
+      {}
+    )
 
     const { lat, lng } = path(['geometry', 'location'], place) || {}
     // lat and lng may come as a function or a double
@@ -177,7 +188,9 @@ class AddressSearch extends Component {
 
     const address = {
       addressType: 'residential',
-      city: parsedAddressComponents.administrative_area_level_2 || parsedAddressComponents.locality,
+      city:
+        parsedAddressComponents.administrative_area_level_2 ||
+        parsedAddressComponents.locality,
       complement: '',
       /* Google Maps API returns Alpha-2 ISO codes, but checkout API requires Alpha-3 */
       country: alpha2ToAlpha3(parsedAddressComponents.country),
@@ -196,7 +209,9 @@ class AddressSearch extends Component {
   checkAddressWithGoogle = async () => {
     const { address } = this.state
     try {
-      const parsedResponse = await this.requestGoogleMapsApi({ address: `${address.street} ${address.number}` })
+      const parsedResponse = await this.requestGoogleMapsApi({
+        address: `${address.street} ${address.number}`,
+      })
       if (!parsedResponse.results.length) {
         return
       }
@@ -210,7 +225,10 @@ class AddressSearch extends Component {
       if (googleAddress.postalCode !== address.postalCode) {
         //  TODO use sentry to log
       }
-      if (address.geoCoordinates[0] !== googleAddress.geoCoordinates[0] || address.geoCoordinates[1] !== googleAddress.geoCoordinates[1]) {
+      if (
+        address.geoCoordinates[0] !== googleAddress.geoCoordinates[0] ||
+        address.geoCoordinates[1] !== googleAddress.geoCoordinates[1]
+      ) {
         // TODO use sentry to log
       }
       return googleAddress.geoCoordinates
@@ -226,7 +244,9 @@ class AddressSearch extends Component {
 
     if (!canSubmit) {
       const formElement = this.form.current
-      const inputs = Array.from(formElement ? formElement.querySelectorAll('input') : [])
+      const inputs = Array.from(
+        formElement ? formElement.querySelectorAll('input') : []
+      )
       for (const input of inputs) {
         if (input.value === '') {
           input.focus()
@@ -257,21 +277,15 @@ class AddressSearch extends Component {
         },
       })
 
-      const newAddress = path(['data', 'updateOrderFormShipping', 'shippingData', 'address'], response)
+      const newAddress = path(
+        ['data', 'updateOrderFormShipping', 'shippingData', 'address'],
+        response
+      )
 
       if (!newAddress || !this.getIsAddressValid(newAddress)) {
         return this.setState({
           isLoading: false,
           inputError: ERROR_ADDRESS_NOT_FOUND,
-        })
-      }
-      
-      if (addressContext.orderForm.isCheckedIn) {
-        await addressContext.updateOrderFormCheckin({
-          variables: {
-            orderFormId: addressContext.orderForm.orderFormId,
-            checkin: { isCheckedIn: false },
-          },
         })
       }
 
@@ -286,7 +300,8 @@ class AddressSearch extends Component {
     }
   }
 
-  getIsAddressValid = address => address.city && address.street && address.number
+  getIsAddressValid = address =>
+    address.city && address.street && address.number
 
   handleAddressKeyChanged = (e, key) => {
     const { address } = this.state
@@ -308,13 +323,21 @@ class AddressSearch extends Component {
   getErrorMessage = errorCode => {
     switch (errorCode) {
       case ERROR_ADDRESS_NOT_FOUND:
-        return <FormattedMessage id="address-locator.address-search-not-found-error" />
+        return (
+          <FormattedMessage id="address-locator.address-search-not-found-error" />
+        )
       case ERROR_TIMEOUT:
-        return <FormattedMessage id="address-locator.address-search-timeout-error" />
+        return (
+          <FormattedMessage id="address-locator.address-search-timeout-error" />
+        )
       case ERROR_POSITION_UNAVAILABLE:
-        return <FormattedMessage id="address-locator.address-search-position-unavailable-error" />
+        return (
+          <FormattedMessage id="address-locator.address-search-position-unavailable-error" />
+        )
       case ERROR_POSITION_DENIED:
-        return <FormattedMessage id="address-locator.address-search-position-denied-error" />
+        return (
+          <FormattedMessage id="address-locator.address-search-position-denied-error" />
+        )
       default:
         return null
     }
@@ -328,9 +351,15 @@ class AddressSearch extends Component {
       <Adopt
         mapper={{
           placeholder: (
-            <FormattedMessage id={`address-locator.address-search-${field}-placeholder`} />
+            <FormattedMessage
+              id={`address-locator.address-search-${field}-placeholder`}
+            />
           ),
-          label: <FormattedMessage id={`address-locator.address-search-${field}-label`} />,
+          label: (
+            <FormattedMessage
+              id={`address-locator.address-search-${field}-label`}
+            />
+          ),
         }}
       >
         {({ placeholder, label }) => (
@@ -367,7 +396,11 @@ class AddressSearch extends Component {
     } = this.state
 
     const isDisabled = this.props.loading
-    const countryCode = path(['orderForm', 'storePreferencesData', 'countryCode'], this.props.address) || 'BRA'
+    const countryCode =
+      path(
+        ['orderForm', 'storePreferencesData', 'countryCode'],
+        this.props.address
+      ) || 'BRA'
 
     return (
       <Fragment>
@@ -381,7 +414,11 @@ class AddressSearch extends Component {
             </div>,
             document.body
           )}
-        <form className="address-search w-100" ref={this.form} onSubmit={this.handleFormSubmit}>
+        <form
+          className="address-search w-100"
+          ref={this.form}
+          onSubmit={this.handleFormSubmit}
+        >
           <div className="mb4">
             {!hasSearchedStreet && (
               <div className="mb4">
@@ -398,22 +435,24 @@ class AddressSearch extends Component {
                     hideLabel
                   />
                 </div>
-              </div>)
-            }
+              </div>
+            )}
 
-            {shouldDisplayStreetInput && hasSearchedStreet && this.renderExtraDataInput('street', 'text')}
-            {shouldDisplayStreetInput && hasSearchedStreet && this.renderExtraDataInput('neighborhood', 'text')}
-            {shouldDisplayStreetInput && hasSearchedStreet && this.renderExtraDataInput('postalCode', 'text')}
-            {shouldDisplayNumberInput && this.renderExtraDataInput('number', 'number')}
-            {shouldDisplayComplementInput && this.renderExtraDataInput('complement', 'text')}
-
+            {shouldDisplayStreetInput &&
+              hasSearchedStreet &&
+              this.renderExtraDataInput('street', 'text')}
+            {shouldDisplayStreetInput &&
+              hasSearchedStreet &&
+              this.renderExtraDataInput('neighborhood', 'text')}
+            {shouldDisplayStreetInput &&
+              hasSearchedStreet &&
+              this.renderExtraDataInput('postalCode', 'text')}
+            {shouldDisplayNumberInput &&
+              this.renderExtraDataInput('number', 'number')}
+            {shouldDisplayComplementInput &&
+              this.renderExtraDataInput('complement', 'text')}
           </div>
-          <Button
-            className="w-100"
-            type="submit"
-            isLoading={isLoading}
-            block
-          >
+          <Button className="w-100" type="submit" isLoading={isLoading} block>
             <FormattedMessage id="address-locator.address-search-button" />
           </Button>
         </form>
@@ -438,7 +477,11 @@ export default compose(
     compose(
       mapProps(ownerProps => {
         const { googleMapsKey } = ownerProps.logisticsQuery.logistics
-        const { onOrderFormUpdated, address, updateOrderFormMutation } = ownerProps
+        const {
+          onOrderFormUpdated,
+          address,
+          updateOrderFormMutation,
+        } = ownerProps
 
         return {
           googleMapKey: googleMapsKey,

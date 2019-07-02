@@ -3,7 +3,7 @@ import React, { useEffect, useState } from 'react'
 import { graphql } from 'react-apollo'
 import { useRuntime } from 'vtex.render-runtime'
 import { Spinner } from 'vtex.styleguide'
-import orderFormQuery from '../../queries/orderForm.gql'
+import { address as addressQuery } from 'vtex.store-resources/Queries'
 import styles from './AddressChallenge.css'
 
 const ADDRESS_PATH = '/address'
@@ -54,6 +54,6 @@ const AddressChallenge = ({ data, children }) => {
   return null
 }
 
-export default graphql(orderFormQuery, {
+export default graphql(addressQuery, {
   options: () => ({ ssr: false }),
 })(AddressChallenge)
