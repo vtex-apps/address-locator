@@ -11,7 +11,7 @@ import { getExampleNumber } from 'libphonenumber-js'
 import StyleguideInput from './StyleguideInput'
 import CountryIcon from './CountryIcon'
 
-const isDisabled = (profilePhone) => {
+const isDisabled = profilePhone => {
   if (!!profilePhone.error) return true
   if (!profilePhone.value || !profilePhone.value.length) return true
   return false
@@ -26,7 +26,10 @@ const AddressRedeemForm = ({
   onSubmit,
 }) => {
   const countryIso2 = convertIso3To2(country)
-  const phonePlaceholder = useMemo(() => getExampleNumber(countryIso2, examples).formatNational(), [country])
+  const phonePlaceholder = useMemo(
+    () => getExampleNumber(countryIso2, examples).formatNational(),
+    [country]
+  )
   const homePhoneField = {
     ...find(propEq('name', 'homePhone'), rules.personalFields),
     required: true,
@@ -73,10 +76,7 @@ AddressRedeemForm.propTypes = {
   /* Input error message */
   errorMessage: PropTypes.string,
   /* Country info object to format the Input */
-  country: PropTypes.shape({
-    icon: PropTypes.string.isRequired,
-    code: PropTypes.number.isRequired,
-  }).isRequired,
+  country: PropTypes.string,
   /* Input change event handler */
   onFieldUpdate: PropTypes.func.isRequired,
   /* Profile Form rules object for the store country */

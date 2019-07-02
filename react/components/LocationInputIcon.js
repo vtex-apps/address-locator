@@ -1,16 +1,15 @@
 import React from 'react'
 import PropTypes from 'prop-types'
 
-import withImage from './withImage'
+import { IconLocationInput } from 'vtex.store-icons'
 
-const LocationInputIcon = ({ onClick, imageSrc }) => {
-  if (!imageSrc) {
-    return null
-  }
-
+const LocationInputIcon = ({ onClick }) => {
   return (
-    <span onClick={onClick} className="pointer vtex-input-icon vtex-input-icon--location">
-      <img className="v-mid pl3" src={imageSrc} />
+    <span
+      onClick={onClick}
+      className="pointer vtex-input-icon vtex-input-icon--location c-action-primary"
+    >
+      <IconLocationInput size={18} viewBox="0 0 18 18" />
     </span>
   )
 }
@@ -20,6 +19,4 @@ LocationInputIcon.propTypes = {
   onClick: PropTypes.func,
 }
 
-const getImagePath = () => 'My-Address-Icon.svg'
-
-export default withImage(getImagePath)(LocationInputIcon)
+export default LocationInputIcon

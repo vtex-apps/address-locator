@@ -4,7 +4,8 @@ import { pick } from 'ramda'
 
 const AddressListItem = ({ address, onSelectAddress, isLastAddress }) => {
   const handleClick = () => {
-    const addressFields = pick([
+    const addressFields = pick(
+      [
         'addressType',
         'city',
         'complement',
@@ -15,9 +16,9 @@ const AddressListItem = ({ address, onSelectAddress, isLastAddress }) => {
         'state',
         'receiverName',
         'country',
-        'geoCoordinates'
+        'geoCoordinates',
       ],
-      address,
+      address
     )
     onSelectAddress && onSelectAddress(addressFields)
   }
@@ -25,11 +26,15 @@ const AddressListItem = ({ address, onSelectAddress, isLastAddress }) => {
   const { street, number, neighborhood, city } = address
   return (
     <div
+      tabIndex={0}
       className={`${!isLastAddress && 'bb b--muted-4'} pv4 dim pointer`}
       onClick={handleClick}
+      onKeyDown={e => e.key === 'Enter' && handleClick()}
     >
       <p className="ma0 t-body c-on-base">{`${street}, ${number}`}</p>
-      <span className="f7 t-small c-muted-2">{!neighborhood ? city : `${neighborhood}, ${city}` }</span>
+      <span className="f7 t-small c-muted-2">
+        {!neighborhood ? city : `${neighborhood}, ${city}`}
+      </span>
     </div>
   )
 }

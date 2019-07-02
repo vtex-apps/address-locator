@@ -7,19 +7,21 @@ import { useAddress } from './AddressContext'
 import Loader from './Loader'
 import Redeem from './Redeem'
 
-const getCountryCode = path(['orderForm', 'storePreferencesData', 'countryCode'])
+const getCountryCode = path([
+  'orderForm',
+  'storePreferencesData',
+  'countryCode',
+])
 
 const LoaderView = () => (
-  (
-    <div className="pv7 ph6 br2 bg-white">
-      <Loader style={{ width: '100%', height: '100%' }} />
-    </div>
-  )
+  <div className="pv7 ph6 br2 bg-white">
+    <Loader style={{ width: '100%', height: '100%' }} />
+  </div>
 )
 
 const RedeemContent = () => {
   const { address } = useAddress()
-  const handleOrderFormUpdated = useCallback(() => address.refetch(), [address])
+  const handleOrderFormUpdated = useCallback(() => {}, [address])
   const isLoading = address.loading
   const country = getCountryCode(address)
 
@@ -29,15 +31,16 @@ const RedeemContent = () => {
         <FormattedMessage id="address-locator.address-redeem-recurring" />
       </h2>
       <div className="vtex-address-modal__redeem">
-      {isLoading ? 
-        <LoaderView /> : (
-        <ProfileRules country={country} shouldUseIOFetching>
-          <Redeem
-            address={address}
-            onOrderFormUpdated={handleOrderFormUpdated}
-          />
-        </ProfileRules>
-      )}
+        {isLoading ? (
+          <LoaderView />
+        ) : (
+          <ProfileRules country={country} shouldUseIOFetching>
+            <Redeem
+              address={address}
+              onOrderFormUpdated={handleOrderFormUpdated}
+            />
+          </ProfileRules>
+        )}
       </div>
     </Fragment>
   )

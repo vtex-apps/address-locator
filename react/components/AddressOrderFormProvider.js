@@ -1,36 +1,54 @@
-
 import React, { useMemo } from 'react'
 import { graphql, compose } from 'react-apollo'
-import { pick, path } from 'ramda'
+import { pick } from 'ramda'
 
 import {
   updateOrderFormProfile,
   updateOrderFormShipping,
   updateOrderFormCheckin,
 } from 'vtex.store-resources/Mutations'
-
-import orderForm from '../queries/orderForm.gql'
+import { address as addressQuery } from 'vtex.store-resources/Queries'
 
 import AddressContext from './AddressContext'
 
-const AddressOrderFormProvider = ({ children, updateOrderFormProfile, updateOrderFormShipping, updateOrderFormCheckin, orderFormQuery }) => {
-  const orderFormId = path(['orderForm', 'cacheId'], orderFormQuery)
+const AddressOrderFormProvider = ({
+  children,
+  updateOrderFormProfile,
+  updateOrderFormShipping,
+  updateOrderFormCheckin,
+  addressQuery,
+}) => {
   const value = useMemo(() => {
     return {
       address: {
-        ...pick(['orderForm', 'loading', 'refetch'], orderFormQuery),
+        ...pick(['orderForm', 'loading', 'refetch'], addressQuery),
         updateOrderFormProfile,
         updateOrderFormShipping,
         updateOrderFormCheckin,
-      }
+      },
     }
-  }, [orderFormId, orderFormQuery.loading])
-  return <AddressContext.Provider value={value}>{children}</AddressContext.Provider>
+  }, [addressQuery])
+  return (
+    <AddressContext.Provider value={value}>{children}</AddressContext.Provider>
+  )
+}
+
+const optionsRefetch = {
+  refetchQueries: [{ query: addressQuery }],
 }
 
 export default compose(
-  graphql(orderForm, { name: 'orderFormQuery', options: { ssr: false } }),
-  graphql(updateOrderFormProfile, { name: 'updateOrderFormProfile' }),
-  graphql(updateOrderFormShipping, { name: 'updateOrderFormShipping' }),
-  graphql(updateOrderFormCheckin, { name: 'updateOrderFormCheckin' }),
+  graphql(addressQuery, { name: 'addressQuery', options: { ssr: false } }),
+  graphql(updateOrderFormProfile, {
+    name: 'updateOrderFormProfile',
+    options: optionsRefetch,
+  }),
+  graphql(updateOrderFormShipping, {
+    name: 'updateOrderFormShipping',
+    options: optionsRefetch,
+  }),
+  graphql(updateOrderFormCheckin, {
+    name: 'updateOrderFormCheckin',
+    options: optionsRefetch,
+  })
 )(AddressOrderFormProvider)
