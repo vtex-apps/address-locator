@@ -24,6 +24,7 @@ const AddressManager = props => {
   const { navigate } = useRuntime()
 
   const redirect = useCallback(() => redirectToReturnURL(navigate), [navigate])
+  console.log('teste address:', address)
 
   useEffect(() => {
     if (!!path(['orderForm', 'shippingData', 'address'], address)) {

@@ -1,17 +1,11 @@
 import React, { Fragment, memo, useCallback } from 'react'
 import { FormattedMessage } from 'react-intl'
 import { ProfileRules } from 'vtex.profile-form'
-import { path } from 'ramda'
+import { useRuntime } from 'vtex.render-runtime'
 
 import { useAddress } from './AddressContext'
 import Loader from './Loader'
 import Redeem from './Redeem'
-
-const getCountryCode = path([
-  'orderForm',
-  'storePreferencesData',
-  'countryCode',
-])
 
 const LoaderView = () => (
   <div className="pv7 ph6 br2 bg-white">
@@ -21,9 +15,11 @@ const LoaderView = () => (
 
 const RedeemContent = () => {
   const { address } = useAddress()
+  const {
+    culture: { country },
+  } = useRuntime()
   const handleOrderFormUpdated = useCallback(() => {}, [address])
   const isLoading = address.loading
-  const country = getCountryCode(address)
 
   return (
     <Fragment>
