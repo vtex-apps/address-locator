@@ -25,7 +25,7 @@ const AddressPage = ({ onSelectAddress }) => {
     setPickupOpen(true)
   }, [setPickupOpen])
 
-  const handleOrderFormUpdated = useCallback(async () => {
+  const handleOrderFormUpdated = useCallback(() => {
     onSelectAddress && onSelectAddress()
   }, [onSelectAddress])
 

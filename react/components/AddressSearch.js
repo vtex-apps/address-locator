@@ -37,6 +37,7 @@ class AddressSearch extends Component {
     onOrderFormUpdated: PropTypes.func,
     /* Set to loading mode */
     loading: PropTypes.bool,
+    country: PropTypes.string,
   }
 
   state = {
@@ -394,13 +395,7 @@ class AddressSearch extends Component {
       shouldDisplayNumberInput,
       shouldDisplayComplementInput,
     } = this.state
-
-    const isDisabled = this.props.loading
-    const countryCode =
-      path(
-        ['orderForm', 'storePreferencesData', 'countryCode'],
-        this.props.address
-      ) || 'BRA'
+    const { loading: isDisabled, country } = this.props
 
     return (
       <Fragment>
@@ -427,7 +422,7 @@ class AddressSearch extends Component {
                     isLoading={isDisabled}
                     onPlaceSelected={this.handleOnPlaceSelected}
                     types={['address']}
-                    componentRestrictions={{ country: countryCode }}
+                    componentRestrictions={{ country }}
                     value={formattedAddress}
                     errorMessage={this.getErrorMessage(inputError)}
                     onChange={this.handleAddressChanged}
@@ -468,7 +463,6 @@ const LoadingSpinner = () => (
 )
 
 export default compose(
-  withAddress,
   graphql(logisticsQuery, {
     name: 'logisticsQuery',
   }),
@@ -479,8 +473,8 @@ export default compose(
         const { googleMapsKey } = ownerProps.logisticsQuery.logistics
         const {
           onOrderFormUpdated,
-          address,
           updateOrderFormMutation,
+          country,
         } = ownerProps
 
         return {
@@ -488,12 +482,13 @@ export default compose(
           googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${googleMapsKey}&v=3.exp&libraries=places`,
           loadingElement: <AddressSearch loading />,
           onOrderFormUpdated: onOrderFormUpdated,
-          address: address,
+          country,
           updateOrderFormMutation,
         }
       }),
       withScriptjs
     ),
     renderComponent(LoadingSpinner)
-  )
+  ),
+  withAddress
 )(AddressSearch)

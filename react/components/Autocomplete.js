@@ -35,6 +35,12 @@ export default class ReactGoogleAutocomplete extends React.Component {
     this.event = null
   }
 
+  componentDidMount() {
+    if (!this.props.isLoading) {
+      this.setup()
+    }
+  }
+
   setup = () => {
     const { types = ['(cities)'], componentRestrictions, bounds } = this.props
     const config = {
@@ -48,9 +54,15 @@ export default class ReactGoogleAutocomplete extends React.Component {
 
     this.disableAutofill()
 
-    this.autocomplete = new google.maps.places.Autocomplete(this.input.current, config)
+    this.autocomplete = new google.maps.places.Autocomplete(
+      this.input.current,
+      config
+    )
 
-    this.event = this.autocomplete.addListener('place_changed', this.onSelected.bind(this))
+    this.event = this.autocomplete.addListener(
+      'place_changed',
+      this.onSelected.bind(this)
+    )
   }
 
   componentDidUpdate(prevProps) {
@@ -86,12 +98,20 @@ export default class ReactGoogleAutocomplete extends React.Component {
   }
 
   render() {
-    const { value, errorMessage, onChange, onSuffixPress, hideLabel } = this.props
+    const {
+      value,
+      errorMessage,
+      onChange,
+      onSuffixPress,
+      hideLabel,
+    } = this.props
 
     return (
       <Adopt
         mapper={{
-          placeholder: <FormattedMessage id="address-locator.address-search-placeholder" />,
+          placeholder: (
+            <FormattedMessage id="address-locator.address-search-placeholder" />
+          ),
           label: <FormattedMessage id="address-locator.address-search-label" />,
         }}
       >
