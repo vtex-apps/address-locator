@@ -12,9 +12,9 @@ import { Alert, Button, Input, Spinner } from 'vtex.styleguide'
 
 import Autocomplete from './Autocomplete'
 
-import { withAddress } from './AddressContext'
-import logisticsQuery from '../queries/logistics.gql'
-import getCurrentPositionPromise from '../utils/getCurrentPositionPromise'
+import { withAddress } from '../AddressContext'
+import logisticsQuery from '../../queries/logistics.gql'
+import getCurrentPositionPromise from '../../utils/getCurrentPositionPromise'
 
 /**
  * Geolocation error codes. Can be found here:

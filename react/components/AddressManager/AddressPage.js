@@ -1,16 +1,18 @@
 import React, { memo, useCallback, useState } from 'react'
 import PropTypes from 'prop-types'
+import { Modal, Spinner } from 'vtex.styleguide'
 
-import Card from './Card'
-import AddressContent from './AddressContent'
+import Card from '../Card'
+import AddressSearch from '../AddressSearch'
+import PickupLocator from '../PickupLocator'
+import AddressRedeem from '../AddressRedeem'
 
-import { Spinner } from 'vtex.styleguide'
-import { Modal } from 'vtex.styleguide'
+import { useAddress } from '../AddressContext'
 
-import PickupContent from './PickupContent'
-import RedeemContent from './RedeemContent'
-
-import { useAddress } from './AddressContext'
+const transformAnimationStyle = (quantity, isPickupOpen) => ({
+  transition: 'transform 300ms',
+  transform: `translate3d(${isPickupOpen ? `-${quantity}` : '0'}, 0, 0)`,
+})
 
 /**
  * Component that allows the user to locate his address, by inserting, searching, retrieving and
@@ -56,32 +58,23 @@ const AddressPage = ({ onSelectAddress }) => {
   const isMobile = window.innerWidth < 640
 
   const pickupPage = isPickupOpen ? (
-    <PickupContent
-      loading={isPickupSelected}
-      onConfirm={handlePickupConfirm}
-      onUpdateOrderForm={handleOrderFormUpdated}
-    />
+    <PickupLocator loading={isPickupSelected} onConfirm={handlePickupConfirm} />
   ) : null
 
   return (
     <React.Fragment>
       <div
         className="vtex-address-modal__address-page"
-        style={{
-          transition: 'transform 300ms',
-          transform: `translate3d(${
-            isPickupOpen && isMobile ? '-100%' : '0'
-          }, 0, 0)`,
-        }}
+        style={transformAnimationStyle('110%', isPickupOpen && isMobile)}
       >
         <Card>
-          <AddressContent
+          <AddressSearch
             onPickupClick={handlePickupClick}
             onUpdateOrderForm={handleOrderFormUpdated}
           />
         </Card>
         <Card>
-          <RedeemContent />
+          <AddressRedeem />
         </Card>
       </div>
       {isMobile ? (
@@ -89,10 +82,7 @@ const AddressPage = ({ onSelectAddress }) => {
           className="absolute w-100 h-100 top-0"
           style={{
             left: '100%',
-            transition: 'transform 300ms',
-            transform: `translate3d(${
-              isPickupOpen && isMobile ? '-100%' : '0'
-            }, 0, 0)`,
+            ...transformAnimationStyle('100%', isPickupOpen && isMobile),
           }}
         >
           {pickupPage}

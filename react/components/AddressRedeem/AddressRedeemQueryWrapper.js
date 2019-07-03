@@ -1,13 +1,13 @@
 import React, { useState } from 'react'
-import { find, head, prop, propEq } from 'ramda'
-import { compose, withApollo } from 'react-apollo'
+import { find, head, prop, propEq, path } from 'ramda'
+import { withApollo } from 'react-apollo'
 import { modules } from 'vtex.profile-form'
 import { useRuntime } from 'vtex.render-runtime'
 
-import AddressRedeemForm from './RedeemForm'
-import documentsQuery from '../queries/documents.gql'
-import getCountryDialCode from '../utils/getCountryDialCode'
-import { useAddress } from './AddressContext'
+import AddressRedeemForm from './AddressRedeemForm'
+import documentsQuery from '../../queries/documents.gql'
+import getCountryDialCode from '../../utils/getCountryDialCode'
+import { useAddress } from '../AddressContext'
 
 const { addValidation } = modules
 
@@ -15,7 +15,7 @@ const { addValidation } = modules
  * Component responsible for retrieving the user's address by his phone number
  */
 
-const AddressRedeem = ({ rules, client, onOrderFormUpdated }) => {
+const AddressRedeemQueryWrapper = ({ rules, client }) => {
   const {
     culture: { country },
   } = useRuntime()
@@ -29,14 +29,25 @@ const AddressRedeem = ({ rules, client, onOrderFormUpdated }) => {
     updateProfile(oldProfile => ({ ...oldProfile, ...field }))
 
   const updateAddressProfile = async ({ email }) => {
-    const data = await address.updateOrderFormProfile({
-      variables: {
-        orderFormId: address.orderForm.orderFormId,
-        fields: { email },
-      },
-    })
-
-    onOrderFormUpdated && onOrderFormUpdated(data)
+    let hasError = false
+    try {
+      const response = await address.updateOrderFormProfile({
+        variables: {
+          orderFormId: address.orderForm.orderFormId,
+          fields: { email },
+        },
+      })
+      console.log('teste response: ', response)
+      hasError = Boolean(
+        path(['data', 'updateOrderFormProfile', 'orderForm'], response)
+      )
+    } catch (e) {
+      hasError = true
+    }
+    console.log('teste haserror: ', hasError)
+    if (hasError) {
+      // Show error to user
+    }
   }
 
   const handleSubmit = async e => {
@@ -73,16 +84,14 @@ const AddressRedeem = ({ rules, client, onOrderFormUpdated }) => {
 
   return (
     <AddressRedeemForm
-      {...{
-        rules,
-        profile,
-        loading: queryLoading,
-        country,
-        onSubmit: handleSubmit,
-        onFieldUpdate: handleFieldUpdate,
-      }}
+      rules={rules}
+      profile={profile}
+      loading={queryLoading}
+      country={country}
+      onSubmit={handleSubmit}
+      onFieldUpdate={handleFieldUpdate}
     />
   )
 }
 
-export default compose(withApollo)(AddressRedeem)
+export default withApollo(AddressRedeemQueryWrapper)

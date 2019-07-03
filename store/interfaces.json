@@ -7,14 +7,19 @@
     "component": "AddressChallenge"
   },
   "store.address": {
-    "before": [
-      "header"
-    ],
-    "required": [
-      "address-manager"
-    ]
+    "before": ["header"],
+    "required": ["address-manager"]
   },
   "change-address": {
     "component": "ChangeAddress"
+  },
+  "address-search": {
+    "component": "AddressSearch"
+  },
+  "address-redeem": {
+    "component": "AddressRedeem"
+  },
+  "pickup-locator": {
+    "component": "PickupLocator"
   }
 }

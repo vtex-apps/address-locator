@@ -4,10 +4,15 @@ import { useModal } from 'vtex.modal/ModalContext'
 
 import { useAddress, withAddressProvider } from '../AddressContext'
 
-import AddressList from '../AddressList'
-import AddressContent from '../AddressContent'
-import PickupContent from '../PickupContent'
+import AddressList from './AddressList'
+import AddressSearch from '../AddressSearch'
+import PickupLocator from '../PickupLocator'
 import '../../global.css'
+
+const transformAnimationStyle = (quantity, isPickupOpen) => ({
+  transition: 'transform 300ms',
+  transform: `translate3d(${isPickupOpen ? `-${quantity}` : '0'}, 0, 0)`,
+})
 
 /**
  * Component responsible for displaying and managing user's address using address.
@@ -54,10 +59,7 @@ const ChangeAddress = ({}) => {
   }, [setPickupOpen])
 
   const pickupPage = isPickupOpen ? (
-    <PickupContent
-      onConfirm={handlePickupConfirm}
-      onUpdateOrderForm={handleOrderFormUpdated}
-    />
+    <PickupLocator loading={isLoading} onConfirm={handlePickupConfirm} />
   ) : null
 
   return (
@@ -68,13 +70,8 @@ const ChangeAddress = ({}) => {
         padding: '3rem',
       }}
     >
-      <div
-        style={{
-          transition: 'transform 300ms',
-          transform: `translate3d(${isPickupOpen ? '-100%' : '0'}, 0, 0)`,
-        }}
-      >
-        <AddressContent
+      <div style={transformAnimationStyle('110%', isPickupOpen)}>
+        <AddressSearch
           onPickupClick={handlePickupClick}
           onUpdateOrderForm={handleOrderFormUpdated}
         />
@@ -87,11 +84,10 @@ const ChangeAddress = ({}) => {
         )}
       </div>
       <div
-        className="absolute w-100 h-100 top-0"
+        className="absolute w-100 h-100 top-0 flex"
         style={{
           left: '100%',
-          transition: 'transform 300ms',
-          transform: `translate3d(${isPickupOpen ? '-100%' : '0'}, 0, 0)`,
+          ...transformAnimationStyle('100%', isPickupOpen),
         }}
       >
         {pickupPage}

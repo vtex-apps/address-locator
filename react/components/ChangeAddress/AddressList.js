@@ -3,7 +3,7 @@ import PropTypes from 'prop-types'
 import { FormattedMessage } from 'react-intl'
 import { pathOr, uniq } from 'ramda'
 
-import { useAddress } from './AddressContext'
+import { useAddress } from '../AddressContext'
 import AddressListItem from './AddressListItem'
 
 const MAX_ADDRESS_QUANTITY = 5
@@ -11,11 +11,20 @@ const MAX_ADDRESS_QUANTITY = 5
 const AddressList = ({ onSelectAddress }) => {
   const { address } = useAddress()
   const availableAddresses = useMemo(() => {
-    const filtered = 
-      pathOr([], ['orderForm', 'shippingData', 'availableAddresses'], address)
-      .filter(address => address.city && address.street && address.number && address.addressType !== 'pickup')
+    const filtered = pathOr(
+      [],
+      ['orderForm', 'shippingData', 'availableAddresses'],
+      address
+    )
+      .filter(
+        address =>
+          address.city &&
+          address.street &&
+          address.number &&
+          address.addressType !== 'pickup'
+      )
       .reverse()
-      return uniq(filtered).slice(0, MAX_ADDRESS_QUANTITY)
+    return uniq(filtered).slice(0, MAX_ADDRESS_QUANTITY)
   }, [address])
 
   if (availableAddresses.length === 0) {
@@ -37,7 +46,7 @@ const AddressList = ({ onSelectAddress }) => {
       ))}
     </div>
   )
-} 
+}
 
 AddressList.propTypes = {
   /* Function that will be called when selecting an address */

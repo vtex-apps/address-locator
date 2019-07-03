@@ -9,7 +9,7 @@ import examples from 'libphonenumber-js/examples.mobile.json'
 import { getExampleNumber } from 'libphonenumber-js'
 import { useRuntime } from 'vtex.render-runtime'
 
-import StyleguideInput from './StyleguideInput'
+import StyleguideInput from '../StyleguideInput'
 import CountryIcon from './CountryIcon'
 
 const isDisabled = profilePhone => {
@@ -25,7 +25,9 @@ const AddressRedeemForm = ({
   onFieldUpdate,
   onSubmit,
 }) => {
-  const { culture: { country }} = useRuntime()
+  const {
+    culture: { country },
+  } = useRuntime()
   const countryIso2 = convertIso3To2(country)
   const phonePlaceholder = useMemo(
     () => getExampleNumber(countryIso2, examples).formatNational(),

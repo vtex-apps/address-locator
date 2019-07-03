@@ -1,13 +1,13 @@
-import React, { memo, useState, useCallback } from 'react'
+import React, { useState, useCallback } from 'react'
 import PropTypes from 'prop-types'
 import { Spinner } from 'vtex.styleguide'
 import { AddressRules } from 'vtex.address-form'
 import { useRuntime } from 'vtex.render-runtime'
 
-import { useAddress } from './AddressContext'
+import { useAddress } from '../AddressContext'
 import PickupModalContainer from './PickupModalContainer'
 
-const PickupContent = ({ loading, onOrderFormUpdated, onConfirm }) => {
+const PickupLocator = ({ loading, onConfirm }) => {
   const [isFetching, setFetching] = useState(false)
   const { address } = useAddress()
   const {
@@ -29,13 +29,9 @@ const PickupContent = ({ loading, onOrderFormUpdated, onConfirm }) => {
       }
 
       setFetching(false)
-      if (onOrderFormUpdated) {
-        onOrderFormUpdated()
-      }
-
       onConfirm && onConfirm()
     },
-    [setFetching, address, onOrderFormUpdated, onConfirm]
+    [setFetching, address, onConfirm]
   )
 
   const isLoading = isFetching || loading
@@ -54,10 +50,9 @@ const PickupContent = ({ loading, onOrderFormUpdated, onConfirm }) => {
   )
 }
 
-PickupContent.propTypes = {
+PickupLocator.propTypes = {
   loading: PropTypes.bool,
   onConfirm: PropTypes.func.isRequired,
-  onOrderFormUpdated: PropTypes.func,
 }
 
-export default memo(PickupContent)
+export default PickupLocator

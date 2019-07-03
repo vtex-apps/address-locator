@@ -15,7 +15,6 @@ const LocationInputIcon = ({ onClick }) => {
 }
 
 LocationInputIcon.propTypes = {
-  imageSrc: PropTypes.string,
   onClick: PropTypes.func,
 }
 

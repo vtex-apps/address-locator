@@ -8,10 +8,10 @@ import { PickupPointsSelector } from 'vtex.pickup-points-selector'
 import { helpers } from 'vtex.address-form'
 import { useRuntime } from 'vtex.render-runtime'
 
-import nearPickupPointsQuery from '../queries/nearPickupPoints.gql'
-import logisticsQuery from '../queries/logistics.gql'
-import { newAddress } from '../utils/newAddress'
-import getCurrentPositionPromise from '../utils/getCurrentPositionPromise'
+import nearPickupPointsQuery from '../../queries/nearPickupPoints.gql'
+import logisticsQuery from '../../queries/logistics.gql'
+import { newAddress } from '../../utils/newAddress'
+import getCurrentPositionPromise from '../../utils/getCurrentPositionPromise'
 
 const { injectRules, addValidation } = helpers
 
@@ -138,8 +138,9 @@ const PickupModalContainer = ({
       .catch(() => updateGeolocationPermission(false))
   }, [])
 
-  if (logisticsQuery.loading || hasGeolocationPermission === undefined)
+  if (logisticsQuery.loading || hasGeolocationPermission === undefined) {
     return null
+  }
 
   return (
     <div className="absolute top-0 bottom-0 left-0 right-0">
