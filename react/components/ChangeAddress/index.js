@@ -1,4 +1,4 @@
-import React, { useCallback, useState } from 'react'
+import React, { useCallback, useState, useRef } from 'react'
 import Spinner from 'vtex.styleguide/Spinner'
 import { useModal } from 'vtex.modal/ModalContext'
 
@@ -8,11 +8,7 @@ import AddressList from './AddressList'
 import AddressSearch from '../AddressSearch'
 import PickupLocator from '../PickupLocator'
 import '../../global.css'
-
-const transformAnimationStyle = (quantity, isPickupOpen) => ({
-  transition: 'transform 300ms',
-  transform: `translate3d(${isPickupOpen ? `-${quantity}` : '0'}, 0, 0)`,
-})
+import transformAnimationStyle from '../../utils/transformAnimationStyle'
 
 /**
  * Component responsible for displaying and managing user's address using address.
@@ -23,6 +19,7 @@ const ChangeAddress = ({}) => {
   const { closeModal } = useModal()
   const [isPickupOpen, setPickupOpen] = useState(false)
   const [isLoading, setLoading] = useState(false)
+  const wrapperRef = useRef(null)
 
   const handleSelectAddress = useCallback(
     async setAddress => {
@@ -58,10 +55,6 @@ const ChangeAddress = ({}) => {
     setPickupOpen(true)
   }, [setPickupOpen])
 
-  const pickupPage = isPickupOpen ? (
-    <PickupLocator loading={isLoading} onConfirm={handlePickupConfirm} />
-  ) : null
-
   return (
     <div
       className="overflow-hidden relative br2"
@@ -69,11 +62,19 @@ const ChangeAddress = ({}) => {
         margin: '-3rem',
         padding: '3rem',
       }}
+      ref={wrapperRef}
     >
       <div style={transformAnimationStyle('110%', isPickupOpen)}>
         <AddressSearch
           onPickupClick={handlePickupClick}
           onUpdateOrderForm={handleOrderFormUpdated}
+        />
+        <PickupLocator
+          loading={isLoading}
+          onConfirm={handlePickupConfirm}
+          onFindPickupClick={handlePickupClick}
+          isPickupOpen={isPickupOpen}
+          parentRef={wrapperRef}
         />
         {!isLoading ? (
           <AddressList onSelectAddress={handleSelectAddress} />
@@ -82,15 +83,6 @@ const ChangeAddress = ({}) => {
             <Spinner />
           </div>
         )}
-      </div>
-      <div
-        className="absolute w-100 h-100 top-0 flex"
-        style={{
-          left: '100%',
-          ...transformAnimationStyle('100%', isPickupOpen),
-        }}
-      >
-        {pickupPage}
       </div>
     </div>
   )

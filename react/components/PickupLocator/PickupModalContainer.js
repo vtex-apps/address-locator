@@ -43,6 +43,7 @@ const PickupModalContainer = ({
   client,
   onConfirm,
 }) => {
+  console.log('teste PickupModalContainer')
   const {
     culture: { country, currency },
   } = useRuntime()
@@ -137,10 +138,16 @@ const PickupModalContainer = ({
       .then(() => updateGeolocationPermission(true))
       .catch(() => updateGeolocationPermission(false))
   }, [])
-
+  console.log('teste RENDERING logisticsQuery', logisticsQuery)
+  console.log(
+    'teste RENDERING hasGeolocationPermission',
+    hasGeolocationPermission
+  )
   if (logisticsQuery.loading || hasGeolocationPermission === undefined) {
     return null
   }
+  console.log('teste RENDERING HEHE')
+  // return <div className="teste">OIE</div>
 
   return (
     <div className="absolute top-0 bottom-0 left-0 right-0">

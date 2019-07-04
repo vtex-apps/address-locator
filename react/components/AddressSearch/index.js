@@ -18,11 +18,6 @@ const AddressSearch = ({ onPickupClick, onUpdateOrderForm }) => {
       </h1>
       <SearchForm onOrderFormUpdated={onUpdateOrderForm} country={country} />
       <hr className="mv5 mv6-ns bg-muted-3 bn" style={{ height: 1 }} />
-      <div>
-        <Button variation="tertiary" block onClick={onPickupClick}>
-          <FormattedMessage id="address-locator.pickup-button" />
-        </Button>
-      </div>
     </div>
   )
 }
