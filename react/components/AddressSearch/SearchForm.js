@@ -1,9 +1,8 @@
 import React, { Component, Fragment } from 'react'
 import { createPortal } from 'react-dom'
-import { FormattedMessage } from 'react-intl'
+import { FormattedMessage, injectIntl } from 'react-intl'
 import PropTypes from 'prop-types'
 import { withScriptjs } from 'react-google-maps'
-import { Adopt } from 'react-adopt'
 import { graphql } from 'react-apollo'
 import { compose, branch, mapProps, renderComponent } from 'recompose'
 import { path } from 'ramda'
@@ -29,7 +28,7 @@ const ERROR_ADDRESS_NOT_FOUND = 9 // custom ad hoc error code
  * Component responsible for searching the user address in Google Maps API, when
  * inserting it or using navigator geolocation to get current position
  */
-class AddressSearch extends Component {
+class SearchForm extends Component {
   static propTypes = {
     /* Google Maps Geolocation API key */
     googleMapKey: PropTypes.string,
@@ -346,36 +345,26 @@ class AddressSearch extends Component {
 
   renderExtraDataInput = (field, type) => {
     const { address } = this.state
+    const {
+      intl: { formatMessage },
+    } = this.props
     if (!address) return null
 
     return (
-      <Adopt
-        mapper={{
-          placeholder: (
-            <FormattedMessage
-              id={`address-locator.address-search-${field}-placeholder`}
-            />
-          ),
-          label: (
-            <FormattedMessage
-              id={`address-locator.address-search-${field}-label`}
-            />
-          ),
-        }}
-      >
-        {({ placeholder, label }) => (
-          <div className="mb4">
-            <Input
-              type={type}
-              value={address[field]}
-              placeholder={placeholder}
-              size="large"
-              label={label}
-              onChange={e => this.handleAddressKeyChanged(e, field)}
-            />
-          </div>
-        )}
-      </Adopt>
+      <div className="mb4">
+        <Input
+          type={type}
+          value={address[field]}
+          placeholder={formatMessage({
+            id: `address-locator.address-search-${field}-placeholder`,
+          })}
+          size="large"
+          label={formatMessage({
+            id: `address-locator.address-search-${field}-label`,
+          })}
+          onChange={e => this.handleAddressKeyChanged(e, field)}
+        />
+      </div>
     )
   }
 
@@ -480,7 +469,7 @@ export default compose(
         return {
           googleMapKey: googleMapsKey,
           googleMapURL: `https://maps.googleapis.com/maps/api/js?key=${googleMapsKey}&v=3.exp&libraries=places`,
-          loadingElement: <AddressSearch loading />,
+          loadingElement: <SearchForm loading />,
           onOrderFormUpdated: onOrderFormUpdated,
           country,
           updateOrderFormMutation,
@@ -490,5 +479,6 @@ export default compose(
     ),
     renderComponent(LoadingSpinner)
   ),
-  withAddress
-)(AddressSearch)
+  withAddress,
+  injectIntl
+)(SearchForm)

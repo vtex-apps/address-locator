@@ -38,7 +38,7 @@ const optionsRefetch = {
 }
 
 export default compose(
-  graphql(addressQuery, { name: 'addressQuery', options: { ssr: false } }),
+  graphql(addressQuery, { name: 'addressQuery' }),
   graphql(updateOrderFormProfile, {
     name: 'updateOrderFormProfile',
     options: optionsRefetch,

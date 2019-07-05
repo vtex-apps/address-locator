@@ -1,6 +1,6 @@
-import React, { memo, useCallback, useState } from 'react'
+import React, { memo, useCallback, useState, useRef } from 'react'
 import PropTypes from 'prop-types'
-import { Modal, Spinner } from 'vtex.styleguide'
+import { Spinner } from 'vtex.styleguide'
 
 import Card from '../Card'
 import AddressSearch from '../AddressSearch'
@@ -22,7 +22,7 @@ const transformAnimationStyle = (quantity, isPickupOpen) => ({
 const AddressPage = ({ onSelectAddress }) => {
   const { address } = useAddress()
   const [isPickupOpen, setPickupOpen] = useState(false)
-  const [isPickupSelected, setPickupSelected] = useState(false)
+  const wrapperRef = useRef(null)
   const handlePickupClick = useCallback(() => {
     setPickupOpen(true)
   }, [setPickupOpen])
@@ -31,14 +31,9 @@ const AddressPage = ({ onSelectAddress }) => {
     onSelectAddress && onSelectAddress()
   }, [onSelectAddress])
 
-  const handlePickupModalClose = useCallback(() => {
+  const closeModal = useCallback(() => {
     setPickupOpen(false)
   }, [setPickupOpen])
-
-  const handlePickupConfirm = useCallback(() => {
-    setPickupSelected(true)
-    handleOrderFormUpdated()
-  }, [setPickupSelected, handleOrderFormUpdated])
 
   if (address.loading) {
     return (
@@ -57,42 +52,27 @@ const AddressPage = ({ onSelectAddress }) => {
    * @author lbebber */
   const isMobile = window.innerWidth < 640
 
-  const pickupPage = isPickupOpen ? (
-    <PickupLocator loading={isPickupSelected} onConfirm={handlePickupConfirm} />
-  ) : null
-
   return (
-    <React.Fragment>
+    <div ref={wrapperRef}>
       <div
         className="vtex-address-modal__address-page"
         style={transformAnimationStyle('110%', isPickupOpen && isMobile)}
       >
         <Card>
-          <AddressSearch
-            onPickupClick={handlePickupClick}
-            onUpdateOrderForm={handleOrderFormUpdated}
+          <AddressSearch onUpdateOrderForm={handleOrderFormUpdated} />
+          <PickupLocator
+            onConfirm={handleOrderFormUpdated}
+            onFindPickupClick={handlePickupClick}
+            isPickupOpen={isPickupOpen}
+            parentRef={isMobile && wrapperRef}
+            closeModal={closeModal}
           />
         </Card>
         <Card>
           <AddressRedeem />
         </Card>
       </div>
-      {isMobile ? (
-        <div
-          className="absolute w-100 h-100 top-0"
-          style={{
-            left: '100%',
-            ...transformAnimationStyle('100%', isPickupOpen && isMobile),
-          }}
-        >
-          {pickupPage}
-        </div>
-      ) : (
-        <Modal centered isOpen={isPickupOpen} onClose={handlePickupModalClose}>
-          <div className="vw-90 vh-80">{pickupPage}</div>
-        </Modal>
-      )}
-    </React.Fragment>
+    </div>
   )
 }
 

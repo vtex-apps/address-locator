@@ -54,13 +54,13 @@ const ChangeAddress = ({}) => {
   const handlePickupClick = useCallback(() => {
     setPickupOpen(true)
   }, [setPickupOpen])
-
   return (
     <div
-      className="overflow-hidden relative br2"
+      className="overflow-hidden relative br2 flex items-center"
       style={{
-        margin: '-3rem',
+        margin: '0 -3rem -3rem -3rem',
         padding: '3rem',
+        minHeight: isPickupOpen ? '75vh' : '50vh',
       }}
       ref={wrapperRef}
     >

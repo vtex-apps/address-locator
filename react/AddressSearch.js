@@ -1,2 +1,2 @@
-import AddressSearch from './components/AddressSearch/index'
+import AddressSearch from './components/AddressSearch/SearchForm'
 export default AddressSearch

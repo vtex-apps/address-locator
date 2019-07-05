@@ -1,13 +1,26 @@
 import React, { useState, useCallback, Fragment } from 'react'
 import PropTypes from 'prop-types'
-import { Button, Spinner } from 'vtex.styleguide'
+import { Button, Spinner, Modal } from 'vtex.styleguide'
 import { AddressRules } from 'vtex.address-form'
 import { useRuntime } from 'vtex.render-runtime'
 import { createPortal } from 'react-dom'
+import { FormattedMessage } from 'react-intl'
 
 import { useAddress } from '../AddressContext'
 import PickupModalContainer from './PickupModalContainer'
 import transformAnimationStyle from '../../utils/transformAnimationStyle'
+
+const PickupWrapper = ({ children, parentRef, closeModal }) => {
+  if (!parentRef.current) {
+    return (
+      <Modal centered isOpen onClose={closeModal} showTopBar={false}>
+        <div className="vw-90 vh-80">{children}</div>
+      </Modal>
+    )
+  }
+
+  return createPortal(children, parentRef.current)
+}
 
 const PickupLocator = ({
   loading,
@@ -15,6 +28,7 @@ const PickupLocator = ({
   onFindPickupClick,
   isPickupOpen,
   parentRef,
+  closeModal,
 }) => {
   const [isFetching, setFetching] = useState(false)
   const { address } = useAddress()
@@ -41,73 +55,53 @@ const PickupLocator = ({
     },
     [setFetching, address, onConfirm]
   )
-  console.log('teste OPAAA isPickupOpen', isPickupOpen)
+
   if (!isPickupOpen) {
     return (
       <Fragment>
         <Button variation="tertiary" block onClick={onFindPickupClick}>
-          <span>FIND PICKUP</span>
-          {/* <FormattedMessage id="address-locator.pickup-button" /> */}
+          <FormattedMessage id="address-locator.pickup-button" />
         </Button>
       </Fragment>
     )
   }
-  console.log('teste OI')
   const isLoading = isFetching || loading
-
-  return createPortal(
-    <AddressRules country={country} shouldUseIOFetching>
-      <div className="absolute top-0 left-0 w-100 h-100 center flex flex-column justify-center items-center pa6 teste-portal">
-        {isLoading ? (
-          <div className="w-100 h-100 flex items-center justify-center">
-            <Spinner />
-          </div>
-        ) : (
-          <PickupModalContainer handlePickedSLA={onHandlePickedSLA} />
-        )}
-      </div>
-    </AddressRules>,
-    parentRef.current
-  )
-
-  return (
-    <div
-      className="absolute w-100 h-100 top-0 flex"
-      style={{
+  const animationStyle = !!parentRef.current
+    ? {
         left: '100%',
         ...transformAnimationStyle('100%', isPickupOpen),
-      }}
-    >
-      <AddressRules country={country} shouldUseIOFetching>
-        <div className="w-100 center flex flex-column justify-center items-center pa6">
-          {isLoading ? (
-            <div className="w-100 h-100 flex items-center justify-center">
-              <Spinner />
-            </div>
-          ) : (
-            <PickupModalContainer handlePickedSLA={onHandlePickedSLA} />
-          )}
-        </div>
-      </AddressRules>
-    </div>
-  )
-}
+      }
+    : {}
 
-{
-  /* <div
-        className="absolute w-100 h-100 top-0 flex"
-        style={{
-          left: '100%',
-          ...transformAnimationStyle('100%', isPickupOpen),
-        }}
-      >
-        {pickupPage}
-      </div> */
+  return (
+    <PickupWrapper parentRef={parentRef} closeModal={closeModal}>
+      {
+        <AddressRules country={country} shouldUseIOFetching>
+          <div
+            className="w-100 center flex flex-column justify-center items-center pa6"
+            style={animationStyle}
+          >
+            {isLoading ? (
+              <div className="w-100 h-100 flex items-center justify-center">
+                <Spinner />
+              </div>
+            ) : (
+              <PickupModalContainer handlePickedSLA={onHandlePickedSLA} />
+            )}
+          </div>
+        </AddressRules>
+      }
+    </PickupWrapper>
+  )
 }
 
 PickupLocator.propTypes = {
   loading: PropTypes.bool,
   onConfirm: PropTypes.func.isRequired,
+  onFindPickupClick: PropTypes.func,
+  isPickupOpen: PropTypes.bool,
+  parentRef: PropTypes.shape({ current: PropTypes.instanceOf(PropTypes.any) }),
+  closeModal: PropTypes.func,
 }
 
 export default PickupLocator
