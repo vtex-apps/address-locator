@@ -1,12 +1,13 @@
 import React, { useCallback, useState, useRef } from 'react'
 import Spinner from 'vtex.styleguide/Spinner'
 import { useModal } from 'vtex.modal/ModalContext'
+import { ExtensionPoint } from 'vtex.render-runtime'
 
 import { useAddress, withAddressProvider } from '../AddressContext'
 
 import AddressList from './AddressList'
 import AddressSearch from '../AddressSearch'
-import PickupLocator from '../PickupLocator'
+import PickupSelector from '../PickupSelector'
 import '../../global.css'
 import transformAnimationStyle from '../../utils/transformAnimationStyle'
 
@@ -65,11 +66,13 @@ const ChangeAddress = ({}) => {
       ref={wrapperRef}
     >
       <div style={transformAnimationStyle('110%', isPickupOpen)}>
-        <AddressSearch
-          onPickupClick={handlePickupClick}
+        <ExtensionPoint
+          id="address-search"
           onUpdateOrderForm={handleOrderFormUpdated}
+          onPickupClick={handlePickupClick}
         />
-        <PickupLocator
+        <ExtensionPoint
+          id="pickup-selector"
           loading={isLoading}
           onConfirm={handlePickupConfirm}
           onFindPickupClick={handlePickupClick}

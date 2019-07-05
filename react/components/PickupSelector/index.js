@@ -22,7 +22,7 @@ const PickupWrapper = ({ children, parentRef, closeModal }) => {
   return createPortal(children, parentRef.current)
 }
 
-const PickupLocator = ({
+const PickupSelector = ({
   loading,
   onConfirm,
   onFindPickupClick,
@@ -95,7 +95,7 @@ const PickupLocator = ({
   )
 }
 
-PickupLocator.propTypes = {
+PickupSelector.propTypes = {
   loading: PropTypes.bool,
   onConfirm: PropTypes.func.isRequired,
   onFindPickupClick: PropTypes.func,
@@ -104,4 +104,4 @@ PickupLocator.propTypes = {
   closeModal: PropTypes.func,
 }
 
-export default PickupLocator
+export default PickupSelector

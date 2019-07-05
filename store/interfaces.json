@@ -1,6 +1,7 @@
 {
   "address-manager": {
-    "allowed": [],
+    "required": ["address-search"],
+    "allowed": ["address-redeem", "pickup-selector"],
     "component": "index"
   },
   "challenge.address": {
@@ -11,6 +12,8 @@
     "required": ["address-manager"]
   },
   "change-address": {
+    "required": ["address-search"],
+    "allowed": ["pickup-selector"],
     "component": "ChangeAddress"
   },
   "address-search": {
@@ -19,7 +22,7 @@
   "address-redeem": {
     "component": "AddressRedeem"
   },
-  "pickup-locator": {
-    "component": "PickupLocator"
+  "pickup-selector": {
+    "component": "PickupSelector"
   }
 }

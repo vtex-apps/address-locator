@@ -1,0 +1,8 @@
+{
+  "address-manager": {
+    "blocks": ["address-search", "address-redeem", "pickup-selector"]
+  },
+  "change-address": {
+    "blocks": ["address-search", "pickup-selector"]
+  }
+}

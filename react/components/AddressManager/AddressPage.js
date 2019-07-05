@@ -1,10 +1,11 @@
 import React, { memo, useCallback, useState, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { Spinner } from 'vtex.styleguide'
+import { ExtensionPoint } from 'vtex.render-runtime'
 
 import Card from '../Card'
 import AddressSearch from '../AddressSearch'
-import PickupLocator from '../PickupLocator'
+import PickupSelector from '../PickupSelector'
 import AddressRedeem from '../AddressRedeem'
 
 import { useAddress } from '../AddressContext'
@@ -59,17 +60,29 @@ const AddressPage = ({ onSelectAddress }) => {
         style={transformAnimationStyle('110%', isPickupOpen && isMobile)}
       >
         <Card>
-          <AddressSearch onUpdateOrderForm={handleOrderFormUpdated} />
-          <PickupLocator
+          <ExtensionPoint
+            id="address-search"
+            onUpdateOrderForm={handleOrderFormUpdated}
+          />
+          {/* <AddressSearch onUpdateOrderForm={handleOrderFormUpdated} /> */}
+          <ExtensionPoint
+            id="pickup-selector"
             onConfirm={handleOrderFormUpdated}
             onFindPickupClick={handlePickupClick}
             isPickupOpen={isPickupOpen}
             parentRef={isMobile && wrapperRef}
             closeModal={closeModal}
           />
+          {/* <PickupSelector
+            onConfirm={handleOrderFormUpdated}
+            onFindPickupClick={handlePickupClick}
+            isPickupOpen={isPickupOpen}
+            parentRef={isMobile && wrapperRef}
+            closeModal={closeModal}
+          /> */}
         </Card>
         <Card>
-          <AddressRedeem />
+          <ExtensionPoint id="address-redeem" />
         </Card>
       </div>
     </div>
