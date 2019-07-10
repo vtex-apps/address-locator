@@ -60,7 +60,7 @@ const PickupSelector = ({
     return (
       <Fragment>
         <Button variation="tertiary" block onClick={onFindPickupClick}>
-          <FormattedMessage id="address-locator.pickup-button" />
+          <FormattedMessage id="store/address-locator.pickup-button" />
         </Button>
       </Fragment>
     )

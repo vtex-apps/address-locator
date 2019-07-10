@@ -19,7 +19,7 @@ const AddressRedeem = ({ rules }) => {
   return (
     <Fragment>
       <h2 className="t-heading-2 mt0 mb4">
-        <FormattedMessage id="address-locator.address-redeem-recurring" />
+        <FormattedMessage id="store/address-locator.address-redeem-recurring" />
       </h2>
       <div className="vtex-address-modal__redeem">
         {isLoading ? (

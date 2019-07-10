@@ -114,12 +114,12 @@ class ReactGoogleAutocomplete extends React.Component {
         value={value}
         errorMessage={errorMessage}
         placeholder={formatMessage({
-          id: 'address-locator.address-search-placeholder',
+          id: 'store/address-locator.address-search-placeholder',
         })}
         size="large"
         label={
           !hideLabel &&
-          formatMessage({ id: 'address-locator.address-search-label' })
+          formatMessage({ id: 'store/address-locator.address-search-label' })
         }
         onChange={onChange}
         suffix={<LocationInputIcon onClick={onSuffixPress} />}

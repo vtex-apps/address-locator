@@ -9,25 +9,23 @@ const StyleguideInput = props => {
 
   return (
     <div
-      className={`vtex-profile-form__${field.name} ${
-        field.hidden ? 'dn' : ''
-      }`}
+      className={`vtex-profile-form__${field.name} ${field.hidden ? 'dn' : ''}`}
     >
       <Input
         name={field.name}
         label={intl.formatMessage({
-          id: `profile-form.field.${field.label}`,
+          id: `store/profile-form.field.${field.label}`,
         })}
         value={data.value || ''}
         errorMessage={
           data.error &&
           intl.formatMessage({
-            id: `profile-form.error.${data.error}`,
+            id: `store/profile-form.error.${data.error}`,
           })
         }
         placeholder={
           !field.required
-            ? intl.formatMessage({ id: 'profile-form.optional' })
+            ? intl.formatMessage({ id: 'store/profile-form.optional' })
             : null
         }
         onChange={onChange}

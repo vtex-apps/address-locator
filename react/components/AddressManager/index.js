@@ -34,13 +34,13 @@ const AddressManager = props => {
 }
 
 AddressManager.schema = {
-  title: 'address-locator.address-manager-title',
-  description: 'address-locator.address-manager-description',
+  title: 'admin/address-locator.address-manager-title',
+  description: 'admin/address-locator.address-manager-description',
   type: 'object',
   properties: {
     logoUrl: {
       type: 'string',
-      title: 'address-locator.address-manager.logo-title',
+      title: 'admin/address-locator.address-manager.logo-title',
       widget: {
         'ui:widget': 'image-uploader',
       },

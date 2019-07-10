@@ -125,7 +125,7 @@ class SearchForm extends Component {
   handleOnPlaceSelected = place => {
     const errorState = {
       AlertMessage: (
-        <FormattedMessage id="address-locator.address-search-invalid-address" />
+        <FormattedMessage id="store/address-locator.address-search-invalid-address" />
       ),
       address: null,
       shouldDisplayNumberInput: false,
@@ -295,7 +295,9 @@ class SearchForm extends Component {
     } catch (e) {
       this.setState({
         isLoading: false,
-        AlertMessage: <FormattedMessage id="address-locator.graphql-error" />,
+        AlertMessage: (
+          <FormattedMessage id="store/address-locator.graphql-error" />
+        ),
       })
     }
   }
@@ -324,19 +326,19 @@ class SearchForm extends Component {
     switch (errorCode) {
       case ERROR_ADDRESS_NOT_FOUND:
         return (
-          <FormattedMessage id="address-locator.address-search-not-found-error" />
+          <FormattedMessage id="store/address-locator.address-search-not-found-error" />
         )
       case ERROR_TIMEOUT:
         return (
-          <FormattedMessage id="address-locator.address-search-timeout-error" />
+          <FormattedMessage id="store/address-locator.address-search-timeout-error" />
         )
       case ERROR_POSITION_UNAVAILABLE:
         return (
-          <FormattedMessage id="address-locator.address-search-position-unavailable-error" />
+          <FormattedMessage id="store/address-locator.address-search-position-unavailable-error" />
         )
       case ERROR_POSITION_DENIED:
         return (
-          <FormattedMessage id="address-locator.address-search-position-denied-error" />
+          <FormattedMessage id="store/address-locator.address-search-position-denied-error" />
         )
       default:
         return null
@@ -356,11 +358,11 @@ class SearchForm extends Component {
           type={type}
           value={address[field]}
           placeholder={formatMessage({
-            id: `address-locator.address-search-${field}-placeholder`,
+            id: `store/address-locator.address-search-${field}-placeholder`,
           })}
           size="large"
           label={formatMessage({
-            id: `address-locator.address-search-${field}-label`,
+            id: `store/address-locator.address-search-${field}-label`,
           })}
           onChange={e => this.handleAddressKeyChanged(e, field)}
         />
@@ -437,7 +439,7 @@ class SearchForm extends Component {
               this.renderExtraDataInput('complement', 'text')}
           </div>
           <Button className="w-100" type="submit" isLoading={isLoading} block>
-            <FormattedMessage id="address-locator.address-search-button" />
+            <FormattedMessage id="store/address-locator.address-search-button" />
           </Button>
         </form>
       </Fragment>

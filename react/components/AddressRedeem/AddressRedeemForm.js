@@ -65,7 +65,7 @@ const AddressRedeemForm = ({
         disabled={isDisabled(profilePhone)}
         block
       >
-        <FormattedMessage id="address-locator.address-redeem-button" />
+        <FormattedMessage id="store/address-locator.address-redeem-button" />
       </Button>
     </form>
   )

@@ -33,7 +33,7 @@ const AddressList = ({ onSelectAddress }) => {
 
   return (
     <div className="vtex-address-locator__address-list pa5">
-      <FormattedMessage id="address-manager.address-list">
+      <FormattedMessage id="store/address-manager.address-list">
         {text => <span className="t-small f6 c-muted-1">{text}</span>}
       </FormattedMessage>
       {availableAddresses.map((address, key) => (

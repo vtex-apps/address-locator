@@ -6,8 +6,6 @@ import { ExtensionPoint } from 'vtex.render-runtime'
 import { useAddress, withAddressProvider } from '../AddressContext'
 
 import AddressList from './AddressList'
-import AddressSearch from '../AddressSearch'
-import PickupSelector from '../PickupSelector'
 import '../../global.css'
 import transformAnimationStyle from '../../utils/transformAnimationStyle'
 
@@ -58,7 +56,7 @@ const ChangeAddress = () => {
   }, [setPickupOpen])
   return (
     <div
-      className="overflow-hidden relative br2 flex items-center nh6 nh8-ns nb8 pa8"
+      className="overflow-hidden relative br2 flex items-center nh6 nh8-ns nb8 pa8 nt5 nt6-ns"
       style={{
         minHeight: isPickupOpen ? '75vh' : '50vh',
       }}
@@ -69,7 +67,6 @@ const ChangeAddress = () => {
           id="address-search"
           onUpdateOrderForm={handleOrderFormUpdated}
         />
-        {/* <AddressSearch onUpdateOrderForm={handleOrderFormUpdated} /> */}
         <ExtensionPoint
           id="pickup-selector"
           loading={isLoading}
