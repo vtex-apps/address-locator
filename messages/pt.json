@@ -17,7 +17,7 @@
   "address-locator.address-search-position-denied-error": "Geolocation permission denied",
   "address-locator.address-search-button": "Entregar neste endereço",
   "address-locator.address-search-invalid-address": "O endereço informado deve conter nome da rua, bairro, cidade e estado",
-  "address-locator.address-page-title": "Onde quer sua entrega?",
+  "store/address-locator.address-page-title": "Onde quer sua entrega?",
   "address-locator.address-redeem-recurring": "Comprando de novo?",
   "address-locator.address-redeem-button": "Buscar endereço",
   "address-locator.address-manager-title": "Seus Endereços",

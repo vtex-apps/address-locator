@@ -15,7 +15,8 @@ import transformAnimationStyle from '../../utils/transformAnimationStyle'
  * Component responsible for displaying and managing user's address using address.
  */
 
-const ChangeAddress = ({}) => {
+// margin 0 -1.5rem -3rem -1.5rem
+const ChangeAddress = () => {
   const { address } = useAddress()
   const { closeModal } = useModal()
   const [isPickupOpen, setPickupOpen] = useState(false)
@@ -57,10 +58,8 @@ const ChangeAddress = ({}) => {
   }, [setPickupOpen])
   return (
     <div
-      className="overflow-hidden relative br2 flex items-center"
+      className="overflow-hidden relative br2 flex items-center nh6 nh8-ns nb8 pa8"
       style={{
-        margin: '0 -3rem -3rem -3rem',
-        padding: '3rem',
         minHeight: isPickupOpen ? '75vh' : '50vh',
       }}
       ref={wrapperRef}
@@ -69,8 +68,8 @@ const ChangeAddress = ({}) => {
         <ExtensionPoint
           id="address-search"
           onUpdateOrderForm={handleOrderFormUpdated}
-          onPickupClick={handlePickupClick}
         />
+        {/* <AddressSearch onUpdateOrderForm={handleOrderFormUpdated} /> */}
         <ExtensionPoint
           id="pickup-selector"
           loading={isLoading}

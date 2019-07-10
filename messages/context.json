@@ -17,7 +17,7 @@
   "address-locator.address-search-position-denied-error": "address-locator.address-search-position-denied-error",
   "address-locator.address-search-button": "address-locator.address-search-button",
   "address-locator.address-search-invalid-address": "address-locator.address-search-invalid-address",
-  "address-locator.address-page-title": "address-locator.address-page-title",
+  "store/address-locator.address-page-title": "store/address-locator.address-page-title",
   "address-locator.address-redeem-recurring": "address-locator.address-redeem-recurring",
   "address-locator.address-redeem-button": "address-locator.address-redeem-button",
   "address-locator.address-manager-title": "address-locator.address-manager-title",

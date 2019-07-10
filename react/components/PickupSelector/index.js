@@ -78,7 +78,7 @@ const PickupSelector = ({
       {
         <AddressRules country={country} shouldUseIOFetching>
           <div
-            className="w-100 center flex flex-column justify-center items-center pa6"
+            className="w-100 center absolute top-0 bottom-0 left-0 right-0"
             style={animationStyle}
           >
             {isLoading ? (

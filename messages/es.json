@@ -17,7 +17,7 @@
   "address-locator.address-search-position-denied-error": "Permiso de geolocalización denegado",
   "address-locator.address-search-button": "Entregar en esta dirección",
   "address-locator.address-search-invalid-address": "La ubicación indicada debe contener el nombre de la calle, el barrio, la ciudad y el estado",
-  "address-locator.address-page-title": "¿A donde quieres enviar tu pedido?",
+  "store/address-locator.address-page-title": "¿A donde quieres enviar tu pedido?",
   "address-locator.address-redeem-recurring": "¿Comprando de nuevo?",
   "address-locator.address-redeem-button": "Buscar dirección",
   "address-locator.address-manager-title": "Sus Direcciones",
