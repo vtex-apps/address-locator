@@ -12,11 +12,8 @@ import { useRuntime } from 'vtex.render-runtime'
 import StyleguideInput from '../StyleguideInput'
 import CountryIcon from './CountryIcon'
 
-const isDisabled = profilePhone => {
-  if (!!profilePhone.error) return true
-  if (!profilePhone.value || !profilePhone.value.length) return true
-  return false
-}
+const isDisabled = profilePhone =>
+  !profilePhone.value || !profilePhone.value.length
 
 const AddressRedeemForm = ({
   loading,
