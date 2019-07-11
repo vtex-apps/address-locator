@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useCallback } from 'react'
+import React, { useEffect, useMemo, useCallback, useReducer } from 'react'
 import PropTypes from 'prop-types'
 import { injectIntl } from 'react-intl'
 import { graphql, withApollo } from 'react-apollo'
@@ -14,6 +14,59 @@ import { newAddress } from '../../utils/newAddress'
 import getCurrentPositionPromise from '../../utils/getCurrentPositionPromise'
 
 const { injectRules, addValidation } = helpers
+
+function reducer(state, action) {
+  const args = action.args || {}
+  switch (action.type) {
+    case 'SET_GEOLOCATION_PERMISSION': {
+      return {
+        ...state,
+        hasGeolocationPermission: args.hasGeolocationPermission,
+      }
+    }
+    case 'SAVE_NULL_PICKUP_POINTS': {
+      return {
+        ...state,
+        pickupOptions: [],
+        pickupPoints: [],
+        isSearching: false,
+      }
+    }
+    case 'SAVE_PICKUP_POINTS': {
+      return {
+        ...state,
+        pickupOptions: args.pickupOptions,
+        pickupPoints: args.pickupPoints,
+        isSearching: false,
+        selectedPickupPoint: args.selectedPickupPoint,
+      }
+    }
+    case 'BEGIN_ADDRESS_SEARCH': {
+      return {
+        ...state,
+        isSearching: true,
+        searchAddress: args.searchAddress,
+      }
+    }
+    case 'SELECT_PICKUP_POINT': {
+      return {
+        ...state,
+        selectedPickupPoint: args.selectedPickupPoint,
+      }
+    }
+    default:
+      return state
+  }
+}
+
+const initialState = {
+  hasGeolocationPermission: undefined,
+  pickupOptions: [],
+  searchAddress: addValidation(newAddress({ addressType: 'search' })),
+  selectedPickupPoint: null,
+  pickupPoints: [],
+  isSearching: true,
+}
 
 const convertPickupPointToOption = pickupPoint => {
   if (!pickupPoint) return pickupPoint
@@ -46,16 +99,15 @@ const PickupModalContainer = ({
   const {
     culture: { country, currency },
   } = useRuntime()
-  const [hasGeolocationPermission, updateGeolocationPermission] = useState(
-    undefined
-  )
-  const [pickupOptions, updatePickupOptions] = useState([])
-  const [searchAddress, updateSearchAddress] = useState(
-    addValidation(newAddress({ addressType: 'search' }))
-  )
-  const [selectedPickupPoint, updateSelectedPickupPoint] = useState(null)
-  const [pickupPoints, updatePickupPoints] = useState([])
-  const [isSearching, updateSearching] = useState(true)
+  const [state, dispatch] = useReducer(reducer, initialState)
+  const {
+    hasGeolocationPermission,
+    pickupOptions,
+    searchAddress,
+    selectedPickupPoint,
+    pickupPoints,
+    isSearching,
+  } = state
 
   const storePreferencesData = useMemo(
     () => ({
@@ -66,8 +118,12 @@ const PickupModalContainer = ({
   )
 
   const changeActivePickupDetails = useCallback(
-    ({ pickupPoint }) => updateSelectedPickupPoint(pickupPoint),
-    [updateSelectedPickupPoint]
+    ({ pickupPoint }) =>
+      dispatch({
+        type: 'SELECT_PICKUP_POINT',
+        args: { selectedPickupPoint: pickupPoint },
+      }),
+    [dispatch]
   )
 
   const changeActiveSLAOption = useCallback(
@@ -78,31 +134,32 @@ const PickupModalContainer = ({
   const savePickupPoints = useCallback(
     pickupPoints => {
       if (!pickupPoints) {
-        updatePickupOptions([])
-        updatePickupPoints([])
-        updateSearching(false)
+        dispatch({ type: 'SAVE_NULL_PICKUP_POINTS' })
         return
       }
       const pickupOptions = pickupPoints.map(convertPickupPointToOption)
       const newSelectedPickupPoint = pickupOptions[0]
-      updatePickupOptions(pickupOptions)
-      updatePickupPoints(pickupPoints)
-      updateSearching(false)
-      updateSelectedPickupPoint(newSelectedPickupPoint)
+      dispatch({
+        type: 'SAVE_PICKUP_POINTS',
+        args: {
+          pickupOptions,
+          pickupPoints,
+          selectedPickupPoint: newSelectedPickupPoint,
+        },
+      })
     },
-    [
-      updatePickupOptions,
-      updatePickupPoints,
-      updateSearching,
-      updateSelectedPickupPoint,
-    ]
+    [dispatch]
   )
 
   const handleSearchAddressChange = useCallback(
     async address => {
       const cleanAddress = addValidation(newAddress(address))
-      updateSearching(true)
-      updateSearchAddress(cleanAddress)
+      dispatch({
+        type: 'BEGIN_ADDRESS_SEARCH',
+        args: {
+          searchAddress: cleanAddress,
+        },
+      })
       if (cleanAddress.geoCoordinates.value.length < 2) {
         savePickupPoints(null)
       }
@@ -122,7 +179,7 @@ const PickupModalContainer = ({
         savePickupPoints(null)
       }
     },
-    [updateSearching, updateSearchAddress, savePickupPoints, client]
+    [dispatch, savePickupPoints, client]
   )
 
   const handlePickupConfirm = useCallback(
@@ -134,9 +191,19 @@ const PickupModalContainer = ({
 
   useEffect(() => {
     getCurrentPositionPromise()
-      .then(() => updateGeolocationPermission(true))
-      .catch(() => updateGeolocationPermission(false))
-  }, [])
+      .then(() =>
+        dispatch({
+          type: 'SET_GEOLOCATION_PERMISSION',
+          args: { hasGeolocationPermission: true },
+        })
+      )
+      .catch(() =>
+        dispatch({
+          type: 'SET_GEOLOCATION_PERMISSION',
+          args: { hasGeolocationPermission: false },
+        })
+      )
+  }, [dispatch])
   if (logisticsQuery.loading || hasGeolocationPermission === undefined) {
     return null
   }

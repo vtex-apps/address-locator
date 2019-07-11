@@ -13,7 +13,6 @@ import transformAnimationStyle from '../../utils/transformAnimationStyle'
  * Component responsible for displaying and managing user's address using address.
  */
 
-// margin 0 -1.5rem -3rem -1.5rem
 const ChangeAddress = () => {
   const { address } = useAddress()
   const { closeModal } = useModal()

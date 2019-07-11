@@ -22,11 +22,7 @@ const redirectToAddress = (page, navigate) => {
 const AddressChallenge = ({ data, children }) => {
   const { navigate, page } = useRuntime()
   const [hasAddress, updateHasAddress] = useState(false)
-  const [isLoading, updateLoading] = useState(true)
   const { loading, orderForm = {}, error } = data
-  useEffect(() => {
-    updateLoading(loading)
-  }, [loading])
   const { shippingData } = orderForm
   useEffect(() => {
     if (!loading) {
@@ -39,7 +35,7 @@ const AddressChallenge = ({ data, children }) => {
     }
   }, [loading, shippingData, page, navigate])
 
-  if (isLoading) {
+  if (loading) {
     return (
       <div className="flex justify-center items-center absolute top-0 bottom-0 left-0 right-0 bg-base">
         <div className={styles.spinnerAppear}>

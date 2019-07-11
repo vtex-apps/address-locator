@@ -18,16 +18,26 @@ const AddressOrderFormProvider = ({
   updateOrderFormCheckin,
   addressQuery,
 }) => {
+  const { orderForm, loading, refetch } = addressQuery
   const value = useMemo(() => {
     return {
       address: {
-        ...pick(['orderForm', 'loading', 'refetch'], addressQuery),
+        orderForm,
+        loading,
+        refetch,
         updateOrderFormProfile,
         updateOrderFormShipping,
         updateOrderFormCheckin,
       },
     }
-  }, [addressQuery])
+  }, [
+    orderForm,
+    loading,
+    refetch,
+    updateOrderFormProfile,
+    updateOrderFormShipping,
+    updateOrderFormCheckin,
+  ])
   return (
     <AddressContext.Provider value={value}>{children}</AddressContext.Provider>
   )
@@ -38,7 +48,10 @@ const optionsRefetch = {
 }
 
 export default compose(
-  graphql(addressQuery, { name: 'addressQuery' }),
+  graphql(addressQuery, {
+    name: 'addressQuery',
+    options: () => ({ ssr: false }),
+  }),
   graphql(updateOrderFormProfile, {
     name: 'updateOrderFormProfile',
     options: optionsRefetch,

@@ -21,7 +21,7 @@ const AddressRedeemQueryWrapper = ({ rules, client }) => {
   } = useRuntime()
   const { address } = useAddress()
   const [queryLoading, updateQueryLoading] = useState(false)
-  const [profile, updateProfile] = useState(
+  const [profile, updateProfile] = useState(() =>
     addValidation({ homePhone: '' }, rules)
   )
 
@@ -37,14 +37,12 @@ const AddressRedeemQueryWrapper = ({ rules, client }) => {
           fields: { email },
         },
       })
-      console.log('teste response: ', response)
       hasError = Boolean(
         path(['data', 'updateOrderFormProfile', 'orderForm'], response)
       )
     } catch (e) {
       hasError = true
     }
-    console.log('teste haserror: ', hasError)
     if (hasError) {
       // Show error to user
     }

@@ -1,12 +1,9 @@
 import React, { memo, useCallback, useState, useRef } from 'react'
 import PropTypes from 'prop-types'
 import { Spinner } from 'vtex.styleguide'
-import { ExtensionPoint } from 'vtex.render-runtime'
+import { ExtensionPoint, useRuntime } from 'vtex.render-runtime'
 
 import Card from '../Card'
-import AddressSearch from '../AddressSearch'
-import PickupSelector from '../PickupSelector'
-import AddressRedeem from '../AddressRedeem'
 
 import { useAddress } from '../AddressContext'
 
@@ -22,6 +19,9 @@ const transformAnimationStyle = (quantity, isPickupOpen) => ({
  */
 const AddressPage = ({ onSelectAddress }) => {
   const { address } = useAddress()
+  const {
+    hints: { phone: isPhone },
+  } = useRuntime()
   const [isPickupOpen, setPickupOpen] = useState(false)
   const wrapperRef = useRef(null)
   const handlePickupClick = useCallback(() => {
@@ -49,37 +49,25 @@ const AddressPage = ({ onSelectAddress }) => {
     )
   }
 
-  /** TODO: use a better method of mobile detection
-   * @author lbebber */
-  const isMobile = window.innerWidth < 640
-
   return (
     <div ref={wrapperRef}>
       <div
         className="vtex-address-modal__address-page"
-        style={transformAnimationStyle('110%', isPickupOpen && isMobile)}
+        style={transformAnimationStyle('110%', isPickupOpen && isPhone)}
       >
         <Card>
           <ExtensionPoint
             id="address-search"
             onUpdateOrderForm={handleOrderFormUpdated}
           />
-          {/* <AddressSearch onUpdateOrderForm={handleOrderFormUpdated} /> */}
           <ExtensionPoint
             id="pickup-selector"
             onConfirm={handleOrderFormUpdated}
             onFindPickupClick={handlePickupClick}
             isPickupOpen={isPickupOpen}
-            parentRef={isMobile && wrapperRef}
+            parentRef={isPhone && wrapperRef}
             closeModal={closeModal}
           />
-          {/* <PickupSelector
-            onConfirm={handleOrderFormUpdated}
-            onFindPickupClick={handlePickupClick}
-            isPickupOpen={isPickupOpen}
-            parentRef={isMobile && wrapperRef}
-            closeModal={closeModal}
-          /> */}
         </Card>
         <Card>
           <ExtensionPoint id="address-redeem" />
