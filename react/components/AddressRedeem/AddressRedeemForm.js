@@ -73,10 +73,6 @@ AddressRedeemForm.propTypes = {
   loading: PropTypes.bool.isRequired,
   /* Submit event handler */
   onSubmit: PropTypes.func.isRequired,
-  /* Input error message */
-  errorMessage: PropTypes.string,
-  /* Country info object to format the Input */
-  country: PropTypes.string,
   /* Input change event handler */
   onFieldUpdate: PropTypes.func.isRequired,
   /* Profile Form rules object for the store country */
