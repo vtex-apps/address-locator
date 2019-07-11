@@ -1,6 +1,7 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect } from 'react'
 
 import { graphql } from 'react-apollo'
+import { path, compose } from 'ramda'
 import { useRuntime } from 'vtex.render-runtime'
 import { Spinner } from 'vtex.styleguide'
 import { address as addressQuery } from 'vtex.store-resources/Queries'
@@ -19,21 +20,21 @@ const redirectToAddress = (page, navigate) => {
   }
 }
 
+const hasShippingAddress = compose(
+  Boolean,
+  path(['shippingData', 'address'])
+)
+
 const AddressChallenge = ({ data, children }) => {
   const { navigate, page } = useRuntime()
-  const [hasAddress, updateHasAddress] = useState(false)
   const { loading, orderForm = {}, error } = data
-  const { shippingData } = orderForm
+  const orderFormHasAddress = hasShippingAddress(orderForm)
+  const hasError = !!error
   useEffect(() => {
-    if (!loading) {
-      const hasError = !!error
-      const gotAddress = !!(shippingData && shippingData.address)
-      updateHasAddress(gotAddress)
-      if (!hasError && !gotAddress) {
-        redirectToAddress(page, navigate)
-      }
+    if (!loading && !hasError && !orderFormHasAddress) {
+      redirectToAddress(page, navigate)
     }
-  }, [loading, shippingData, page, navigate])
+  }, [loading, orderFormHasAddress, page, navigate, hasError])
 
   if (loading) {
     return (
@@ -44,7 +45,7 @@ const AddressChallenge = ({ data, children }) => {
       </div>
     )
   }
-  if (hasAddress) {
+  if (!loading && orderFormHasAddress) {
     return children
   }
   return null
