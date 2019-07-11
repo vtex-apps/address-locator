@@ -7,26 +7,29 @@ import { ProfileField } from 'vtex.profile-form'
 import convertIso3To2 from 'country-iso-3-to-2'
 import examples from 'libphonenumber-js/examples.mobile.json'
 import { getExampleNumber } from 'libphonenumber-js'
+import { useRuntime } from 'vtex.render-runtime'
 
-import StyleguideInput from './StyleguideInput'
+import StyleguideInput from '../StyleguideInput'
 import CountryIcon from './CountryIcon'
 
-const isDisabled = (profilePhone) => {
-  if (!!profilePhone.error) return true
-  if (!profilePhone.value || !profilePhone.value.length) return true
-  return false
-}
+const isDisabled = profilePhone =>
+  !profilePhone.value || !profilePhone.value.length
 
 const AddressRedeemForm = ({
   loading,
-  country,
   rules,
   profile,
   onFieldUpdate,
   onSubmit,
 }) => {
+  const {
+    culture: { country },
+  } = useRuntime()
   const countryIso2 = convertIso3To2(country)
-  const phonePlaceholder = useMemo(() => getExampleNumber(countryIso2, examples).formatNational(), [country])
+  const phonePlaceholder = useMemo(
+    () => getExampleNumber(countryIso2, examples).formatNational(),
+    [country]
+  )
   const homePhoneField = {
     ...find(propEq('name', 'homePhone'), rules.personalFields),
     required: true,
@@ -59,7 +62,7 @@ const AddressRedeemForm = ({
         disabled={isDisabled(profilePhone)}
         block
       >
-        <FormattedMessage id="address-locator.address-redeem-button" />
+        <FormattedMessage id="store/address-locator.address-redeem-button" />
       </Button>
     </form>
   )
@@ -70,13 +73,6 @@ AddressRedeemForm.propTypes = {
   loading: PropTypes.bool.isRequired,
   /* Submit event handler */
   onSubmit: PropTypes.func.isRequired,
-  /* Input error message */
-  errorMessage: PropTypes.string,
-  /* Country info object to format the Input */
-  country: PropTypes.shape({
-    icon: PropTypes.string.isRequired,
-    code: PropTypes.number.isRequired,
-  }).isRequired,
   /* Input change event handler */
   onFieldUpdate: PropTypes.func.isRequired,
   /* Profile Form rules object for the store country */

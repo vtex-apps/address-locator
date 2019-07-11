@@ -7,6 +7,17 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.3.0] - 2019-07-11
+### Added
+- Blocks `address-search`, `address-redeem` and `pickup-selector`.
+
+### Changed
+- Use a lot more hooks.
+- Create Address context, use address hook.
+
+### Removed
+- Get rid of OrderForm context.
+
 ## [2.2.1] - 2019-04-26
 ### Fixed
 - use `withModal` and call it after changing address.

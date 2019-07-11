@@ -1,5 +1,5 @@
 import React, { memo, useState } from 'react'
-import getCountryDialCode from '../utils/getCountryDialCode'
+import getCountryDialCode from '../../utils/getCountryDialCode'
 
 const CountryIcon = ({ size, country }) => {
   const [flagSource, setFlagSource] = useState(undefined)
@@ -10,11 +10,19 @@ const CountryIcon = ({ size, country }) => {
       .catch(() => setFlagSource(null))
     return null
   }
-  
+
   const dialCode = getCountryDialCode(country)
   return (
     <div className="flex items-center">
-      {flagSource && <img className="pr2" style={{ objectFit: 'contain' }} src={flagSource} width={size} height={size} />}
+      {flagSource && (
+        <img
+          className="pr2"
+          style={{ objectFit: 'contain' }}
+          src={flagSource}
+          width={size}
+          height={size}
+        />
+      )}
       <p>{`+${dialCode}`}</p>
     </div>
   )

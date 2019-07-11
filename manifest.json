@@ -1,7 +1,7 @@
 {
   "vendor": "vtex",
   "name": "address-locator",
-  "version": "2.2.1",
+  "version": "2.3.0",
   "builders": {
     "store": "0.x",
     "messages": "1.x",
@@ -18,9 +18,11 @@
     "vtex.pickup-points-selector": "0.x",
     "vtex.store": "2.x",
     "vtex.store-header": "2.x",
-    "vtex.modal": "0.x"
+    "vtex.modal": "0.x",
+    "vtex.store-icons": "0.x"
   },
   "scripts": {
     "postreleasy": "vtex publish --verbose"
-  }
+  },
+  "$schema": "https://raw.githubusercontent.com/vtex/node-vtex-api/master/gen/manifest.schema"
 }
