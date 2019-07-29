@@ -7,6 +7,8 @@ and this project adheres to [Semantic Versioning](http://semver.org/spec/v2.0.0.
 
 ## [Unreleased]
 
+## [2.3.1] - 2019-07-29
+
 ## [2.3.0] - 2019-07-11
 ### Added
 - Blocks `address-search`, `address-redeem` and `pickup-selector`.
