@@ -4,10 +4,13 @@
 
 /* TODO: make modal accept configuring its size in order to
  * render the styling below obsolete */
-.vtex-modal__modal {
-  max-width: 96rem !important;
-  max-height: 64rem !important;
+ @media (min-width: 64rem) {
+  .vtex-modal__modal {
+    max-width: 96rem !important;
+    max-height: 64rem !important;
+  }
 }
+
 .vtex-modal__close-icon {
   z-index: 9;
 }
