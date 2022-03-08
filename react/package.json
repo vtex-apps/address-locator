@@ -12,5 +12,6 @@
     "react-google-maps": "^9.4.5",
     "recompose": "^0.30.0",
     "svg-country-flags": "^1.2.6"
-  }
+  },
+  "version": "2.4.0"
 }
